@@ -82,6 +82,11 @@ contract Particle {
         int interval = max - min;
         return randi % interval + min;
     }
+
+    function updateTargetFunction(address _newTargetFunctionAddress) external {
+        require(msg.sender == address(controller), "Only the controller can update the target function");
+        targetFunction = IFunction(_newTargetFunctionAddress);
+    }
 }
 
 interface IController {

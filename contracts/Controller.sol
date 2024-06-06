@@ -6,17 +6,20 @@ import "./Particle.sol";
 contract Controller {
     int[dimension + 1] public bestPoint;
     address[] public particleAddresses;
+    address public targetFunctionAddress;
 
     event UpdateVar(address particle, int[dimension + 1] old, int[dimension + 1] newVar);
     event ParticleBorn(address particle, int[dimension] position, int[dimension] speed);
     event NewLocalMax(address particle, int[dimension + 1] old, int[dimension + 1] newVal);
+    event TargetFunctionUpdated(address newTargetFunction);
 
     constructor(uint8 initialParticles, address _targetFunctionContractAddress) payable {
+        targetFunctionAddress = _targetFunctionContractAddress;
         for (uint i = 0; i < dimension; i++) {
             bestPoint[i] = 0;
         }
         bestPoint[dimension] = 9999999;
-        for (uint8 i = 0; i < initialParticles; i++) {
+        for (uint16 i = 0; i < initialParticles; i++) {
             int[dimension] memory start;
             int[dimension] memory velocity;
             for (uint8 j = 0; j < dimension; j++) {
@@ -44,9 +47,17 @@ contract Controller {
         }
     }
 
-    function random(int min, int max, uint16 nonce) private view returns (int) {
+    function random(int min, int max, uint32 nonce) private view returns (int) {
         uint256 seed = uint256(keccak256(abi.encode(block.timestamp, block.difficulty, msg.sender, nonce)));
         uint256 rand = seed % uint256(max - min + 1);
         return int(rand) + min;
+    }
+
+    function updateTargetFunction(address _newTargetFunctionAddress) public {
+        targetFunctionAddress = _newTargetFunctionAddress;
+        emit TargetFunctionUpdated(_newTargetFunctionAddress);
+        for (uint i = 0; i < particleAddresses.length; i++) {
+            Particle(particleAddresses[i]).updateTargetFunction(_newTargetFunctionAddress);
+        }
     }
 }
