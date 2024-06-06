@@ -57,14 +57,14 @@ contract Particle {
 
     function findNewVal(int cogF, int socialF, int inertiaF, int[dimension + 1] memory globalBest) private returns (int) {
         int[dimension] memory newSpeed;
-        uint8 maxSpeed = 30;
+        int maxSpeed = 30;
         for (uint i = 0; i < dimension; i++) {
             int newSpeedi = speed[i] * inertiaF / 100 + cogF * (localBest[i] - position[i]) / 100 + socialF * (globalBest[i] - position[i]) / 100;
 
             if (newSpeedi > maxSpeed) {
                 newSpeedi = maxSpeed;
-            } else if (newSpeedi < - maxSpeed) {
-                newSpeedi = - maxSpeed;
+            } else if (newSpeedi < -maxSpeed) {
+                newSpeedi = -maxSpeed;
             }
 
             newSpeed[i] = newSpeedi;
