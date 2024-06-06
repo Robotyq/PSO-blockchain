@@ -63,8 +63,8 @@ contract Particle {
 
             if (newSpeedi > maxSpeed) {
                 newSpeedi = maxSpeed;
-            } else if (newSpeedi < -maxSpeed) {
-                newSpeedi = -maxSpeed;
+            } else if (newSpeedi < - maxSpeed) {
+                newSpeedi = - maxSpeed;
             }
 
             newSpeed[i] = newSpeedi;
@@ -86,5 +86,6 @@ contract Particle {
 
 interface IController {
     function getBestPoint() external view returns (int[3] memory);
+
     function setBestPoint(int[3] memory newVar) external;
 }
