@@ -8,9 +8,8 @@ contract Controller {
     address[] public particleAddresses;
     address public targetFunctionAddress;
 
-    event UpdateVar(address particle, int[dimension + 1] old, int[dimension + 1] newVar);
+    event NewBestGlobal(address particle, int[dimension + 1] old, int[dimension + 1] newVar);
     event ParticleBorn(address particle, int[dimension] position, int[dimension] speed);
-    event NewLocalMax(address particle, int[dimension + 1] old, int[dimension + 1] newVal);
     event TargetFunctionUpdated(address newTargetFunction);
 
     constructor(uint8 initialParticles, address _targetFunctionContractAddress) payable {
@@ -23,8 +22,8 @@ contract Controller {
             int[dimension] memory start;
             int[dimension] memory velocity;
             for (uint8 j = 0; j < dimension; j++) {
-                start[j] = random(- 600, 600, i * j);
-                velocity[j] = random(- 40, 40, 200 * i * j);
+                start[j] = random(- 600, 600, i * (j+1));
+                velocity[j] = random(- 40, 40, 200 * i * (j+1));
             }
             Particle newParticle = (new Particle){value: 1 ether}(address(this), _targetFunctionContractAddress, start, velocity);
             particleAddresses.push(address(newParticle));
@@ -33,7 +32,7 @@ contract Controller {
     }
 
     function setBestPoint(int[dimension + 1] calldata newVar) public {
-        emit UpdateVar(msg.sender, bestPoint, newVar);
+        emit NewBestGlobal(msg.sender, bestPoint, newVar);
         bestPoint = newVar;
     }
 

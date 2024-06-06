@@ -5,6 +5,43 @@ module.exports = async function (callback) {
     try {
         const controller = await Controller.deployed();
 
+        // Fetch all events from the Controller contract
+        const controllerEvents = await controller.getPastEvents('allEvents', {
+            fromBlock: 0,
+            toBlock: 'latest'
+        });
+
+        console.log('Controller Events:');
+        // Format and print each Controller event
+        controllerEvents.forEach(event => {
+            switch (event.event) {
+                case 'NewBestGlobal':
+                    console.log(`UpdateVar Event:
+                                Particle: ${event.returnValues.particle}
+                                Old Value: ${event.returnValues.old}
+                                New Value: ${event.returnValues.newVar}
+                                `);
+                    break;
+                case 'ParticleBorn':
+                    console.log(`ParticleBorn Event:
+                                Particle: ${event.returnValues.particle}
+                                Position: ${event.returnValues.position}
+                                Speed: ${event.returnValues.speed}
+                                `);
+                    break;
+                case 'TargetFunctionUpdated':
+                    console.log(`TargetFunctionUpdated Event:
+                                New Target Function: ${event.returnValues.newTargetFunction}
+                                `);
+                    break;
+                default:
+                    console.log(`Unknown Event from Controller:
+                                ${JSON.stringify(event, null, 2)}
+                                `);
+                    break;
+            }
+        });
+
         // Assume there are exactly 7 particles
         const particleCount = 7;
 
