@@ -13,6 +13,7 @@ import "./IFunction.sol";
         int y;
         int z;
     }
+
 contract Particle {
     int[dimension] public position;
     IFunction public targetFunction;
