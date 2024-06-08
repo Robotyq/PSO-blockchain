@@ -13,6 +13,7 @@ export default function Home() {
     const [controller, setController] = useState(null);
     const [particles, setParticles] = useState([]);
     const [events, setEvents] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (web3) {
@@ -21,7 +22,7 @@ export default function Home() {
                     const controllerInstance = await initializeController(web3);
                     setController(controllerInstance);
                 } catch (error) {
-                    console.error(error.message);
+                    setError(error.message);
                 }
             };
             initController();
@@ -33,8 +34,9 @@ export default function Home() {
             try {
                 const particlesData = await fetchParticlesData(web3, controller);
                 setParticles(particlesData);
+                setError(null); // Clear any previous errors
             } catch (error) {
-                console.error(error.message);
+                setError(error.message);
             }
         }
     };
@@ -44,8 +46,9 @@ export default function Home() {
             try {
                 const eventsData = await fetchEventsData(web3, controller);
                 setEvents(eventsData);
+                setError(null); // Clear any previous errors
             } catch (error) {
-                console.error(error.message);
+                setError(error.message);
             }
         }
     };
@@ -58,6 +61,8 @@ export default function Home() {
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
             </div>
+
+            {error && <div className={styles.error}>{error}</div>}
 
             <h2>Particles</h2>
             <ul className={styles.list}>
