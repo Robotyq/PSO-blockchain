@@ -1,16 +1,17 @@
 // src/app/components/ParticlesChart.js
 import React from 'react';
-import { Scatter } from 'react-chartjs-2';
-import { Chart as ChartJS, Tooltip, Legend, PointElement, LinearScale, Title, CategoryScale } from 'chart.js';
+import {Scatter} from 'react-chartjs-2';
+import {Chart as ChartJS, Tooltip, PointElement, LinearScale, CategoryScale} from 'chart.js';
+import styles from '../page.module.css';
+ChartJS.register(Tooltip, PointElement, LinearScale, CategoryScale);
 
-ChartJS.register(Tooltip, Legend, PointElement, LinearScale, Title, CategoryScale);
-
-const ParticlesChart = ({ particles }) => {
+const ParticlesChart = ({particles}) => {
     const data = {
-        datasets: particles.map((particle, index) => ({
+        datasets: particles.map((particle) => ({
             label: particle.name,
-            data: [{ x: particle.position[0], y: particle.position[1] }],
+            data: [{x: particle.position[0], y: particle.position[1]}],
             backgroundColor: 'rgba(75, 192, 192, 1)',
+            pointRadius: 8,  // Increase the dot size
         })),
     };
 
@@ -25,6 +26,9 @@ const ParticlesChart = ({ particles }) => {
             },
         },
         plugins: {
+            legend: {
+                display: false,  // Hide the legend
+            },
             tooltip: {
                 callbacks: {
                     label: (context) => {
@@ -36,7 +40,11 @@ const ParticlesChart = ({ particles }) => {
         },
     };
 
-    return <Scatter data={data} options={options} />;
+    return (
+        <div className={styles.chartContainer}>
+            <Scatter data={data} options={options}/>
+        </div>
+    );
 };
 
 export default ParticlesChart;

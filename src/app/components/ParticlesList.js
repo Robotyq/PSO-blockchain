@@ -28,7 +28,7 @@ const ParticlesList = ({particles1}) => {
                 {particles.map((particle, index) => {
                     return (
                         <li key={index} className={styles.listItem}>
-                            Address: {particle.address}, Position: [{particle.position}]
+                            Particle address: {particle.name}, Position: [{particle.position.join(", ")}]
                         </li>
                     );
                 })}

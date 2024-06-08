@@ -74,3 +74,9 @@
   border-radius: 5px;
   margin-bottom: 1rem;
 }
+
+.chartContainer {
+  width: 60%; /* Set the width to 75% of the parent */
+  height: 100%;
+  margin: 0 auto; /* Center the chart */
+}

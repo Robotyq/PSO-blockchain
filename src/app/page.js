@@ -29,6 +29,12 @@ export default function Home() {
             initController();
         }
     }, [web3]);
+    useEffect(() => {
+        if (controller) {
+            fetchParticles();
+            fetchEvents();
+        }
+    }, [controller]);
 
     const fetchParticles = async () => {
         if (controller) {
