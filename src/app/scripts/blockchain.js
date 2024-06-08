@@ -12,7 +12,6 @@ export const initializeController = async (web3) => {
         deployedNetwork && deployedNetwork.address
     );
 };
-
 export const fetchParticlesData = async (web3, controller) => {
     const particleCount = await controller.methods.getParticlesCount().call();
     const particlePromises = [];
@@ -78,3 +77,18 @@ export const fetchEventsData = async (web3, controller) => {
     console.log('Fetched events', formattedGlobalVarEvents)
     return formattedGlobalVarEvents;
 };
+
+export const iterate = async (web3, account, controller, value, callback) => {
+    try {
+        console.log('Iterating with value:', value, "from account:", account);
+        const send = controller.methods.iterateAll().send({from: account});
+        send.then((receipt) => {
+            console.log('Transaction receipt:', receipt);
+            callback();
+        });
+    } catch (error) {
+        console.error('Error iterating:', error);
+        throw error;
+    }
+};
+

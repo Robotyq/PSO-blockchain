@@ -1,12 +1,14 @@
 "use client";
 import {useState, useEffect} from 'react';
 import {useWeb3} from './components/Web3Provider';
-import {initializeController, fetchParticlesData, fetchEventsData} from './scripts/blockchain';
+import {initializeController, fetchParticlesData, fetchEventsData, iterate} from './scripts/blockchain';
 import AccountInfo from './components/AccountInfo';
 import ControllerInfo from './components/ControllerInfo';
 import ParticlesList from './components/ParticlesList';
 import EventsList from './components/EventsList';
+import IterationControl from './components/IterationControl';
 import styles from './page.module.css';
+import {callback} from "chart.js/helpers";
 
 export default function Home() {
     const {web3, account} = useWeb3();
@@ -75,6 +77,22 @@ export default function Home() {
         }
     };
 
+    const handleIterate = async (value) => {
+        if (controller) {
+            try {
+                const callback= () => {
+                    fetchParticles();
+                    fetchEvents();
+                    fetchCurrentBlock();
+                }
+                await iterate(web3, account, controller, value, callback);
+                // Optionally, you can fetch particles or events after iteration
+            } catch (error) {
+                setError({message: error.message, stack: error.stack});
+            }
+        }
+    };
+
     return (
         <main className={styles.main}>
             <h1>Blockchain Particle System</h1>
@@ -83,6 +101,7 @@ export default function Home() {
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
+                <IterationControl onIterate={handleIterate}/>
             </div>
             {error && (
                 <div className={styles.error}>

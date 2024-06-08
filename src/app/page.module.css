@@ -25,6 +25,16 @@
   font-size: 1rem;
   transition: background-color 0.3s ease;
 }
+.button_iter {
+  padding: 1rem 2rem;
+  background-color: #f30024;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
 
 .button:hover {
   background-color: #005bb5;
@@ -79,4 +89,15 @@
   width: 60%; /* Set the width to 75% of the parent */
   height: 100%;
   margin: 0 auto; /* Center the chart */
+}
+
+.iterationControl {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-left: 10rem;
+}
+
+.slider {
+  width: 150px;
 }
