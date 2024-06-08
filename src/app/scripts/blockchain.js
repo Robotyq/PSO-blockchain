@@ -1,5 +1,5 @@
-import ControllerContract from '../contracts/Controller.json';
-import ParticleContract from '../contracts/Particle.json';
+import ControllerContract from '../contracts/Controller.js';
+import ParticleContract from '../contracts/Particle.js';
 
 export const initializeController = async (web3) => {
     const networkId = await web3.eth.net.getId();
@@ -37,9 +37,44 @@ export const fetchEventsData = async (web3, controller) => {
     currentBlockNumber = Number(currentBlockNumber);
     const fromBlock = Math.max(currentBlockNumber - 5, 0);
     console.log('Current block number:', currentBlockNumber)
-    console.log('Fetching events from block', fromBlock, 'to latest')
-    return await controller.getPastEvents('allEvents', {
-        fromBlock,
+    console.log('Fetching events of ', controller, 'from block', fromBlock, 'to latest')
+    const controllerEvents = await controller.getPastEvents('allEvents', {
+        fromBlock: 0,
         toBlock: 'latest',
     });
+    const formattedGlobalVarEvents = controllerEvents.map(event => {
+        switch (event.event) {
+            case 'UpdateVar':
+                return {
+                    event: 'UpdateVar',
+                    particle: event.returnValues.particle,
+                    oldBestPos: event.returnValues.old.bestPos,
+                    oldMinValue: event.returnValues.old.minValue,
+                    newBestPos: event.returnValues.newVar.bestPos,
+                    newMinValue: event.returnValues.newVar.minValue
+                };
+            case 'ParticleBorn':
+                return {
+                    event: 'ParticleBorn',
+                    particle: event.returnValues.particle,
+                    initialPosition: event.returnValues.position,
+                    speed: event.returnValues.speed
+                };
+            case 'NewLocalMax':
+                return {
+                    event: 'NewLocalMax',
+                    particle: event.returnValues.particle,
+                    oldValue: event.returnValues.old,
+                    newValue: event.returnValues.newVal
+                };
+            default:
+                return {
+                    event: 'UnknownEvent',
+                    data: event
+                };
+        }
+    });
+
+    console.log('Fetched events', formattedGlobalVarEvents)
+    return formattedGlobalVarEvents;
 };

@@ -55,9 +55,10 @@ export default function Home() {
     return (
         <main className={styles.main}>
             <h1>Blockchain Particle System</h1>
+            {/*<h2>Accounts: {accounts.join(", ")}</h2>*/}
             <h2>Account: {account}</h2>
             <h3>Web3: {web3 ? 'Connected' : 'Not Connected'}</h3>
-            <h4>Controller: {controller ? 'Initialized'+controller.address : 'Not Initialized'}</h4>
+            <h4>Controller contract: {controller ? controller.options.address : 'Not Initialized'}</h4>
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
@@ -83,7 +84,8 @@ export default function Home() {
             <ul className={styles.list}>
                 {events.map((event, index) => (
                     <li key={index} className={styles.listItem}>
-                        {event.event}: {JSON.stringify(event.returnValues)}
+                        {event.event}: {JSON.stringify(event)}
+                        {}
                     </li>
                 ))}
             </ul>
