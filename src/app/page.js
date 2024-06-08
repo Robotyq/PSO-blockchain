@@ -1,14 +1,81 @@
 "use client";
+import { useState, useEffect } from 'react';
+import { useWeb3 } from './components/Web3Provider';
+import {
+    initializeController,
+    fetchParticlesData,
+    fetchEventsData
+} from './scripts/blockchain';
+import styles from './page.module.css';
 
-import {Web3Provider} from './components/Web3Provider';
-import './globals.css';  // Import global styles
+export default function Home() {
+    const { web3, account } = useWeb3();
+    const [controller, setController] = useState(null);
+    const [particles, setParticles] = useState([]);
+    const [events, setEvents] = useState([]);
 
-function MyApp({Component, pageProps}) {
+    useEffect(() => {
+        if (web3) {
+            const initController = async () => {
+                try {
+                    const controllerInstance = await initializeController(web3);
+                    setController(controllerInstance);
+                } catch (error) {
+                    console.error(error.message);
+                }
+            };
+            initController();
+        }
+    }, [web3]);
+
+    const fetchParticles = async () => {
+        if (controller) {
+            try {
+                const particlesData = await fetchParticlesData(web3, controller);
+                setParticles(particlesData);
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+    };
+
+    const fetchEvents = async () => {
+        if (controller) {
+            try {
+                const eventsData = await fetchEventsData(web3, controller);
+                setEvents(eventsData);
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+    };
+
     return (
-        <Web3Provider>
-            <Component {...pageProps} />
-        </Web3Provider>
+        <main className={styles.main}>
+            <h1>Blockchain Particle System</h1>
+            <p>Account: {account}</p>
+            <div className={styles.center}>
+                <button onClick={fetchParticles}>Fetch Particles</button>
+                <button onClick={fetchEvents}>Fetch Events</button>
+            </div>
+
+            <h2>Particles</h2>
+            <ul>
+                {particles.map((particle, index) => (
+                    <li key={index}>
+                        Address: {particle.address}, Position: [{particle.position.join(', ')}]
+                    </li>
+                ))}
+            </ul>
+
+            <h2>Events</h2>
+            <ul>
+                {events.map((event, index) => (
+                    <li key={index}>
+                        {event.event}: {JSON.stringify(event.returnValues)}
+                    </li>
+                ))}
+            </ul>
+        </main>
     );
 }
-
-export default MyApp;
