@@ -5,9 +5,7 @@ import '../globals.css';  // Import global styles
 
 function MyApp({ Component, pageProps }) {
     return (
-        <Web3Provider>
-            <Component {...pageProps} />
-        </Web3Provider>
+        <h2> hello world </h2>
     );
 }
 
