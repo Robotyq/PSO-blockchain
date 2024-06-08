@@ -39,7 +39,7 @@ export const fetchEventsData = async (web3, controller) => {
     console.log('Current block number:', currentBlockNumber)
     console.log('Fetching events of ', controller, 'from block', fromBlock, 'to latest')
     const controllerEvents = await controller.getPastEvents('allEvents', {
-        fromBlock: 0,
+        fromBlock,
         toBlock: 'latest',
     });
     const formattedGlobalVarEvents = controllerEvents.map(event => {

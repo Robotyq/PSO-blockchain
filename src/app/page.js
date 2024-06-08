@@ -1,31 +1,26 @@
-// src/app/page.js
 "use client";
-import { useState, useEffect } from 'react';
-import { useWeb3 } from './components/Web3Provider';
-import {
-    initializeController,
-    fetchParticlesData,
-    fetchEventsData
-} from './scripts/blockchain';
+import {useState, useEffect} from 'react';
+import {useWeb3} from './components/Web3Provider';
+import {initializeController, fetchParticlesData, fetchEventsData} from './scripts/blockchain';
+import AccountInfo from './components/AccountInfo';
+import ControllerInfo from './components/ControllerInfo';
+import ParticlesList from './components/ParticlesList';
+import EventsList from './components/EventsList';
 import styles from './page.module.css';
 
-// Custom replacer function to handle BigInt serialization
-const bigintReplacer = (key, value) => {
-    return typeof value === 'bigint' ? value.toString() : value;
-};
-
 export default function Home() {
-    const { web3, account } = useWeb3();
+    const {web3, account} = useWeb3();
     const [controller, setController] = useState(null);
     const [particles, setParticles] = useState([]);
     const [events, setEvents] = useState([]);
     const [error, setError] = useState(null);
+
     const initController = async () => {
         try {
             const controllerInstance = await initializeController(web3);
             setController(controllerInstance);
         } catch (error) {
-            setError({ message: error.message, stack: error.stack });
+            setError({message: error.message, stack: error.stack});
         }
     };
 
@@ -42,7 +37,7 @@ export default function Home() {
                 setParticles(particlesData);
                 setError(null); // Clear any previous errors
             } catch (error) {
-                setError({ message: error.message, stack: error.stack });
+                setError({message: error.message, stack: error.stack});
             }
         }
     };
@@ -54,10 +49,10 @@ export default function Home() {
                 setEvents(eventsData);
                 setError(null); // Clear any previous errors
                 if (eventsData.length === 0) {
-                    setError({ message: 'No events found', stack: '' });
+                    setError({message: 'No events found', stack: ''});
                 }
             } catch (error) {
-                setError({ message: error.message, stack: error.stack });
+                setError({message: error.message, stack: error.stack});
             }
         }
     };
@@ -65,39 +60,20 @@ export default function Home() {
     return (
         <main className={styles.main}>
             <h1>Blockchain Particle System</h1>
-            {/*<h2>Accounts: {accounts.join(", ")}</h2>*/}
-            <h2>Account: {account}</h2>
-            <h3>Web3: {web3 ? 'Connected' : 'Not Connected'}</h3>
-            <h4>Controller contract: {controller ? controller.options.address : 'Not Initialized'}</h4>
+            <AccountInfo account={account} web3={web3}/>
+            <ControllerInfo controllerAddress={controller?.options.address}/>
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
             </div>
-
             {error && (
                 <div className={styles.error}>
                     <p>{error.message}</p>
                     <pre>{error.stack}</pre>
                 </div>
             )}
-
-            <h2>Particles</h2>
-            <ul className={styles.list}>
-                {particles.map((particle, index) => (
-                    <li key={index} className={styles.listItem}>
-                        Address: {particle.address}, Position: [{particle.position.join(', ')}]
-                    </li>
-                ))}
-            </ul>
-
-            <h2>Events</h2>
-            <ul className={styles.list}>
-                {events.map((event, index) => (
-                    <li key={index} className={styles.listItem}>
-                        {event.event}: {JSON.stringify(event, bigintReplacer)}
-                    </li>
-                ))}
-            </ul>
+            <ParticlesList particles={particles}/>
+            <EventsList events={events}/>
         </main>
     );
 }
