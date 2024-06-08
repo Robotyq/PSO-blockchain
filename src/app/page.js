@@ -35,6 +35,7 @@ export default function Home() {
             try {
                 const particlesData = await fetchParticlesData(web3, controller);
                 setParticles(particlesData);
+                console.log("particlesData: ", particlesData)
                 setError(null); // Clear any previous errors
             } catch (error) {
                 setError({message: error.message, stack: error.stack});
@@ -72,7 +73,7 @@ export default function Home() {
                     <pre>{error.stack}</pre>
                 </div>
             )}
-            <ParticlesList particles={particles}/>
+            <ParticlesList particles1={particles}/>
             <EventsList events={events}/>
         </main>
     );
