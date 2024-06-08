@@ -60,12 +60,12 @@ export const fetchEventsData = async (web3, controller) => {
                     initialPosition: event.returnValues.position,
                     speed: event.returnValues.speed
                 };
-            case 'NewLocalMax':
+            case 'NewBestGlobal':
                 return {
-                    event: 'NewLocalMax',
+                    event: 'NewBestGlobal',
                     particle: event.returnValues.particle,
                     oldValue: event.returnValues.old,
-                    newValue: event.returnValues.newVal
+                    newValue: event.returnValues.newVar
                 };
             default:
                 return {

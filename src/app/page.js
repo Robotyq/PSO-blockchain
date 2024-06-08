@@ -1,3 +1,4 @@
+// src/app/page.js
 "use client";
 import { useState, useEffect } from 'react';
 import { useWeb3 } from './components/Web3Provider';
@@ -7,6 +8,11 @@ import {
     fetchEventsData
 } from './scripts/blockchain';
 import styles from './page.module.css';
+
+// Custom replacer function to handle BigInt serialization
+const bigintReplacer = (key, value) => {
+    return typeof value === 'bigint' ? value.toString() : value;
+};
 
 export default function Home() {
     const { web3, account } = useWeb3();
@@ -22,6 +28,7 @@ export default function Home() {
             setError({ message: error.message, stack: error.stack });
         }
     };
+
     useEffect(() => {
         if (web3) {
             initController();
@@ -46,6 +53,9 @@ export default function Home() {
                 const eventsData = await fetchEventsData(web3, controller);
                 setEvents(eventsData);
                 setError(null); // Clear any previous errors
+                if (eventsData.length === 0) {
+                    setError({ message: 'No events found', stack: '' });
+                }
             } catch (error) {
                 setError({ message: error.message, stack: error.stack });
             }
@@ -84,8 +94,7 @@ export default function Home() {
             <ul className={styles.list}>
                 {events.map((event, index) => (
                     <li key={index} className={styles.listItem}>
-                        {event.event}: {JSON.stringify(event)}
-                        {}
+                        {event.event}: {JSON.stringify(event, bigintReplacer)}
                     </li>
                 ))}
             </ul>
