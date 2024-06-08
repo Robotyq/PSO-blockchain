@@ -14,17 +14,16 @@ export default function Home() {
     const [particles, setParticles] = useState([]);
     const [events, setEvents] = useState([]);
     const [error, setError] = useState(null);
-
+    const initController = async () => {
+        try {
+            const controllerInstance = await initializeController(web3);
+            setController(controllerInstance);
+        } catch (error) {
+            setError({ message: error.message, stack: error.stack });
+        }
+    };
     useEffect(() => {
         if (web3) {
-            const initController = async () => {
-                try {
-                    const controllerInstance = await initializeController(web3);
-                    setController(controllerInstance);
-                } catch (error) {
-                    setError(error.message);
-                }
-            };
             initController();
         }
     }, [web3]);
@@ -36,7 +35,7 @@ export default function Home() {
                 setParticles(particlesData);
                 setError(null); // Clear any previous errors
             } catch (error) {
-                setError(error.message);
+                setError({ message: error.message, stack: error.stack });
             }
         }
     };
@@ -48,7 +47,7 @@ export default function Home() {
                 setEvents(eventsData);
                 setError(null); // Clear any previous errors
             } catch (error) {
-                setError(error.message);
+                setError({ message: error.message, stack: error.stack });
             }
         }
     };
@@ -56,13 +55,20 @@ export default function Home() {
     return (
         <main className={styles.main}>
             <h1>Blockchain Particle System</h1>
-            <p>Account: {account}</p>
+            <h2>Account: {account}</h2>
+            <h3>Web3: {web3 ? 'Connected' : 'Not Connected'}</h3>
+            <h4>Controller: {controller ? 'Initialized'+controller.address : 'Not Initialized'}</h4>
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
             </div>
 
-            {error && <div className={styles.error}>{error}</div>}
+            {error && (
+                <div className={styles.error}>
+                    <p>{error.message}</p>
+                    <pre>{error.stack}</pre>
+                </div>
+            )}
 
             <h2>Particles</h2>
             <ul className={styles.list}>

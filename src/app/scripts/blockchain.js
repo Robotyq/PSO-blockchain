@@ -27,14 +27,17 @@ export const fetchParticlesData = async (web3, controller) => {
                 particleInstance.methods.position(0).call(),
                 particleInstance.methods.position(1).call(),
             ]);
-            return { address, position };
+            return {address, position};
         })
     );
 };
 
 export const fetchEventsData = async (web3, controller) => {
-    const currentBlockNumber = await web3.eth.getBlockNumber();
-    const fromBlock = Math.max(currentBlockNumber - 10, 0);
+    let currentBlockNumber = await web3.eth.getBlockNumber();
+    currentBlockNumber = Number(currentBlockNumber);
+    const fromBlock = Math.max(currentBlockNumber - 5, 0);
+    console.log('Current block number:', currentBlockNumber)
+    console.log('Fetching events from block', fromBlock, 'to latest')
     return await controller.getPastEvents('allEvents', {
         fromBlock,
         toBlock: 'latest',
