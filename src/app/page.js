@@ -55,23 +55,23 @@ export default function Home() {
             <h1>Blockchain Particle System</h1>
             <p>Account: {account}</p>
             <div className={styles.center}>
-                <button onClick={fetchParticles}>Fetch Particles</button>
-                <button onClick={fetchEvents}>Fetch Events</button>
+                <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
+                <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
             </div>
 
             <h2>Particles</h2>
-            <ul>
+            <ul className={styles.list}>
                 {particles.map((particle, index) => (
-                    <li key={index}>
+                    <li key={index} className={styles.listItem}>
                         Address: {particle.address}, Position: [{particle.position.join(', ')}]
                     </li>
                 ))}
             </ul>
 
             <h2>Events</h2>
-            <ul>
+            <ul className={styles.list}>
                 {events.map((event, index) => (
-                    <li key={index}>
+                    <li key={index} className={styles.listItem}>
                         {event.event}: {JSON.stringify(event.returnValues)}
                     </li>
                 ))}
