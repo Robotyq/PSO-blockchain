@@ -11,6 +11,7 @@ import styles from './page.module.css';
 export default function Home() {
     const {web3, account} = useWeb3();
     const [controller, setController] = useState(null);
+    const [currentBlock, setCurrentBlock] = useState(null); // State for current block number
     const [particles, setParticles] = useState([]);
     const [events, setEvents] = useState([]);
     const [error, setError] = useState(null);
@@ -29,12 +30,22 @@ export default function Home() {
             initController();
         }
     }, [web3]);
+
     useEffect(() => {
         if (controller) {
             fetchParticles();
             fetchEvents();
+            fetchCurrentBlock();
         }
     }, [controller]);
+
+    const fetchCurrentBlock = async () => {
+        if (controller) {
+            const blockNumber = await web3.eth.getBlockNumber();
+            setCurrentBlock(Number(blockNumber));
+            console.log("blockNumber: ", blockNumber)
+        }
+    };
 
     const fetchParticles = async () => {
         if (controller) {
@@ -68,7 +79,7 @@ export default function Home() {
         <main className={styles.main}>
             <h1>Blockchain Particle System</h1>
             <AccountInfo account={account} web3={web3}/>
-            <ControllerInfo controllerAddress={controller?.options.address}/>
+            <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}/>
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
