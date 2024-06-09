@@ -3,11 +3,12 @@ import React from 'react';
 import {Scatter} from 'react-chartjs-2';
 import {Chart as ChartJS, Tooltip, PointElement, LinearScale, CategoryScale} from 'chart.js';
 import styles from '../page.module.css';
+
 ChartJS.register(Tooltip, PointElement, LinearScale, CategoryScale);
 
 const ParticlesChart = ({particles}) => {
     const data = {
-        datasets: particles.map((particle) => ({
+        datasets: particles.map((particle, index) => ({
             label: particle.name,
             data: [{x: particle.position[0], y: particle.position[1]}],
             backgroundColor: 'rgba(75, 192, 192, 1)',
@@ -32,7 +33,8 @@ const ParticlesChart = ({particles}) => {
             tooltip: {
                 callbacks: {
                     label: (context) => {
-                        const particle = particles[context.dataIndex];
+                        const datasetIndex = context.datasetIndex;
+                        const particle = particles[datasetIndex];
                         return `${particle.name}: (${particle.position[0]}, ${particle.position[1]})`;
                     },
                 },

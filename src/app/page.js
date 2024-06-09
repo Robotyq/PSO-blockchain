@@ -95,7 +95,7 @@ export default function Home() {
 
     return (
         <main className={styles.main}>
-            <h1>Blockchain Particle System</h1>
+            <h1>Blockchain Particle Tracker</h1>
             <AccountInfo account={account} web3={web3}/>
             <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}/>
             <div className={styles.center}>

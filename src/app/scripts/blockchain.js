@@ -1,5 +1,6 @@
 import ControllerContract from '../contracts/Controller.js';
 import ParticleContract from '../contracts/Particle.js';
+import Particle from "../contracts/Particle.js";
 
 export const initializeController = async (web3) => {
     const networkId = await web3.eth.net.getId();
@@ -73,15 +74,48 @@ export const fetchEventsData = async (web3, controller) => {
                 };
         }
     });
-
     console.log('Fetched events', formattedGlobalVarEvents)
-    return formattedGlobalVarEvents;
-};
+
+    // Fetch particle addresses from the Controller contract
+    const particleCount = await controller.methods.getParticlesCount().call();
+    const particleEvents = [];
+
+    for (let i = 0; i < particleCount; i++) {
+        const particleAddress = await controller.methods.particles(i).call();
+        const particleInstance = new web3.eth.Contract(Particle.abi, particleAddress);
+
+        const events = await particleInstance.getPastEvents('allEvents', {
+            fromBlock,
+            toBlock: 'latest',
+        });
+
+        particleEvents.push(...events)
+        console.log('Fetched events for particle', particleAddress, events);
+    }
+
+    return [...formattedGlobalVarEvents, ...particleEvents.map(event => {
+            switch (event.event) {
+                case 'NewLocalMin':
+                    return {
+                        event: 'New Local Min',
+                        particle: event.returnValues.particle,
+                        oldPos: event.returnValues.old,
+                        newPos: event.returnValues.newVal
+                    };
+                default:
+                    return {
+                        event: 'UnknownEvent',
+                        data: event
+                    };
+            }
+        }
+    )];
+}
 
 export const iterate = async (web3, account, controller, value, callback) => {
     try {
         console.log('Iterating with value:', value, "from account:", account);
-        const send = controller.methods.iterateAll().send({from: account});
+        const send = controller.methods.iterateTimes(value).send({from: account});
         send.then((receipt) => {
             console.log('Transaction receipt:', receipt);
             callback();
