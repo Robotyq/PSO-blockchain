@@ -17,7 +17,7 @@ contract Controller {
         for (uint i = 0; i < dimension; i++) {
             bestPoint[i] = 0;
         }
-        bestPoint[dimension] = 9999999;
+        bestPoint[dimension] = int(2**255 - 1);
         for (uint16 i = 0; i < initialParticles; i++) {
             int[dimension] memory start;
             int[dimension] memory velocity;
@@ -61,6 +61,10 @@ contract Controller {
     function updateTargetFunction(address _newTargetFunctionAddress) public {
         targetFunctionAddress = _newTargetFunctionAddress;
         emit TargetFunctionUpdated(_newTargetFunctionAddress);
+        for (uint i = 0; i < dimension; i++) {
+            bestPoint[i] = 0;
+        }
+        bestPoint[dimension] = int(2**255 - 1);
         for (uint i = 0; i < particles.length; i++) {
             particles[i].updateTargetFunction(_newTargetFunctionAddress);
         }

@@ -1,0 +1,23 @@
+/scripts/particle_positions.png
+/scripts/particle_positions_reversed.png
+/particle_positions_reversed.png
+/scripts/plotPositions.py
+/build/contracts/PolynomialFunction.json
+/scripts/positions.json
+/build/contracts/RastriginFunction.json
+/build/contracts/RosenbrockFunction.json
+/contracts/RosenbrockFunction.sol
+/build/contracts/SphereFunction.json
+/build/contracts/TargetFunction.json
+/build/contracts/Particle.json
+/.idea/vcs.xml
+/build/contracts/IGlobalVar.json
+/build/contracts/ITargetFunction.json
+/build/contracts/IController.json
+/build/contracts/IFunction.json
+/build/contracts/globalVar (1).json
+/build/contracts/GlobalVar.json
+/test/.gitkeep
+/build/contracts/Controller.json
+/ganache-20240518-231134.log
+/build/contracts/Trigonometry.json

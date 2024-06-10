@@ -18,7 +18,7 @@ contract Particle {
     int[dimension] public position;
     IFunction public targetFunction;
     int[dimension + 1] public localBest;
-    int private localMin = 999999999999;
+    int private localMin = int(2**255 - 1);
     int[dimension] public speed;
     uint private nonce = 0;
     IController private controller;
@@ -86,6 +86,12 @@ contract Particle {
     function updateTargetFunction(address _newTargetFunctionAddress) external {
         require(msg.sender == address(controller), "Only the controller can update the target function");
         targetFunction = IFunction(_newTargetFunctionAddress);
+        localMin= int(2**255 - 1);
+        for (uint i = 0; i < dimension; i++) {
+            localBest[i] = 0;
+        }
+        localBest[dimension] = localMin;
+
     }
 }
 

@@ -7,6 +7,10 @@ import "./Trigonometry.sol";
 contract RastriginFunction is IFunction {
     int private factor = 10 * 10**18;  // Factor scaled by 18 decimals
 
+    constructor() {
+        emit FunctionContractDeployed(address(this));
+    }
+
     function compute(int[2] calldata dimensions) external view override returns (int) {
         int A = factor;
         int sum = A * int(dimensions.length);  // Initialize sum to n * A
