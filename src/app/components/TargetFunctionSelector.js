@@ -1,9 +1,26 @@
-import React, { useState } from 'react';
-import { updateTargetFunction } from '../scripts/blockchain';
+import React, {useState, useEffect} from 'react';
+import {updateTargetFunction, fetchDeployedFunctions} from '../scripts/blockchain';
 import styles from '../page.module.css';
 
-const TargetFunctionSelector = ({account, controller }) => {
+const TargetFunctionSelector = ({web3, account, controller}) => {
+    const [deployedFunctions, setDeployedFunctions] = useState([]);
     const [selectedFunction, setSelectedFunction] = useState('');
+
+    useEffect(() => {
+        const fetchFunctions = async () => {
+            try {
+                const functions = await fetchDeployedFunctions(web3);
+                setDeployedFunctions(functions);
+                console.log('Fetched deployed functions:', functions);
+            } catch (error) {
+                console.error('Error fetching deployed functions:', error);
+            }
+        };
+
+        if (web3) {
+            fetchFunctions();
+        }
+    }, [web3]);
 
     const handleUpdate = async () => {
         if (selectedFunction) {
@@ -24,10 +41,11 @@ const TargetFunctionSelector = ({account, controller }) => {
                 className={styles.dropdown}
             >
                 <option value="">Select Target Function</option>
-                <option value="Rastrigin">Rastrigin</option>
-                <option value="Rosenbrock">Rosenbrock</option>
-                <option value="Sphere">Sphere</option>
-                <option value="Trigonometry">Trigonometry</option>
+                {deployedFunctions.map((func, index) => (
+                    <option key={index} value={func.address}>
+                        {func.address}
+                    </option>
+                ))}
             </select>
             <button className={styles.button} onClick={handleUpdate}>
                 Update Target Function

@@ -1,6 +1,6 @@
 import ControllerContract from '../contracts/Controller.js';
+import IFunction from '../contracts/IFunction.js';
 import ParticleContract from '../contracts/Particle.js';
-import Particle from "../contracts/Particle.js";
 
 export const initializeController = async (web3) => {
     const networkId = await web3.eth.net.getId();
@@ -82,7 +82,7 @@ export const fetchEventsData = async (web3, controller) => {
 
     for (let i = 0; i < particleCount; i++) {
         const particleAddress = await controller.methods.particles(i).call();
-        const particleInstance = new web3.eth.Contract(Particle.abi, particleAddress);
+        const particleInstance = new web3.eth.Contract(ParticleContract.abi, particleAddress);
 
         const events = await particleInstance.getPastEvents('allEvents', {
             fromBlock,
@@ -126,9 +126,23 @@ export const iterate = async (account, controller, value, callback) => {
     }
 };
 
-export const updateTargetFunction = async (account, controller, newTargetFunction) => {
+export const fetchDeployedFunctions = async (web3) => {
+    const networkId = await web3.eth.net.getId();
+    const deployedNetwork = IFunction.networks[networkId];
+    if (!deployedNetwork) {
+        throw new Error('IFunction contract not deployed on this network');
+    }
+    const ifunctionInstance = new web3.eth.Contract(
+        IFunction.abi,
+        deployedNetwork && deployedNetwork.address
+    );
+    const deployedFunctions = await ifunctionInstance.methods.getDeployedFunctions().call();
+    return deployedFunctions.map(address => ({address}));
+};
+
+export const updateTargetFunction = async (web3, account, controller, newTargetFunction) => {
     try {
-        const send = controller.methods.updateTargetFunction(newTargetFunction).send({ from: account });
+        const send = controller.methods.updateTargetFunction(newTargetFunction).send({from: account});
         await send;
         console.log('Target function updated successfully.');
     } catch (error) {
@@ -136,5 +150,3 @@ export const updateTargetFunction = async (account, controller, newTargetFunctio
         throw error;
     }
 };
-
-
