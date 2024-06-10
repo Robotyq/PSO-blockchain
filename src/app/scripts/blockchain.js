@@ -112,7 +112,7 @@ export const fetchEventsData = async (web3, controller) => {
     )];
 }
 
-export const iterate = async (web3, account, controller, value, callback) => {
+export const iterate = async (account, controller, value, callback) => {
     try {
         console.log('Iterating with value:', value, "from account:", account);
         const send = controller.methods.iterateTimes(value).send({from: account});
@@ -125,4 +125,16 @@ export const iterate = async (web3, account, controller, value, callback) => {
         throw error;
     }
 };
+
+export const updateTargetFunction = async (account, controller, newTargetFunction) => {
+    try {
+        const send = controller.methods.updateTargetFunction(newTargetFunction).send({ from: account });
+        await send;
+        console.log('Target function updated successfully.');
+    } catch (error) {
+        console.error('Error updating target function:', error);
+        throw error;
+    }
+};
+
 

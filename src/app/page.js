@@ -7,8 +7,8 @@ import ControllerInfo from './components/ControllerInfo';
 import ParticlesList from './components/ParticlesList';
 import EventsList from './components/EventsList';
 import IterationControl from './components/IterationControl';
+import TargetFunctionSelector from './components/TargetFunctionSelector';
 import styles from './page.module.css';
-import {callback} from "chart.js/helpers";
 
 export default function Home() {
     const {web3, account} = useWeb3();
@@ -80,7 +80,7 @@ export default function Home() {
     const handleIterate = async (value) => {
         if (controller) {
             try {
-                const callback= () => {
+                const callback = () => {
                     fetchParticles();
                     fetchEvents();
                     fetchCurrentBlock();
@@ -102,6 +102,8 @@ export default function Home() {
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
                 <IterationControl onIterate={handleIterate}/>
+                <TargetFunctionSelector account={account} controller={controller}/>
+
             </div>
             {error && (
                 <div className={styles.error}>

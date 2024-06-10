@@ -1,103 +1,112 @@
 /* src/app/page.module.css */
 
 .main {
-  padding: 2rem;
+    padding: 2rem;
 }
 
 .description {
-  text-align: center;
+    text-align: center;
 }
 
 .center {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .button {
-  padding: 1rem 2rem;
-  background-color: #0070f3;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+    padding: 1rem 2rem;
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
 }
+
 .button_iter {
-  padding: 1rem 2rem;
-  background-color: #f30024;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+    padding: 1rem 2rem;
+    background-color: #f30024;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
 }
 
 .button:hover {
-  background-color: #005bb5;
+    background-color: #005bb5;
 }
 
 .button:active {
-  background-color: #003f8e;
+    background-color: #003f8e;
 }
 
 .list {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
 }
 
 .listItem {
-  margin: 0.5rem 0;
+    margin: 0.5rem 0;
 }
 
 .error {
-  color: red;
-  margin-top: 1rem;
-  text-align: center;
+    color: red;
+    margin-top: 1rem;
+    text-align: center;
 }
 
 .error pre {
-  text-align: left;
-  margin: 0 auto;
-  display: inline-block;
-  text-align: left;
+    text-align: left;
+    margin: 0 auto;
+    display: inline-block;
+    text-align: left;
 }
 
 .info {
-  margin-bottom: 2rem;
+    margin-bottom: 2rem;
 }
 
 .particles {
-  margin-top: 2rem;
+    margin-top: 2rem;
 }
 
 .events {
-  margin-top: 2rem;
+    margin-top: 2rem;
 }
 
 .eventItem {
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 1rem;
 }
 
 .chartContainer {
-  width: 60%; /* Set the width to 75% of the parent */
-  height: 100%;
-  margin: 0 auto; /* Center the chart */
+    width: 60%; /* Set the width to 75% of the parent */
+    height: 100%;
+    margin: 0 auto; /* Center the chart */
 }
 
 .iterationControl {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding-left: 10rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 10rem;
 }
 
 .slider {
-  width: 200px;
+    width: 200px;
+}
+
+.dropdown {
+    padding: 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 1rem;
 }
