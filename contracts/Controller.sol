@@ -5,7 +5,7 @@ import "./Particle.sol";
 
 contract Controller {
     int[dimension + 1] public bestPoint;
-    address[] public particleAddresses;
+    Particle[] public particles;
     address public targetFunctionAddress;
 
     event NewBestGlobal(address particle, int[dimension + 1] old, int[dimension + 1] newVar);
@@ -26,7 +26,7 @@ contract Controller {
                 velocity[j] = random(- 40, 40, 200 * i * (j+1));
             }
             Particle newParticle = (new Particle){value: 1 ether}(address(this), _targetFunctionContractAddress, start, velocity);
-            particleAddresses.push(address(newParticle));
+            particles.push(newParticle);
             emit ParticleBorn(address(newParticle), start, velocity);
         }
     }
@@ -41,8 +41,14 @@ contract Controller {
     }
 
     function iterateAll() public {
-        for (uint i = 0; i < particleAddresses.length; i++) {
-            Particle(particleAddresses[i]).iterate();
+        for (uint i = 0; i < particles.length; i++) {
+            particles[i].iterate();
+        }
+    }
+
+    function iterateTimes(uint16 times) public {
+        for (uint i = 0; i < times; i++) {
+            iterateAll();
         }
     }
 
@@ -55,8 +61,28 @@ contract Controller {
     function updateTargetFunction(address _newTargetFunctionAddress) public {
         targetFunctionAddress = _newTargetFunctionAddress;
         emit TargetFunctionUpdated(_newTargetFunctionAddress);
-        for (uint i = 0; i < particleAddresses.length; i++) {
-            Particle(particleAddresses[i]).updateTargetFunction(_newTargetFunctionAddress);
+        for (uint i = 0; i < particles.length; i++) {
+            particles[i].updateTargetFunction(_newTargetFunctionAddress);
         }
+    }
+
+    function addParticle(address particleAddress) public {
+        // Create a new instance of the Particle contract
+        Particle particle = Particle(particleAddress);
+        // Add the new particle to the array of particles
+        particles.push(particle);
+        int[dimension] memory position;
+        int[dimension] memory speed;
+        for (uint i = 0; i < dimension; i++) {
+            position[i] = particle.position(i);
+        }
+        for (uint i = 0; i < dimension; i++) {
+            speed[i] = particle.speed(i);
+        }
+        emit ParticleBorn(address(particle), position, speed);
+    }
+
+    function getParticlesCount() public view returns (uint) {
+        return particles.length;
     }
 }

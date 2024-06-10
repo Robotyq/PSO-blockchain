@@ -5,9 +5,13 @@ module.exports = async function (callback) {
     try {
         const controller = await Controller.deployed();
 
-        // Fetch all events from the Controller contract
+        // Get the current block number
+        const currentBlockNumber = await web3.eth.getBlockNumber();
+        const fromBlock = Math.max(currentBlockNumber - 5, 0);
+
+        // Fetch all events from the Controller contract from the last 10 blocks
         const controllerEvents = await controller.getPastEvents('allEvents', {
-            fromBlock: 0,
+            fromBlock: fromBlock,
             toBlock: 'latest'
         });
 
@@ -42,18 +46,17 @@ module.exports = async function (callback) {
             }
         });
 
-        // Assume there are exactly 7 particles
-        const particleCount = 7;
-
-        console.log('Particle Events:');
-        // Iterate over particle addresses and fetch their events
+        // Fetch the number of particles from the Controller contract
+        let particleCount = await controller.getParticlesCount();
+        console.log('Particle(' + particleCount + ') Events:');
+// Iterate over particle addresses and fetch their events
         for (let i = 0; i < particleCount; i++) {
-            const address = await controller.particleAddresses(i);
-            const particleInstance = await Particle.at(address);
+            const particleAddress = await controller.particles(i);
+            const particleInstance = await Particle.at(particleAddress);
 
-            // Fetch all events from the Particle contract
+            // Fetch all events from the last 10 blocks
             const particleEvents = await particleInstance.getPastEvents('allEvents', {
-                fromBlock: 0,
+                fromBlock: fromBlock,
                 toBlock: 'latest'
             });
 
@@ -61,13 +64,13 @@ module.exports = async function (callback) {
             particleEvents.forEach(event => {
                 switch (event.event) {
                     case 'NewLocalMin':
-                        console.log(`NewLocalMin Event from Particle at ${address}:
+                        console.log(`NewLocalMin Event from Particle at ${particleAddress}:
                                     Old Position: ${event.returnValues.old.x}, ${event.returnValues.old.y}, ${event.returnValues.old.z}
                                     New Position: ${event.returnValues.newVal.x}, ${event.returnValues.newVal.y}, ${event.returnValues.newVal.z}
                                     `);
                         break;
                     default:
-                        console.log(`Unknown Event from Particle at ${address}:
+                        console.log(`Unknown Event from Particle at ${particleAddress}:
                                     ${JSON.stringify(event, null, 2)}
                                     `);
                         break;

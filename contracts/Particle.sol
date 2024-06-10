@@ -19,7 +19,7 @@ contract Particle {
     IFunction public targetFunction;
     int[dimension + 1] public localBest;
     int private localMin = 999999999999;
-    int[dimension] private speed;
+    int[dimension] public speed;
     uint private nonce = 0;
     IController private controller;
 
