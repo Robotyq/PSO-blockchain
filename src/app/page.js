@@ -102,7 +102,6 @@ export default function Home() {
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
                 <IterationControl onIterate={handleIterate}/>
-                <TargetFunctionSelector web3={web3} account={account} controller={controller}/>
             </div>
             {error && (
                 <div className={styles.error}>
@@ -110,6 +109,7 @@ export default function Home() {
                     <pre>{error.stack}</pre>
                 </div>
             )}
+            <TargetFunctionSelector web3={web3} account={account} controller={controller}/>
             <ParticlesList particles1={particles}/>
             <EventsList events={events}/>
         </main>

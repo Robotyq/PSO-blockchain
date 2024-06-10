@@ -1,5 +1,4 @@
 import ControllerContract from '../contracts/Controller.js';
-import IFunction from '../contracts/IFunction.js';
 import ParticleContract from '../contracts/Particle.js';
 
 export const initializeController = async (web3) => {
@@ -128,16 +127,24 @@ export const iterate = async (account, controller, value, callback) => {
 
 export const fetchDeployedFunctions = async (web3) => {
     const networkId = await web3.eth.net.getId();
-    const deployedNetwork = IFunction.networks[networkId];
+    const deployedNetwork = ControllerContract.networks[networkId];
     if (!deployedNetwork) {
-        throw new Error('IFunction contract not deployed on this network');
+        throw new Error('ControllerContract not deployed on this network');
     }
-    const ifunctionInstance = new web3.eth.Contract(
-        IFunction.abi,
-        deployedNetwork && deployedNetwork.address
-    );
-    const deployedFunctions = await ifunctionInstance.methods.getDeployedFunctions().call();
-    return deployedFunctions.map(address => ({address}));
+    const events = await web3.eth.getPastLogs({
+        fromBlock: 0,
+        toBlock: 'latest',
+        topics: [web3.utils.sha3('FunctionContractDeployed(address)')]
+    });
+    for (let i = 0; i < events.length; i++) {
+        console.log(events[i].address);
+        events[i].address = web3.eth.abi.decodeParameter('address', events[i].data);
+    }
+    console.log("Found events: ", events);
+
+    return events.map(event => ({
+        address: event.address
+    }));
 };
 
 export const updateTargetFunction = async (web3, account, controller, newTargetFunction) => {
