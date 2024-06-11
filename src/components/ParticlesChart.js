@@ -10,7 +10,7 @@ const ParticlesChart = ({particles, account}) => {
         datasets: particles.map((particle) => ({
             label: particle.name,
             data: [{x: particle.position[0], y: particle.position[1]}],
-            backgroundColor: particle.owner === account ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)',
+            backgroundColor: particle.owner === account ? 'rgb(5,61,248)' : 'rgba(75, 192, 192, 1)',
             pointRadius: 8,
         })),
     };

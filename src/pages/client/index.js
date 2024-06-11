@@ -64,10 +64,11 @@ export default function Client() {
         if (controller) {
             try {
                 for (const particle of userParticles) {
-                    await iterateParticle(account, particle.address, value);
+                    iterateParticle(web3, account, particle.address, value, () => {
+                        fetchCurrentBlock();
+                        fetchParticles()
+                    });
                 }
-                fetchParticles();
-                fetchCurrentBlock();
             } catch (error) {
                 setError({message: error.message, stack: error.stack});
             }

@@ -119,3 +119,7 @@
     gap: 1rem;
     align-items: flex-start;
 }
+
+.blueText {
+    color: #0070f3;
+}

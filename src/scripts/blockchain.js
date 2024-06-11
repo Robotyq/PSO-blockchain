@@ -167,11 +167,15 @@ export const fetchGlobalMin = async (controller) => {
     return latestEvent.returnValues.newVar;
 };
 
-export const iterateParticle = async (account, particleAddress, value) => {
+export const iterateParticle = async (web3, account, particleAddress, value, callback) => {
     const particleInstance = new web3.eth.Contract(ParticleContract.abi, particleAddress);
     try {
         console.log('Iterating particle with value:', value, "from account:", account);
-        await particleInstance.methods.iterateTimes(value).send({from: account});
+        const send = particleInstance.methods.iterate(value).send({from: account});
+        send.then((receipt) => {
+            console.log('Transaction receipt:', receipt)
+            callback();
+        });
     } catch (error) {
         console.error('Error iterating particle:', error);
         throw error;

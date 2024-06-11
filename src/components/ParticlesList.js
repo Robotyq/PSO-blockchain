@@ -26,8 +26,10 @@ const ParticlesList = ({particles1, account}) => {
                     <li key={index} className={styles.listItem}>
                         Particle address: {particle.name}, Current Value: {particle.currentValue}, Position:
                         [{particle.position.join(", ")}], Local Best:
-                        [{particle.localBest.join(", ")}],
-                        Owner: {particle.owner.slice(0, 6)}...{particle.owner.slice(-4)}
+                        [{particle.localBest.join(", ")}], Owner
+                        <span className={particle.owner === account ? styles.blueText : null}>
+                            : {particle.owner.slice(0, 6)}...{particle.owner.slice(-4)}
+                        </span>
                     </li>
                 ))}
             </ul>
