@@ -6,9 +6,8 @@ const Rastrigin = artifacts.require("RastriginFunction");
 module.exports = async function (deployer, network, accounts) {
     await deployer.deploy(Sphere);
     const sphere = await Sphere.deployed();
-    // await deployer.deploy(Controller, sphere.address, {'value': web3.utils.toWei('10', 'ether')});
+    await deployer.deploy(Controller, sphere.address, {'value': web3.utils.toWei('10', 'ether')});
     const controller = await Controller.deployed();
-    // deployedGlobalVar.send(web3.utils.toWei("1", "ether"))
 
     // Deploy the first Particle contract with the address of controller and sphere
     const part1 = await deployer.deploy(Particle, controller.address, sphere.address, [152,150], [20,25], {overwrite: true});

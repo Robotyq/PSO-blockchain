@@ -36,7 +36,7 @@ contract Particle {
     }
 
     function iterate() public {
-        require(msg.sender == _owner || msg.sender==address(controller), "Only the owner or the Controller can iterate");
+        require(msg.sender == _owner || msg.sender == address(controller), "Only the owner or the Controller can iterate");
         int socialFactor = random(45, 90);
         int cognitiveFactor = 100 - socialFactor;
         int[dimension + 1] memory globalBest = controller.getBestPoint();
@@ -86,7 +86,10 @@ contract Particle {
             localBest[i] = 0;
         }
         localBest[dimension] = localMin;
+    }
 
+    function getOwner() external view returns (address) {
+        return _owner;
     }
 }
 
