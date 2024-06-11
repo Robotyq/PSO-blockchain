@@ -19,9 +19,9 @@ module.exports = async function (deployer, network, accounts) {
     await controller.addParticle(part2.address);
     console.log('Particle 2 deployed at address: ' + part2.address)
 
-    console.log("Deploying the other functions...");
-    const rosenbrock = await deployer.deploy(Rosenbrock);
-    const rastrigin = await deployer.deploy(Rastrigin);
+    // console.log("Deploying the other functions...");
+    // const rosenbrock = await deployer.deploy(Rosenbrock);
+    // const rastrigin = await deployer.deploy(Rastrigin);
     // console.log("Deployed the other functions.");
     // console.log("Changinh the target function to Rastrigin...");
     // await controller.updateTargetFunction(rosenbrock.address);

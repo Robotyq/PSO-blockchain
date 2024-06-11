@@ -2,28 +2,19 @@
 pragma solidity ^0.8.0;
 
 import "./IFunction.sol";
-
-    struct Point2 {
-        int x;
-        int y;
-    }
-
-    struct Point3 {
-        int x;
-        int y;
-        int z;
-    }
+int16 constant maxSpeed = 30;
 
 contract Particle {
     int[dimension] public position;
+    int public currentValue;
     IFunction public targetFunction;
     int[dimension + 1] public localBest;
-    int private localMin = int(2**255 - 1);
+    int private localMin = int(2 ** 255 - 1);
     int[dimension] public speed;
     uint private nonce = 0;
     IController private controller;
 
-    event NewLocalMin(address particle, Point3 old, Point3 newVal);
+    event NewLocalMin(address particle, int[dimension + 1] newVal);
 
     constructor(address _controllerAddress, address _TargetContractAddress, int[dimension] memory initialPos, int[dimension] memory initialVelocity) payable {
         controller = IController(_controllerAddress);
@@ -36,48 +27,49 @@ contract Particle {
         localBest[dimension] = localMin;
     }
 
+    function iterate(uint16 times) public {
+        for (uint16 i = 0; i < times; i++) {
+            iterate();
+        }
+    }
+
     function iterate() public {
         int socialFactor = random(45, 90);
         int cognitiveFactor = 100 - socialFactor;
         int[dimension + 1] memory globalBest = controller.getBestPoint();
-
-        int newVal = findNewVal(cognitiveFactor, socialFactor, 33, globalBest);
-        if (newVal < localBest[dimension]) {
-            int[dimension + 1] memory old = localBest;
+        findNewVal(cognitiveFactor, socialFactor, 33, globalBest);
+        if (currentValue < localBest[dimension]) {
             for (uint i = 0; i < dimension; i++) {
                 localBest[i] = position[i];
             }
-            localBest[dimension] = newVal;
-            emit NewLocalMin(msg.sender, Point3(old[0], old[1], old[2]), Point3(localBest[0], localBest[1], localBest[2]));
-            if (newVal < globalBest[dimension]) {
+            localBest[dimension] = currentValue;
+            emit NewLocalMin(msg.sender, localBest);
+            if (currentValue < globalBest[dimension]) {
                 controller.setBestPoint(localBest);
             }
         }
     }
 
-    function findNewVal(int cogF, int socialF, int inertiaF, int[dimension + 1] memory globalBest) private returns (int) {
+    function findNewVal(int cogF, int socialF, int inertiaF, int[dimension + 1] memory globalBest) private {
         int[dimension] memory newSpeed;
-        int maxSpeed = 30;
         for (uint i = 0; i < dimension; i++) {
             int newSpeedi = speed[i] * inertiaF / 100 + cogF * (localBest[i] - position[i]) / 100 + socialF * (globalBest[i] - position[i]) / 100;
-            newSpeedi+=random(-5,5);
+            newSpeedi += random(- 5, 5);
             if (newSpeedi > maxSpeed) {
                 newSpeedi = maxSpeed;
-            } else if (newSpeedi < -maxSpeed) {
-                newSpeedi = -maxSpeed;
+            } else if (newSpeedi < - maxSpeed) {
+                newSpeedi = - maxSpeed;
             }
-
             newSpeed[i] = newSpeedi;
             position[i] = position[i] + newSpeed[i];
         }
         speed = newSpeed;
-        int value = targetFunction.compute(position);
-        return value;
+        currentValue = targetFunction.compute(position);
     }
 
     function random(int min, int max) private returns (int) {
         nonce++;
-        uint rand = uint(keccak256(abi.encodePacked(block.number - 1), nonce, this));
+        uint rand = uint(keccak256(abi.encodePacked(block.number - 1, nonce, this)));
         int randi = int(rand);
         int interval = max - min;
         return randi % interval + min;
@@ -86,7 +78,7 @@ contract Particle {
     function updateTargetFunction(address _newTargetFunctionAddress) external {
         require(msg.sender == address(controller), "Only the controller can update the target function");
         targetFunction = IFunction(_newTargetFunctionAddress);
-        localMin= int(2**255 - 1);
+        localMin = int(2 ** 255 - 1);
         for (uint i = 0; i < dimension; i++) {
             localBest[i] = 0;
         }
