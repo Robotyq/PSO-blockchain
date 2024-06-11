@@ -47,12 +47,12 @@ const EventItem = ({event}) => {
     }
 };
 
-const EventsList = ({ events }) => {
+const EventsList = ({events}) => {
     // Sort events by blockNumber in descending order
     const sortedEvents = events.sort((a, b) => {
         let number = Number(b.blockNumber) - Number(a.blockNumber);
-        if(number==0)
-            number+=1;
+        if (number == 0)
+            number += 1;
         return number;
     });
 
@@ -62,7 +62,7 @@ const EventsList = ({ events }) => {
             <ul className={styles.list}>
                 {sortedEvents.map((event, index) => (
                     <li key={index} className={styles.listItem}>
-                        <EventItem event={event} />
+                        <EventItem event={event}/>
                     </li>
                 ))}
             </ul>

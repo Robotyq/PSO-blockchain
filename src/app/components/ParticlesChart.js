@@ -1,7 +1,7 @@
 // src/app/components/ParticlesChart.js
 import React from 'react';
 import {Scatter} from 'react-chartjs-2';
-import {Chart as ChartJS, Tooltip, PointElement, LinearScale, CategoryScale} from 'chart.js';
+import {CategoryScale, Chart as ChartJS, LinearScale, PointElement, Tooltip} from 'chart.js';
 import styles from '../page.module.css';
 
 ChartJS.register(Tooltip, PointElement, LinearScale, CategoryScale);
@@ -35,7 +35,7 @@ const ParticlesChart = ({particles}) => {
                     label: (context) => {
                         const datasetIndex = context.datasetIndex;
                         const particle = particles[datasetIndex];
-                        const name= particle.name.slice(0, 4)+'...'+particle.name.slice(-3)
+                        const name = particle.name.slice(0, 4) + '...' + particle.name.slice(-3)
                         return `${name}: (${particle.position[0]}, ${particle.position[1]}) => ${particle.currentValue}`;
                     },
                 },

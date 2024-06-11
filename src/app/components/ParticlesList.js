@@ -17,7 +17,7 @@ const ParticlesList = ({particles1}) => {
         xyposition[0] = Number(particles1[i].position[0]);
         xyposition[1] = Number(particles1[i].position[1]);
         particle.position = xyposition;
-        particle.currentValue= Number(particles1[i].position[2]);
+        particle.currentValue = Number(particles1[i].position[2]);
 
         let xylocalBest = [];
         xylocalBest[0] = Number(particles1[i].localBest[0]);
@@ -37,7 +37,8 @@ const ParticlesList = ({particles1}) => {
                 {particles.map((particle, index) => {
                     return (
                         <li key={index} className={styles.listItem}>
-                            Particle address: {particle.name}, Current Value: {particle.currentValue}, Position: [{particle.position.join(", ")}], Local Best:
+                            Particle address: {particle.name}, Current Value: {particle.currentValue}, Position:
+                            [{particle.position.join(", ")}], Local Best:
                             [{particle.localBest.join(", ")}]
                         </li>
                     );

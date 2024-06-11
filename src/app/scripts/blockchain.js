@@ -160,7 +160,7 @@ export const fetchGlobalMin = async (controller) => {
     });
     if (events.length === 0) {
         // throw new Error('No NewBestGlobal events found');
-        return [0,0,NaN]
+        return [0, 0, NaN]
     }
     const latestEvent = events[events.length - 1];
     return latestEvent.returnValues.newVar;
