@@ -18,13 +18,13 @@ const IterationControl = ({ onIterate }) => {
             <input
                 type="range"
                 min="1"
-                max="36"
+                max="20"
                 value={value}
                 onChange={handleChange}
                 className={styles.slider}
             />
             <span>{value}</span>
-            <button className={styles.button_iter} onClick={handleIterate}>
+            <button className={styles.button_gas} onClick={handleIterate}>
                 Iterate
             </button>
         </div>

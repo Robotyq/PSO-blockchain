@@ -5,13 +5,22 @@ import styles from '../page.module.css';
 const TargetFunctionSelector = ({web3, account, controller}) => {
     const [deployedFunctions, setDeployedFunctions] = useState([]);
     const [selectedFunction, setSelectedFunction] = useState('');
-
     useEffect(() => {
         const fetchFunctions = async () => {
             try {
                 const functions = await fetchDeployedFunctions(web3);
-                setDeployedFunctions(functions);
-                console.log('Fetched deployed functions:', functions);
+                const functionNames = {
+                    '73c': 'RastriginFunction',
+                    'a4d': 'RosenbrockFunction',
+                    'cb0': 'SphereFunction'
+                };
+                let unknownCount = 1;
+                const namedFunctions = functions.map(func => {
+                    const lastThree = func.address.slice(-3);
+                    const name = functionNames[lastThree] || `Unknown Function${unknownCount++}`;
+                    return {...func, name};
+                });
+                setDeployedFunctions(namedFunctions);
             } catch (error) {
                 console.error('Error fetching deployed functions:', error);
             }
@@ -43,11 +52,11 @@ const TargetFunctionSelector = ({web3, account, controller}) => {
                 <option value="">Select Target Function</option>
                 {deployedFunctions.map((func, index) => (
                     <option key={index} value={func.address}>
-                        {func.address}
+                        {func.name} ({func.address})
                     </option>
                 ))}
             </select>
-            <button className={styles.button} onClick={handleUpdate}>
+            <button className={styles.button_gas} onClick={handleUpdate}>
                 Update Target Function
             </button>
         </div>

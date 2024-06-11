@@ -85,8 +85,7 @@ export default function Home() {
                     fetchEvents();
                     fetchCurrentBlock();
                 }
-                await iterate(web3, account, controller, value, callback);
-                // Optionally, you can fetch particles or events after iteration
+                iterate(account, controller, value, callback);
             } catch (error) {
                 setError({message: error.message, stack: error.stack});
             }

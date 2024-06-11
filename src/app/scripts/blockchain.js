@@ -26,7 +26,12 @@ export const fetchParticlesData = async (web3, controller) => {
                 particleInstance.methods.position(0).call(),
                 particleInstance.methods.position(1).call(),
             ]);
-            return {address, position};
+            const localBest = await Promise.all([
+                particleInstance.methods.localBest(0).call(),
+                particleInstance.methods.localBest(1).call(),
+                particleInstance.methods.localBest(2).call(),
+            ]);
+            return {address, position, localBest};
         })
     );
 };
@@ -43,15 +48,6 @@ export const fetchEventsData = async (web3, controller) => {
     });
     const formattedGlobalVarEvents = controllerEvents.map(event => {
         switch (event.event) {
-            case 'UpdateVar':
-                return {
-                    event: 'UpdateVar',
-                    particle: event.returnValues.particle,
-                    oldBestPos: event.returnValues.old.bestPos,
-                    oldMinValue: event.returnValues.old.minValue,
-                    newBestPos: event.returnValues.newVar.bestPos,
-                    newMinValue: event.returnValues.newVar.minValue
-                };
             case 'ParticleBorn':
                 return {
                     event: 'ParticleBorn',
@@ -65,6 +61,11 @@ export const fetchEventsData = async (web3, controller) => {
                     particle: event.returnValues.particle,
                     oldValue: event.returnValues.old,
                     newValue: event.returnValues.newVar
+                };
+            case 'TargetFunctionUpdated':
+                return {
+                    event: 'TargetFunctionUpdated',
+                    targetFunctionAddress: event.returnValues.newTargetFunction
                 };
             default:
                 return {
@@ -82,12 +83,10 @@ export const fetchEventsData = async (web3, controller) => {
     for (let i = 0; i < particleCount; i++) {
         const particleAddress = await controller.methods.particles(i).call();
         const particleInstance = new web3.eth.Contract(ParticleContract.abi, particleAddress);
-
         const events = await particleInstance.getPastEvents('allEvents', {
             fromBlock,
             toBlock: 'latest',
         });
-
         particleEvents.push(...events)
         console.log('Fetched events for particle', particleAddress, events);
     }
@@ -136,18 +135,12 @@ export const fetchDeployedFunctions = async (web3) => {
         toBlock: 'latest',
         topics: [web3.utils.sha3('FunctionContractDeployed(address)')]
     });
-    for (let i = 0; i < events.length; i++) {
-        console.log(events[i].address);
-        events[i].address = web3.eth.abi.decodeParameter('address', events[i].data);
-    }
-    console.log("Found events: ", events);
-
     return events.map(event => ({
         address: event.address
     }));
 };
 
-export const updateTargetFunction = async (web3, account, controller, newTargetFunction) => {
+export const updateTargetFunction = async (account, controller, newTargetFunction) => {
     try {
         const send = controller.methods.updateTargetFunction(newTargetFunction).send({from: account});
         await send;

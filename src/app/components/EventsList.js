@@ -22,13 +22,19 @@ const EventItem = ({ event }) => {
                 </div>
             );
         case 'New Local Min':
-            console.log(" position event", event.oldPos.x, event.newPos[1])
             return (
                 <div className={styles.eventItem}>
                     <strong>{event.event}</strong>:
                     Particle: {event.particle}<br />
                     Old Position: [{Number(event.oldPos.x)}, {Number(event.oldPos.y)}, {Number(event.oldPos.z)}]<br />
                     New Position: [{Number(event.newPos.x)}, {Number(event.newPos.y)}, {Number(event.newPos.z)}]
+                </div>
+            );
+        case 'TargetFunctionUpdated':
+            return (
+                <div className={styles.eventItem}>
+                    <strong>{event.event}</strong>:
+                    Target Function Address: {event.targetFunctionAddress}
                 </div>
             );
         default:
