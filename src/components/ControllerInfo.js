@@ -1,4 +1,4 @@
-// src/app/components/ControllerInfo.js
+// src/src/components/ControllerInfo.js
 import React from 'react';
 import styles from '../page.module.css';
 

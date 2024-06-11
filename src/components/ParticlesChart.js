@@ -1,4 +1,3 @@
-// src/app/components/ParticlesChart.js
 import React from 'react';
 import {Scatter} from 'react-chartjs-2';
 import {CategoryScale, Chart as ChartJS, LinearScale, PointElement, Tooltip} from 'chart.js';
@@ -6,13 +5,13 @@ import styles from '../page.module.css';
 
 ChartJS.register(Tooltip, PointElement, LinearScale, CategoryScale);
 
-const ParticlesChart = ({particles}) => {
+const ParticlesChart = ({particles, account}) => {
     const data = {
         datasets: particles.map((particle, index) => ({
             label: particle.name,
             data: [{x: particle.position[0], y: particle.position[1]}],
-            backgroundColor: 'rgba(75, 192, 192, 1)',
-            pointRadius: 8,  // Increase the dot size
+            backgroundColor: particle.owner === account ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)',
+            pointRadius: 8,
         })),
     };
 
@@ -28,7 +27,7 @@ const ParticlesChart = ({particles}) => {
         },
         plugins: {
             legend: {
-                display: false,  // Hide the legend
+                display: false,
             },
             tooltip: {
                 callbacks: {

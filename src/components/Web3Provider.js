@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, createContext, useContext } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import Web3 from 'web3';
 
 const Web3Context = createContext();

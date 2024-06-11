@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import {updateTargetFunction, fetchDeployedFunctions} from '../scripts/blockchain';
+import React, {useEffect, useState} from 'react';
+import {fetchDeployedFunctions, updateTargetFunction} from '../scripts/blockchain';
 import styles from '../page.module.css';
-import iterationControl from "@/app/components/IterationControl";
+// import iterationControl from "@/src/components/IterationControl";
 
 const TargetFunctionSelector = ({web3, account, controller}) => {
     const [deployedFunctions, setDeployedFunctions] = useState([]);

@@ -1,19 +1,20 @@
 "use client";
 import {useEffect, useState} from 'react';
-import {useWeb3} from './components/Web3Provider';
-import {fetchEventsData, fetchParticlesData, initializeController, iterateParticle} from './scripts/blockchain';
-import AccountInfo from './components/AccountInfo';
-import ControllerInfo from './components/ControllerInfo';
-import ParticlesList from './components/ParticlesList';
-import EventsList from './components/EventsList';
-import IterationControl from './components/IterationControl';
-import GlobalMin from './components/GlobalMin';
-import styles from './page.module.css';
+import {useWeb3} from '@/components/Web3Provider';
+import {fetchEventsData, fetchParticlesData, initializeController, iterate} from '@/scripts/blockchain';
+import AccountInfo from '../../components/AccountInfo';
+import ControllerInfo from '../../components/ControllerInfo';
+import ParticlesList from '../../components/ParticlesList';
+import EventsList from '../../components/EventsList';
+import IterationControl from '../../components/IterationControl';
+import TargetFunctionSelector from '../../components/TargetFunctionSelector';
+import styles from '../../page.module.css';
+import GlobalMin from '../../components/GlobalMin';
 
-export default function ClientPage() {
+export default function Home() {
     const {web3, account} = useWeb3();
     const [controller, setController] = useState(null);
-    const [currentBlock, setCurrentBlock] = useState(null);
+    const [currentBlock, setCurrentBlock] = useState(null); // State for current block number
     const [particles, setParticles] = useState([]);
     const [events, setEvents] = useState([]);
     const [error, setError] = useState(null);
@@ -37,6 +38,7 @@ export default function ClientPage() {
         if (controller) {
             fetchParticles();
             fetchCurrentBlock();
+
         }
     }, [controller]);
 
@@ -50,6 +52,7 @@ export default function ClientPage() {
         if (controller) {
             const blockNumber = await web3.eth.getBlockNumber();
             setCurrentBlock(Number(blockNumber));
+            console.log("blockNumber: ", blockNumber)
         }
     };
 
@@ -58,7 +61,8 @@ export default function ClientPage() {
             try {
                 const particlesData = await fetchParticlesData(web3, controller);
                 setParticles(particlesData);
-                setError(null);
+                console.log("particlesData: ", particlesData)
+                setError(null); // Clear any previous errors
             } catch (error) {
                 setError({message: error.message, stack: error.stack});
             }
@@ -70,7 +74,7 @@ export default function ClientPage() {
             try {
                 const eventsData = await fetchEventsData(web3, controller, currentBlock);
                 setEvents(eventsData);
-                setError(null);
+                setError(null); // Clear any previous errors
                 if (eventsData.length === 0) {
                     setError({message: 'No events found', stack: ''});
                 }
@@ -83,13 +87,12 @@ export default function ClientPage() {
     const handleIterate = async (value) => {
         if (controller) {
             try {
-                const userParticles = particles.filter(particle => particle.owner === account);
-                for (const particle of userParticles) {
-                    await iterateParticle(account, particle.address, value);
+                const callback = () => {
+                    fetchParticles();
+                    fetchEvents();
+                    fetchCurrentBlock();
                 }
-                fetchParticles();
-                fetchEvents();
-                fetchCurrentBlock();
+                iterate(account, controller, value, callback);
             } catch (error) {
                 setError({message: error.message, stack: error.stack});
             }
@@ -98,13 +101,14 @@ export default function ClientPage() {
 
     return (
         <main className={styles.main}>
-            <h1>Client Particle Swarm Tracker</h1>
+            <h1>Blockchain Particle Swarm Tracker</h1>
             <AccountInfo account={account} web3={web3}/>
             <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}/>
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
                 <IterationControl onIterate={handleIterate}/>
+                <TargetFunctionSelector web3={web3} account={account} controller={controller}/>
             </div>
             {error && (
                 <div className={styles.error}>
@@ -114,7 +118,7 @@ export default function ClientPage() {
             )}
             <div className={styles.flex_layout}>
                 <div className={styles.chartContainer}>
-                    <ParticlesList particles1={particles} account={account}/>
+                    <ParticlesList particles1={particles}/>
                 </div>
                 <GlobalMin controller={controller} blockNumber={currentBlock}/>
             </div>

@@ -32,7 +32,8 @@ export const fetchParticlesData = async (web3, controller) => {
                 particleInstance.methods.localBest(1).call(),
                 particleInstance.methods.localBest(2).call(),
             ]);
-            return {address, position, localBest};
+            const owner = await particleInstance.methods.getOwner().call();
+            return {address, position, localBest, owner};
         })
     );
 };
@@ -164,4 +165,15 @@ export const fetchGlobalMin = async (controller) => {
     }
     const latestEvent = events[events.length - 1];
     return latestEvent.returnValues.newVar;
+};
+
+export const iterateParticle = async (account, particleAddress, value) => {
+    const particleInstance = new web3.eth.Contract(ParticleContract.abi, particleAddress);
+    try {
+        console.log('Iterating particle with value:', value, "from account:", account);
+        await particleInstance.methods.iterateTimes(value).send({from: account});
+    } catch (error) {
+        console.error('Error iterating particle:', error);
+        throw error;
+    }
 };
