@@ -9,6 +9,7 @@ import EventsList from './components/EventsList';
 import IterationControl from './components/IterationControl';
 import TargetFunctionSelector from './components/TargetFunctionSelector';
 import styles from './page.module.css';
+import GlobalMin from './components/GlobalMin';
 
 export default function Home() {
     const {web3, account} = useWeb3();
@@ -65,7 +66,7 @@ export default function Home() {
     const fetchEvents = async () => {
         if (controller) {
             try {
-                const eventsData = await fetchEventsData(web3, controller);
+                const eventsData = await fetchEventsData(web3, controller, currentBlock);
                 setEvents(eventsData);
                 setError(null); // Clear any previous errors
                 if (eventsData.length === 0) {
@@ -109,7 +110,12 @@ export default function Home() {
                 </div>
             )}
             <TargetFunctionSelector web3={web3} account={account} controller={controller}/>
-            <ParticlesList particles1={particles}/>
+            <div className={styles.layout}>
+                <GlobalMin web3={web3} controller={controller}/>
+                <div className={styles.chartContainer}>
+                    <ParticlesList particles1={particles}/>
+                </div>
+            </div>
             <EventsList events={events}/>
         </main>
     );

@@ -36,11 +36,9 @@ export const fetchParticlesData = async (web3, controller) => {
     );
 };
 
-export const fetchEventsData = async (web3, controller) => {
-    let currentBlockNumber = await web3.eth.getBlockNumber();
-    currentBlockNumber = Number(currentBlockNumber);
-    const fromBlock = Math.max(currentBlockNumber - 5, 0);
-    console.log('Current block number:', currentBlockNumber)
+export const fetchEventsData = async (web3, controller, currentBlock) => {
+    const fromBlock = Math.max(currentBlock - 5, 0);
+    console.log('Current block number:', currentBlock)
     console.log('Fetching events of ', controller, 'from block', fromBlock, 'to latest')
     const controllerEvents = await controller.getPastEvents('allEvents', {
         fromBlock,
@@ -88,7 +86,7 @@ export const fetchEventsData = async (web3, controller) => {
             toBlock: 'latest',
         });
         particleEvents.push(...events)
-        console.log('Fetched events for particle', particleAddress, events);
+        // console.log('Fetched events for particle', particleAddress, events);
     }
 
     return [...formattedGlobalVarEvents, ...particleEvents.map(event => {
@@ -149,4 +147,18 @@ export const updateTargetFunction = async (account, controller, newTargetFunctio
         console.error('Error updating target function:', error);
         throw error;
     }
+};
+
+export const fetchGlobalMin = async (controller) => {
+    console.log('Fetching global min from controller:', controller)
+    const events = await controller.getPastEvents('NewBestGlobal', {
+        fromBlock: 0,
+        toBlock: 'latest',
+    });
+    if (events.length === 0) {
+        // throw new Error('No NewBestGlobal events found');
+        return [0,0,NaN]
+    }
+    const latestEvent = events[events.length - 1];
+    return latestEvent.returnValues.newVar;
 };

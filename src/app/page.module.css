@@ -87,7 +87,7 @@
 }
 
 .chartContainer {
-    width: 60%; /* Set the width to 75% of the parent */
+    width: 75%;
     height: 100%;
     margin: 0 auto; /* Center the chart */
 }
@@ -109,4 +109,10 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-right: 1rem;
+}
+
+.layout {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
 }
