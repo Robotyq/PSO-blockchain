@@ -1,34 +1,31 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+uint constant dimension = 2;
 
-import "./Particle.sol";
+interface IParticle {
+//    function position(uint256) external view returns (int256);
+//    function currentValue() external view returns (int256);
+//    function localBest(uint256) external view returns (int256);
+    function iterate(uint16 times) external;
+
+    function updateTargetFunction(address _newTargetFunctionAddress) external;
+}
 
 contract Controller {
     int[dimension + 1] public bestPoint;
-    Particle[] public particles;
+    IParticle[] public particles;
     address public targetFunctionAddress;
 
     event NewBestGlobal(address particle, int[dimension + 1] newVar);
     event ParticleAdded(address particle);
     event TargetFunctionUpdated(address newTargetFunction);
 
-    constructor(uint8 initialParticles, address _targetFunctionContractAddress) payable {
+    constructor(address _targetFunctionContractAddress) payable {
         targetFunctionAddress = _targetFunctionContractAddress;
         for (uint i = 0; i < dimension; i++) {
             bestPoint[i] = 0;
         }
-        bestPoint[dimension] = int(2**255 - 1);
-        for (uint16 i = 0; i < initialParticles; i++) {
-            int[dimension] memory start;
-            int[dimension] memory velocity;
-            for (uint8 j = 0; j < dimension; j++) {
-                start[j] = random(- 600, 600, i * (j+1));
-                velocity[j] = random(- 40, 40, 200 * i * (j+1));
-            }
-            Particle newParticle = (new Particle){value: 1 ether}(address(this), _targetFunctionContractAddress, start, velocity);
-            particles.push(newParticle);
-            emit ParticleAdded(address(newParticle));
-        }
+        bestPoint[dimension] = int(2 ** 255 - 1);
     }
 
     function setBestPoint(int[dimension + 1] calldata newVar) public {
@@ -58,7 +55,7 @@ contract Controller {
         for (uint i = 0; i < dimension; i++) {
             bestPoint[i] = 0;
         }
-        bestPoint[dimension] = int(2**255 - 1);
+        bestPoint[dimension] = int(2 ** 255 - 1);
         for (uint i = 0; i < particles.length; i++) {
             particles[i].updateTargetFunction(_newTargetFunctionAddress);
         }
@@ -66,7 +63,7 @@ contract Controller {
 
     function addParticle(address particleAddress) public {
         // Create a new instance of the Particle contract
-        Particle particle = Particle(particleAddress);
+        IParticle particle = IParticle(particleAddress);
         // Add the new particle to the array of particles
         particles.push(particle);
         emit ParticleAdded(address(particle));
@@ -75,4 +72,5 @@ contract Controller {
     function getParticlesCount() public view returns (uint) {
         return particles.length;
     }
+
 }

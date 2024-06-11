@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./IFunction.sol";
-int16 constant maxSpeed = 30;
+int16 constant maxSpeed = 50;
 
 contract Particle {
     int[dimension] public position;
@@ -13,6 +13,7 @@ contract Particle {
     int[dimension] public speed;
     uint private nonce = 0;
     IController private controller;
+    address private _owner;
 
     event NewLocalMin(address particle, int[dimension + 1] newVal);
 
@@ -25,6 +26,7 @@ contract Particle {
             localBest[i] = position[i];
         }
         localBest[dimension] = localMin;
+        _owner = msg.sender;
     }
 
     function iterate(uint16 times) public {
@@ -34,6 +36,7 @@ contract Particle {
     }
 
     function iterate() public {
+        require(msg.sender == _owner || msg.sender==address(controller), "Only the owner or the Controller can iterate");
         int socialFactor = random(45, 90);
         int cognitiveFactor = 100 - socialFactor;
         int[dimension + 1] memory globalBest = controller.getBestPoint();
