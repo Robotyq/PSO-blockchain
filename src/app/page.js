@@ -37,10 +37,16 @@ export default function Home() {
     useEffect(() => {
         if (controller) {
             fetchParticles();
-            fetchEvents();
             fetchCurrentBlock();
+
         }
     }, [controller]);
+
+    useEffect(() => {
+        if (controller) {
+            fetchEvents();
+        }
+    }, [currentBlock]);
 
     const fetchCurrentBlock = async () => {
         if (controller) {
@@ -95,13 +101,14 @@ export default function Home() {
 
     return (
         <main className={styles.main}>
-            <h1>Blockchain Particle Tracker</h1>
+            <h1>Blockchain Particle Swarm Tracker</h1>
             <AccountInfo account={account} web3={web3}/>
             <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}/>
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
                 <IterationControl onIterate={handleIterate}/>
+                <TargetFunctionSelector web3={web3} account={account} controller={controller}/>
             </div>
             {error && (
                 <div className={styles.error}>
@@ -109,12 +116,11 @@ export default function Home() {
                     <pre>{error.stack}</pre>
                 </div>
             )}
-            <TargetFunctionSelector web3={web3} account={account} controller={controller}/>
-            <div className={styles.layout}>
-                <GlobalMin web3={web3} controller={controller}/>
+            <div className={styles.flex_layout}>
                 <div className={styles.chartContainer}>
                     <ParticlesList particles1={particles}/>
                 </div>
+                <GlobalMin controller={controller} blockNumber={currentBlock}/>
             </div>
             <EventsList events={events}/>
         </main>

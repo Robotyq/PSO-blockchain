@@ -25,6 +25,7 @@ export const fetchParticlesData = async (web3, controller) => {
             const position = await Promise.all([
                 particleInstance.methods.position(0).call(),
                 particleInstance.methods.position(1).call(),
+                particleInstance.methods.currentValue().call()
             ]);
             const localBest = await Promise.all([
                 particleInstance.methods.localBest(0).call(),
@@ -46,28 +47,29 @@ export const fetchEventsData = async (web3, controller, currentBlock) => {
     });
     const formattedGlobalVarEvents = controllerEvents.map(event => {
         switch (event.event) {
-            case 'ParticleBorn':
+            case 'ParticleAdded':
                 return {
-                    event: 'ParticleBorn',
+                    event: 'ParticleAdded',
+                    blockNumber: event.blockNumber,
                     particle: event.returnValues.particle,
-                    initialPosition: event.returnValues.position,
-                    speed: event.returnValues.speed
                 };
             case 'NewBestGlobal':
                 return {
                     event: 'NewBestGlobal',
+                    blockNumber: event.blockNumber,
                     particle: event.returnValues.particle,
-                    oldValue: event.returnValues.old,
                     newValue: event.returnValues.newVar
                 };
             case 'TargetFunctionUpdated':
                 return {
                     event: 'TargetFunctionUpdated',
+                    blockNumber: event.blockNumber,
                     targetFunctionAddress: event.returnValues.newTargetFunction
                 };
             default:
                 return {
                     event: 'UnknownEvent',
+                    blockNumber: event.blockNumber,
                     data: event
                 };
         }
@@ -94,13 +96,14 @@ export const fetchEventsData = async (web3, controller, currentBlock) => {
                 case 'NewLocalMin':
                     return {
                         event: 'New Local Min',
+                        blockNumber: event.blockNumber,
                         particle: event.returnValues.particle,
-                        oldPos: event.returnValues.old,
                         newPos: event.returnValues.newVal
                     };
                 default:
                     return {
                         event: 'UnknownEvent',
+                        blockNumber: event.blockNumber,
                         data: event
                     };
             }

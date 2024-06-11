@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import styles from '../page.module.css';
 
-const IterationControl = ({ onIterate }) => {
+const IterationControl = ({onIterate}) => {
     const [value, setValue] = useState(1);
 
     const handleChange = (event) => {

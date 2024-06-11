@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {updateTargetFunction, fetchDeployedFunctions} from '../scripts/blockchain';
 import styles from '../page.module.css';
+import iterationControl from "@/app/components/IterationControl";
 
 const TargetFunctionSelector = ({web3, account, controller}) => {
     const [deployedFunctions, setDeployedFunctions] = useState([]);
@@ -10,14 +11,14 @@ const TargetFunctionSelector = ({web3, account, controller}) => {
             try {
                 const functions = await fetchDeployedFunctions(web3);
                 const functionNames = {
-                    '73c': 'RastriginFunction',
-                    'a4d': 'RosenbrockFunction',
-                    'cb0': 'SphereFunction'
+                    'b27': 'Rastrigin',
+                    'f79': 'Rosenbrock',
+                    'a56': 'Sphere Function'
                 };
                 let unknownCount = 1;
                 const namedFunctions = functions.map(func => {
                     const lastThree = func.address.slice(-3);
-                    const name = functionNames[lastThree] || `Unknown Function${unknownCount++}`;
+                    const name = functionNames[lastThree] || `Unnamed F${unknownCount++}`;
                     return {...func, name};
                 });
                 setDeployedFunctions(namedFunctions);
@@ -43,16 +44,16 @@ const TargetFunctionSelector = ({web3, account, controller}) => {
     };
 
     return (
-        <div className={styles.center}>
-            <select
-                value={selectedFunction}
-                onChange={(e) => setSelectedFunction(e.target.value)}
-                className={styles.dropdown}
+        <div className={styles.iterationControl}>
+            <select className={styles.center}
+                    value={selectedFunction}
+                    onChange={(e) => setSelectedFunction(e.target.value)}
+                    className={styles.dropdown}
             >
                 <option value="">Select Target Function</option>
                 {deployedFunctions.map((func, index) => (
                     <option key={index} value={func.address}>
-                        {func.name} ({func.address})
+                        {func.name} ({func.address.slice(0, 4)}...{func.address.slice(-3)})
                     </option>
                 ))}
             </select>

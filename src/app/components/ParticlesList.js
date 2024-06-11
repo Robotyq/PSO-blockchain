@@ -5,10 +5,10 @@ import styles from '../page.module.css';
 
 const ParticlesList = ({particles1}) => {
     if (!particles1) {
-        console.log("particles1 is null")
-        console.log("particles1: ", particles1)
         return null;
     }
+    console.log("particles1: ", particles1)
+
     const particles = [];
     for (let i = 0; i < particles1.length; i++) {
         let particle = {};
@@ -17,6 +17,7 @@ const ParticlesList = ({particles1}) => {
         xyposition[0] = Number(particles1[i].position[0]);
         xyposition[1] = Number(particles1[i].position[1]);
         particle.position = xyposition;
+        particle.currentValue= Number(particles1[i].position[2]);
 
         let xylocalBest = [];
         xylocalBest[0] = Number(particles1[i].localBest[0]);
@@ -28,13 +29,16 @@ const ParticlesList = ({particles1}) => {
 
     return (
         <div className={styles.particles}>
-            <h2>Particles</h2>
-            <ParticlesChart particles={particles}/>
+            <div className={styles.flex_layout}>
+                <h2>Particles</h2>
+                <ParticlesChart particles={particles}/>
+            </div>
             <ul className={styles.list}>
                 {particles.map((particle, index) => {
                     return (
                         <li key={index} className={styles.listItem}>
-                            Particle address: {particle.name}, Position: [{particle.position.join(", ")}], Local Best: [{particle.localBest.join(", ")}]
+                            Particle address: {particle.name}, Current Value: {particle.currentValue}, Position: [{particle.position.join(", ")}], Local Best:
+                            [{particle.localBest.join(", ")}]
                         </li>
                     );
                 })}

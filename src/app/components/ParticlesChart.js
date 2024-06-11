@@ -35,7 +35,8 @@ const ParticlesChart = ({particles}) => {
                     label: (context) => {
                         const datasetIndex = context.datasetIndex;
                         const particle = particles[datasetIndex];
-                        return `${particle.name}: (${particle.position[0]}, ${particle.position[1]})`;
+                        const name= particle.name.slice(0, 4)+'...'+particle.name.slice(-3)
+                        return `${name}: (${particle.position[0]}, ${particle.position[1]}) => ${particle.currentValue}`;
                     },
                 },
             },

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {fetchGlobalMin} from '../scripts/blockchain';
 import styles from './GlobalMin.module.css';
 
-const GlobalMin = ({web3, controller}) => {
+const GlobalMin = ({controller, blockNumber}) => {
     const [globalMin, setGlobalMin] = useState(null);
     const [error, setError] = useState(null);
 
@@ -21,7 +21,7 @@ const GlobalMin = ({web3, controller}) => {
     useEffect(() => {
         if (controller)
             fetchMin();
-    }, [controller]);
+    }, [controller, blockNumber]);
 
     return (
         <div className={styles.globalMinContainer}>
@@ -34,8 +34,8 @@ const GlobalMin = ({web3, controller}) => {
             )}
             {globalMin ? (
                 <div>
-                    <p>Position: [{globalMin.slice(0, -1).join(', ')}]</p>
-                    <p>Value: {globalMin[globalMin.length - 1]}</p>
+                    <p>Position: [{globalMin.slice(0, 2).join(', ')}]</p>
+                    <p>Value: {globalMin.slice(-1).join(", ")}</p>
                 </div>
             ) : (
                 <p>Loading...</p>
