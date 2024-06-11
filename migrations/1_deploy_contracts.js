@@ -22,9 +22,9 @@ module.exports = async function (deployer, network, accounts) {
     console.log("Deploying the other functions...");
     const rosenbrock = await deployer.deploy(Rosenbrock);
     const rastrigin = await deployer.deploy(Rastrigin);
-    console.log("Deployed the other functions.");
-    console.log("Changinh the target function to Rastrigin...");
-    await controller.updateTargetFunction(rosenbrock.address);
-    await controller.updateTargetFunction(rastrigin.address);
+    // console.log("Deployed the other functions.");
+    // console.log("Changinh the target function to Rastrigin...");
+    // await controller.updateTargetFunction(rosenbrock.address);
+    // await controller.updateTargetFunction(rastrigin.address);
 
 };

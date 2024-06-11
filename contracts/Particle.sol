@@ -60,7 +60,7 @@ contract Particle {
         int maxSpeed = 30;
         for (uint i = 0; i < dimension; i++) {
             int newSpeedi = speed[i] * inertiaF / 100 + cogF * (localBest[i] - position[i]) / 100 + socialF * (globalBest[i] - position[i]) / 100;
-
+            newSpeedi+=random(-5,5);
             if (newSpeedi > maxSpeed) {
                 newSpeedi = maxSpeed;
             } else if (newSpeedi < -maxSpeed) {
@@ -77,7 +77,7 @@ contract Particle {
 
     function random(int min, int max) private returns (int) {
         nonce++;
-        uint rand = uint(keccak256(abi.encodePacked(blockhash(block.number - 1), msg.sender, nonce)));
+        uint rand = uint(keccak256(abi.encodePacked(block.number - 1), nonce, this));
         int randi = int(rand);
         int interval = max - min;
         return randi % interval + min;
