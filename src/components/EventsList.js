@@ -50,10 +50,7 @@ const EventItem = ({event}) => {
 const EventsList = ({events}) => {
     // Sort events by blockNumber in descending order
     const sortedEvents = events.sort((a, b) => {
-        let number = Number(b.blockNumber) - Number(a.blockNumber);
-        if (number == 0)
-            number += 1;
-        return number;
+        return Number(b.blockNumber) - Number(a.blockNumber);
     });
 
     return (

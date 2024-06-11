@@ -7,7 +7,7 @@ ChartJS.register(Tooltip, PointElement, LinearScale, CategoryScale);
 
 const ParticlesChart = ({particles, account}) => {
     const data = {
-        datasets: particles.map((particle, index) => ({
+        datasets: particles.map((particle) => ({
             label: particle.name,
             data: [{x: particle.position[0], y: particle.position[1]}],
             backgroundColor: particle.owner === account ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)',

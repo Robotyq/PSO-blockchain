@@ -45,8 +45,7 @@ const TargetFunctionSelector = ({web3, account, controller}) => {
 
     return (
         <div className={styles.iterationControl}>
-            <select className={styles.center}
-                    value={selectedFunction}
+            <select value={selectedFunction}
                     onChange={(e) => setSelectedFunction(e.target.value)}
                     className={styles.dropdown}
             >

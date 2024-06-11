@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {fetchGlobalMin} from '../scripts/blockchain';
+import React, {useEffect, useState} from 'react';
+import {fetchGlobalMin} from '@/scripts/blockchain';
 import styles from './GlobalMin.module.css';
 
 const GlobalMin = ({controller, blockNumber}) => {
