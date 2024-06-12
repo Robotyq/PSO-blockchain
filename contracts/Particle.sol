@@ -6,7 +6,7 @@ int16 constant maxSpeed = 50;
 
 contract Particle {
     int[dimension] public position;
-    int public currentValue;
+    int public currentValue = int(2 ** 255 - 1);
     IFunction public targetFunction;
     int[dimension + 1] public localBest;
     int private localMin = int(2 ** 255 - 1);
@@ -27,6 +27,7 @@ contract Particle {
         }
         localBest[dimension] = localMin;
         _owner = msg.sender;
+        controller.addParticle(address(this));
     }
 
     function iterate(uint16 times) public {
@@ -97,4 +98,6 @@ interface IController {
     function getBestPoint() external view returns (int[3] memory);
 
     function setBestPoint(int[3] memory newVar) external;
+
+    function addParticle(address particleAddress) external;
 }
