@@ -8,6 +8,7 @@ import ParticlesList from '../../components/ParticlesList';
 import IterationControl from '../../components/IterationControl';
 import GlobalMin from '../../components/GlobalMin';
 import styles from '../../page.module.css';
+import DeployParticleForm from '../../components/DeployParticleForm'; // Add this import
 
 export default function Client() {
     const {web3, account} = useWeb3();
@@ -75,6 +76,11 @@ export default function Client() {
         }
     };
 
+    const handleParticleDeployed = () => {
+        fetchParticles();
+        fetchCurrentBlock();
+    };
+
     return (
         <main className={styles.main}>
             <h1>My Particles Tracker</h1>
@@ -83,7 +89,12 @@ export default function Client() {
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <IterationControl onIterate={handleIterate}/>
-            </div>
+                <DeployParticleForm
+                    web3={web3}
+                    account={account}
+                    controller={controller}
+                    onParticleDeployed={handleParticleDeployed}
+                /></div>
             {error && (
                 <div className={styles.error}>
                     <p>{error.message}</p>

@@ -181,3 +181,12 @@ export const iterateParticle = async (web3, account, particleAddress, value, cal
         throw error;
     }
 };
+
+export const deployParticle = async (web3, account, controller, initialPosition, initialSpeed) => {
+    const targetFunctionAddress = await controller.methods.targetFunction().call();
+    await controller.methods.deployParticle(
+        [initialPosition.x, initialPosition.y],
+        [initialSpeed.vx, initialSpeed.vy],
+        targetFunctionAddress
+    ).send({from: account});
+};
