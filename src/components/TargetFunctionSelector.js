@@ -38,7 +38,6 @@ const TargetFunctionSelector = ({web3, account, controller, afterChange}) => {
         if (selectedFunction) {
             try {
                 await updateTargetFunction(account, controller, selectedFunction);
-                alert('Target function updated successfully!');
                 if (afterChange) {
                     afterChange();
                 }
