@@ -1,7 +1,7 @@
 "use client";
 import {useEffect, useState} from 'react';
 import {useWeb3} from '@/components/Web3Provider';
-import {fetchParticlesData, initializeController, iterateParticle} from '@/scripts/blockchain';
+import {fetchParticlesData, getTargetFunction, initializeController, iterateParticle} from '@/scripts/blockchain'; // Add this import
 import AccountInfo from '../../components/AccountInfo';
 import ControllerInfo from '../../components/ControllerInfo';
 import ParticlesList from '../../components/ParticlesList';
@@ -16,6 +16,7 @@ export default function Client() {
     const [currentBlock, setCurrentBlock] = useState(null);
     const [particles, setParticles] = useState([]);
     const [userParticles, setUserParticles] = useState([]);
+    const [targetFunction, setTargetFunction] = useState('');
     const [error, setError] = useState(null);
 
     const initController = async () => {
@@ -33,12 +34,25 @@ export default function Client() {
         }
     }, [web3]);
 
+    async function fetchTarghetFunction() {
+        const targetFunctionAddress = await getTargetFunction(controller);
+        setTargetFunction(targetFunctionAddress);
+    }
+
     useEffect(() => {
         if (controller) {
             fetchParticles();
             fetchCurrentBlock();
+            fetchTarghetFunction();
         }
     }, [controller]);
+
+    useEffect(() => {
+        if (controller) {
+            fetchParticles();
+            fetchTarghetFunction();
+        }
+    }, [currentBlock]);
 
     const fetchCurrentBlock = async () => {
         if (controller) {
@@ -67,7 +81,6 @@ export default function Client() {
                 for (const particle of userParticles) {
                     iterateParticle(web3, account, particle.address, value, () => {
                         fetchCurrentBlock();
-                        fetchParticles()
                     });
                 }
             } catch (error) {
@@ -85,7 +98,8 @@ export default function Client() {
         <main className={styles.main}>
             <h1>My Particles Tracker</h1>
             <AccountInfo account={account} web3={web3}/>
-            <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}/>
+            <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}
+                            targetFunction={targetFunction}/>
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <IterationControl onIterate={handleIterate}/>
@@ -94,6 +108,7 @@ export default function Client() {
                     account={account}
                     controller={controller}
                     onParticleDeployed={handleParticleDeployed}
+                    targetFunction={targetFunction}
                 /></div>
             {error && (
                 <div className={styles.error}>

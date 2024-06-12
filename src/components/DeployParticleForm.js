@@ -4,14 +4,14 @@ import styles from '../page.module.css';
 
 const getRandomValue = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-const DeployParticleForm = ({web3, account, controller, onParticleDeployed}) => {
+const DeployParticleForm = ({web3, account, controller, onParticleDeployed, targetFunction}) => {
     const [initialPosition, setInitialPosition] = useState({x: 0, y: 0});
     const [initialSpeed, setInitialSpeed] = useState({vx: 0, vy: 0});
     const [deployError, setDeployError] = useState(null);
 
     useEffect(() => {
         setInitialPosition({x: getRandomValue(-500, 500), y: getRandomValue(-500, 500)});
-        setInitialSpeed({vx: getRandomValue(-500, 500), vy: getRandomValue(-500, 500)});
+        setInitialSpeed({vx: getRandomValue(-50, 50), vy: getRandomValue(-50, 50)});
     }, []);
 
     const handleInputChange = (e) => {
@@ -25,7 +25,7 @@ const DeployParticleForm = ({web3, account, controller, onParticleDeployed}) => 
 
     const handleDeploy = async () => {
         try {
-            await deployParticle(web3, account, controller, initialPosition, initialSpeed);
+            await deployParticle(web3, account, controller, targetFunction, initialPosition, initialSpeed);
             onParticleDeployed();
         } catch (error) {
             setDeployError({message: error.message, stack: error.stack});

@@ -1,20 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {fetchDeployedFunctions, updateTargetFunction} from '../scripts/blockchain';
+import {fetchDeployedFunctions, updateTargetFunction} from '@/scripts/blockchain';
 import styles from '../page.module.css';
 // import iterationControl from "@/src/components/IterationControl";
 
-const TargetFunctionSelector = ({web3, account, controller}) => {
+export const functionNames = {
+    '664': 'Rastrigin',
+    '380': 'Rosenbrock',
+    'b9b': 'Sphere Function'
+};
+
+const TargetFunctionSelector = ({web3, account, controller, afterChange}) => {
     const [deployedFunctions, setDeployedFunctions] = useState([]);
     const [selectedFunction, setSelectedFunction] = useState('');
     useEffect(() => {
         const fetchFunctions = async () => {
             try {
                 const functions = await fetchDeployedFunctions(web3);
-                const functionNames = {
-                    'b27': 'Rastrigin',
-                    'f79': 'Rosenbrock',
-                    'a56': 'Sphere Function'
-                };
+
                 let unknownCount = 1;
                 const namedFunctions = functions.map(func => {
                     const lastThree = func.address.slice(-3);
@@ -37,6 +39,9 @@ const TargetFunctionSelector = ({web3, account, controller}) => {
             try {
                 await updateTargetFunction(account, controller, selectedFunction);
                 alert('Target function updated successfully!');
+                if (afterChange) {
+                    afterChange();
+                }
             } catch (error) {
                 alert(`Error updating target function: ${error.message}`);
             }
