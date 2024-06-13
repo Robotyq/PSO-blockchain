@@ -1,16 +1,17 @@
 "use client";
 import {useEffect, useState} from 'react';
 import {useWeb3} from '@/components/Web3Provider';
-import {fetchParticlesData, getTargetFunction, initializeController, iterateParticle} from '@/scripts/blockchain'; // Add this import
+import {fetchParticlesData, getTargetFunction, initializeController, iterateParticle} from '@/scripts/blockchain';
 import AccountInfo from '../../components/AccountInfo';
 import ControllerInfo from '../../components/ControllerInfo';
 import ParticlesList from '../../components/ParticlesList';
 import IterationControl from '../../components/IterationControl';
 import GlobalMin from '../../components/GlobalMin';
 import styles from '../../page.module.css';
+
 import DeployParticleForm from '../../components/DeployParticleForm'; // Add this import
 
-export default function Client() {
+export default function Home() {
     const {web3, account} = useWeb3();
     const [controller, setController] = useState(null);
     const [currentBlock, setCurrentBlock] = useState(null);

@@ -11,16 +11,17 @@ import {
 import AccountInfo from '../../components/AccountInfo';
 import ControllerInfo from '../../components/ControllerInfo';
 import ParticlesList from '../../components/ParticlesList';
-import EventsList from '../../components/EventsList';
 import IterationControl from '../../components/IterationControl';
-import TargetFunctionSelector from '../../components/TargetFunctionSelector';
-import styles from '../../page.module.css';
 import GlobalMin from '../../components/GlobalMin';
+import styles from '../../page.module.css';
+
+import EventsList from '../../components/EventsList';
+import TargetFunctionSelector from '../../components/TargetFunctionSelector';
 
 export default function Home() {
     const {web3, account} = useWeb3();
     const [controller, setController] = useState(null);
-    const [currentBlock, setCurrentBlock] = useState(null); // State for current block number
+    const [currentBlock, setCurrentBlock] = useState(null);
     const [particles, setParticles] = useState([]);
     const [events, setEvents] = useState([]);
     const [error, setError] = useState(null);
