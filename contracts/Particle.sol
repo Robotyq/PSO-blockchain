@@ -58,7 +58,7 @@ contract Particle {
         int[dimension] memory newSpeed;
         for (uint i = 0; i < dimension; i++) {
             int newSpeedi = speed[i] * inertiaF / 100 + cogF * (localBest[i] - position[i]) / 100 + socialF * (globalBest[i] - position[i]) / 100;
-            newSpeedi += random(- 5, 5);
+            newSpeedi += random(- 6, 6);
             if (newSpeedi > maxSpeed) {
                 newSpeedi = maxSpeed;
             } else if (newSpeedi < - maxSpeed) {
