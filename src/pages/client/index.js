@@ -37,8 +37,12 @@ export default function Home() {
     }, [web3]);
 
     async function fetchTarghetFunction() {
-        const targetFunctionAddress = await getTargetFunction(controller);
-        setTargetFunction(targetFunctionAddress);
+        try {
+            const targetFunctionAddress = await getTargetFunction(controller);
+            setTargetFunction(targetFunctionAddress);
+        } catch (error) {
+            setError({message: error.message, stack: error.stack});
+        }
     }
 
     useEffect(() => {

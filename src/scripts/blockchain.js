@@ -156,16 +156,23 @@ export const updateTargetFunction = async (account, controller, newTargetFunctio
 
 export const fetchGlobalMin = async (controller) => {
     console.log('Fetching global min from controller:', controller)
-    const events = await controller.getPastEvents('NewBestGlobal', {
-        fromBlock: 0,
-        toBlock: 'latest',
-    });
-    if (events.length === 0) {
-        // throw new Error('No NewBestGlobal events found');
-        return [0, 0, NaN]
+    const min = [];
+    for (let i = 0; i < 3; i++) {
+        const pos = await controller.methods.bestPoint(i).call();
+        min.push(Number(pos));
     }
-    const latestEvent = events[events.length - 1];
-    return latestEvent.returnValues.newVar;
+    // const min= await controller.methods.bestPoint(2).call();
+    // const events = await controller.me('NewBestGlobal', {
+    //     fromBlock: 0,
+    //     toBlock: 'latest',
+    // });
+    // if (events.length === 0) {
+    //     throw new Error('No NewBestGlobal events found');
+    // return [0, 0, NaN]
+    // }
+    // const latestEvent = events[events.length - 1];
+    return min
+    // return latestEvent.returnValues.newVar;
 };
 
 export const iterateParticle = async (web3, account, particleAddress, value, callback) => {

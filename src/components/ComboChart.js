@@ -4,7 +4,7 @@ import 'chart.js/auto';
 import styles from '../page.module.css';
 import {fetchGlobalMin} from '@/scripts/blockchain';
 
-const ComboChart = ({web3, account, controller, particles, currentBlock}) => {
+const ComboChart = ({controller, particles, currentBlock}) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [],
@@ -30,7 +30,7 @@ const ComboChart = ({web3, account, controller, particles, currentBlock}) => {
     }, [controller, currentBlock]);
 
     useEffect(() => {
-        if (particles && globalMin) {
+        if (particles && particles.length > 0 && globalMin && currentBlock) {
             const labels = [...chartData.labels, `Iteration ${chartData.labels.length + 1}`];
 
             const newDatasets = particles.map((particle, index) => {
@@ -39,27 +39,32 @@ const ComboChart = ({web3, account, controller, particles, currentBlock}) => {
                     type: 'bar',
                     label: `Particle ${index + 1}`,
                     data: existingDataset ? [...existingDataset.data, Number(particle.position[2])] : [Number(particle.position[2])],
-                    backgroundColor: existingDataset ? existingDataset.backgroundColor : `rgba(${75 + index * 20}, 192, 192, 0.2)`,
-                    borderColor: existingDataset ? existingDataset.borderColor : `rgba(${75 + index * 20}, 192, 192, 1)`,
+                    backgroundColor: existingDataset ? existingDataset.backgroundColor : `rgba(${5 + index * 100}, 192, 192, 0.5)`,
+                    borderColor: existingDataset ? existingDataset.borderColor : `rgba(${10 + index * 80}, 192, 192, 1)`,
                     borderWidth: 1,
                 };
             });
 
-            const globalMinDataset = {
-                type: 'line',
-                label: 'Global Minimum',
-                data: chartData.datasets.length > 0 ? [...chartData.datasets[particles.length]?.data, Number(globalMin[2])] : [Number(globalMin[2])],
-                fill: false,
-                borderColor: 'rgba(255, 99, 132, 1)',
-            };
+            const globalMinDataset = chartData.datasets.find(dataset => dataset.label === 'Global Minimum');
+            const globalMinData = globalMinDataset ? [...globalMinDataset.data, globalMin[2]] : [globalMin[2]];
 
-            setChartData({
+            const newChartData = {
                 labels,
-                datasets: [...newDatasets, globalMinDataset],
-            });
+                datasets: [
+                    ...newDatasets,
+                    {
+                        type: 'line',
+                        label: 'Global Minimum',
+                        data: globalMinData,
+                        fill: false,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                    },
+                ],
+            };
+            console.log("chartData: ", newChartData)
+            setChartData(newChartData);
         }
-        console.log("dataSet", chartData)
-    }, [particles, globalMin]);
+    }, [particles]);
 
     const options = {
         scales: {
