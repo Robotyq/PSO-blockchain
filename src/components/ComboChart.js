@@ -1,10 +1,31 @@
 import React, {useEffect, useState} from 'react';
 import {Bar} from 'react-chartjs-2';
+import 'chart.js/auto';
 import styles from '../page.module.css';
 import {fetchGlobalMin} from '@/scripts/blockchain';
 
 const ComboChart = ({web3, account, controller, particles, currentBlock}) => {
-    const [dataSets, setDataSets] = useState([]);
+    const [chartData, setChartData] = useState({
+        labels: [],
+        datasets: [
+            {
+                type: 'bar',
+                label: 'Current Value',
+                data: [],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+            },
+            {
+                type: 'line',
+                label: 'Global Minimum',
+                data: [],
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+            },
+        ],
+    });
+
     const [globalMin, setGlobalMin] = useState(null);
 
     const fetchMin = async () => {
@@ -26,30 +47,25 @@ const ComboChart = ({web3, account, controller, particles, currentBlock}) => {
 
     useEffect(() => {
         if (particles && globalMin) {
-            console.log('Updating chart data', particles, globalMin);
-            const newDataSets = {
-                labels: dataSets.length ? [...dataSets[0].labels, `Iteration ${dataSets[0].labels.length + 1}`] : ['Iteration 1'],
+            const labels = [...chartData.labels, `Iteration ${chartData.labels.length + 1}`];
+            const currentValues = particles.map(p => Number(p.position[2]));
+            const globalMinValue = Number(globalMin[2]);
+
+            setChartData(prevData => ({
+                labels,
                 datasets: [
                     {
-                        type: 'bar',
-                        label: 'Current Value',
-                        data: particles.map(p => Number(p.position[2])),
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1,
+                        ...prevData.datasets[0],
+                        data: [...prevData.datasets[0].data, ...currentValues],
                     },
                     {
-                        type: 'line',
-                        label: 'Global Minimum',
-                        data: dataSets.length ? [...dataSets[1].data, Number(globalMin[2])] : [Number(globalMin[2])],
-                        fill: false,
-                        borderColor: 'rgba(255, 99, 132, 1)',
+                        ...prevData.datasets[1],
+                        data: [...prevData.datasets[1].data, globalMinValue],
                     },
                 ],
-            };
-            setDataSets(newDataSets);
-            console.log('Updated chart data', newDataSets)
+            }));
         }
+        console.log("dataSet", chartData)
     }, [particles, globalMin]);
 
     const options = {
@@ -62,8 +78,7 @@ const ComboChart = ({web3, account, controller, particles, currentBlock}) => {
 
     return (
         <div className={styles.chartContainer}>
-            {dataSets.length > 0 && <Bar data={dataSets} options={options}/>}
-            {/*<Bar data={dataSets} options={options} />*/}
+            <Bar data={chartData} options={options}/>
         </div>
     );
 };
