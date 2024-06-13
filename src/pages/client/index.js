@@ -8,6 +8,7 @@ import ParticlesList from '../../components/ParticlesList';
 import IterationControl from '../../components/IterationControl';
 import GlobalMin from '../../components/GlobalMin';
 import styles from '../../page.module.css';
+import ComboChart from '../../components/ComboChart';
 
 import DeployParticleForm from '../../components/DeployParticleForm'; // Add this import
 
@@ -120,6 +121,9 @@ export default function Home() {
             <div className={styles.flex_layout}>
                 <div className={styles.chartContainer}>
                     <ParticlesList particles1={particles} account={account}/>
+
+                    <ComboChart web3={web3} account={account} controller={controller} particles={userParticles}
+                                currentBlock={currentBlock}/>
                 </div>
                 <GlobalMin controller={controller} blockNumber={currentBlock}/>
             </div>
