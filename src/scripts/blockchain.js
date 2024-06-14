@@ -23,16 +23,22 @@ export const fetchParticlesData = async (web3, controller) => {
     return await Promise.all(
         particleAddresses.map(async (address) => {
             const particleInstance = new web3.eth.Contract(ParticleContract.abi, address);
-            const position = await Promise.all([
+            let position = await Promise.all([
                 particleInstance.methods.position(0).call(),
                 particleInstance.methods.position(1).call(),
                 particleInstance.methods.currentValue().call()
             ]);
-            const localBest = await Promise.all([
+            position = position.map(pos => Number(pos));
+            if (position[2] > 10000000000)
+                position[2] /= 100000000000000;
+            let localBest = await Promise.all([
                 particleInstance.methods.localBest(0).call(),
                 particleInstance.methods.localBest(1).call(),
                 particleInstance.methods.localBest(2).call(),
             ]);
+            localBest = localBest.map(pos => Number(pos));
+            if (localBest[2] > 10000000000)
+                localBest[2] /= 100000000000000;
             const owner = await particleInstance.methods.getOwner().call();
             return {address, position, localBest, owner};
         })
@@ -159,7 +165,10 @@ export const fetchGlobalMin = async (controller) => {
     const min = [];
     for (let i = 0; i < 3; i++) {
         const pos = await controller.methods.bestPoint(i).call();
-        min.push(Number(pos));
+        let number = Number(pos);
+        if (number > 10000000000)
+            number /= 100000000000000;
+        min.push(number);
     }
     // const min= await controller.methods.bestPoint(2).call();
     // const events = await controller.me('NewBestGlobal', {

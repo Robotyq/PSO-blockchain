@@ -31,7 +31,7 @@ const ComboChart = ({controller, particles, currentBlock}) => {
 
     useEffect(() => {
         if (particles && particles.length > 0 && globalMin && currentBlock) {
-            const labels = [...chartData.labels, `Iteration ${chartData.labels.length + 1}`];
+            const labels = [...chartData.labels, `Round ${chartData.labels.length + 1}`];
 
             const newDatasets = particles.map((particle, index) => {
                 const existingDataset = chartData.datasets.find(dataset => dataset.label === `Particle ${index + 1}`);
@@ -39,9 +39,9 @@ const ComboChart = ({controller, particles, currentBlock}) => {
                     type: 'bar',
                     label: `Particle ${index + 1}`,
                     data: existingDataset ? [...existingDataset.data, Number(particle.position[2])] : [Number(particle.position[2])],
-                    backgroundColor: existingDataset ? existingDataset.backgroundColor : `rgba(${5 + index * 100}, 192, 192, 0.5)`,
-                    borderColor: existingDataset ? existingDataset.borderColor : `rgba(${10 + index * 80}, 192, 192, 1)`,
-                    borderWidth: 1,
+                    backgroundColor: existingDataset ? existingDataset.backgroundColor : `rgba(${15 + index * 120}, 192, 192, 0.5)`,
+                    borderColor: existingDataset ? existingDataset.borderColor : `rgba(${15 + index * 120}, 192, 192, 1)`,
+                    borderWidth: 5,
                 };
             });
 
