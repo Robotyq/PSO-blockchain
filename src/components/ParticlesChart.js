@@ -11,7 +11,7 @@ const ParticlesChart = ({particles, account}) => {
             label: particle.name,
             data: [{x: particle.position[0], y: particle.position[1]}],
             backgroundColor: particle.owner === account ? 'rgb(5,61,248)' : 'rgba(75, 192, 192, 1)',
-            pointRadius: 15,
+            pointRadius: 13,
         })),
     };
 

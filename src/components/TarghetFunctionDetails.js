@@ -1,5 +1,6 @@
 import React from 'react';
-import Latex from 'react-latex-next';
+import 'katex/dist/katex.min.css';
+import {InlineMath} from 'react-katex';
 import styles from './TargetFunctionDetails.module.css';
 import {functionNames} from "@/components/TargetFunctionSelector";
 
@@ -32,9 +33,10 @@ const TargetFunctionDetails = ({targetFunction}) => {
     return (
         <div className={styles.functionDetails}>
             <h2>{details.name}</h2>
+            <br/>
             <p><strong>Formula:</strong></p>
-            {/*<p><Latex>{`$${details.formula}$`}</Latex></p>*/}
-            <Latex>{`$${details.formula}$`}</Latex>
+            <p><InlineMath>{details.formula}</InlineMath></p>
+            <br/>
             <p>{details.description}</p>
             {details.graphic && <img src={details.graphic} alt={`${details.name} graphic`} className={styles.graphic}/>}
         </div>
