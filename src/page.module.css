@@ -157,3 +157,12 @@
 .targetFunction {
     text-align: right;
 }
+
+.detailsContainer {
+    width: 15%;
+    /*padding: 1rem;*/
+    /*background-color: rgba(0, 0, 0, 0.05);*/
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 2rem;
+}

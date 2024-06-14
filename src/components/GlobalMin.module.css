@@ -1,11 +1,9 @@
 .globalMinContainer {
-    /*width: 20%;*/
     padding: 1rem;
-    margin-top: 5rem;
+    margin-top: 1rem;
     background-color: rgba(2, 102, 252, 0.2);
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-right: 1rem;
 }
 
 .globalMinContainer h2 {

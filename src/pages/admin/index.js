@@ -14,6 +14,7 @@ import ParticlesList from '../../components/ParticlesList';
 import IterationControl from '../../components/IterationControl';
 import GlobalMin from '../../components/GlobalMin';
 import styles from '../../page.module.css';
+import TargetFunctionDetails from '../../components/TarghetFunctionDetails';
 
 import EventsList from '../../components/EventsList';
 import TargetFunctionSelector from '../../components/TargetFunctionSelector';
@@ -141,7 +142,10 @@ export default function Home() {
                 <div className={styles.chartContainer}>
                     <ParticlesList particles1={particles}/>
                 </div>
-                <GlobalMin controller={controller} blockNumber={currentBlock}/>
+                <div className={styles.detailsContainer}>
+                    <GlobalMin controller={controller} blockNumber={currentBlock}/>
+                    <TargetFunctionDetails targetFunction={targetFunction}/>
+                </div>
             </div>
             <EventsList events={events}/>
         </main>

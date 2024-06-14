@@ -1,0 +1,17 @@
+.functionDetails {
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: rgba(2, 102, 252, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.detailsContainer h2 {
+    margin-top: 0;
+}
+
+.detailsContainer .graphic {
+    max-width: 100%;
+    height: auto;
+    margin-top: 1rem;
+}
