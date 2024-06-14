@@ -11,20 +11,23 @@ const TargetFunctionDetails = ({targetFunction}) => {
         'Rastrigin': {
             name: 'Rastrigin Function',
             formula: 'A n + \\sum_{i=1}^{n} \\left[ x_i^2 - A \\cos(2 \\pi x_i) \\right]',
-            description: 'The Rastrigin function is a non-convex function used as a performance test problem for optimization algorithms. It is highly multimodal, but locations of the minima are regularly distributed.',
-            graphic: '/images/rastrigin.png'
+            description: 'The Rastrigin function is a non-convex function used as a performance test problem for optimization algorithms. It is highly multimodal, but locations of the minima are regularly distributed. For this deployment, A is set to 10 and n is 2 because the function is 2-dimensional. In order to work with decimal numbers, the function is scaled by 10^18. When deploying a new Particle the initial coordinates must also be scaled by 10^18.',
+            minimum: 'The global minimum is at the origin.',
+            graphic: '/images/Rastrigin.png'
         },
         'Rosenbrock': {
             name: 'Rosenbrock Function',
             formula: '\\sum_{i=1}^{n-1} \\left[ 100 (x_{i+1} - x_i^2)^2 + (1 - x_i)^2 \\right]',
             description: 'The Rosenbrock function, also known as the Valley or Banana function, is a popular test problem for optimization algorithms. The global minimum is inside a long, narrow, parabolic shaped flat valley.',
-            graphic: '/images/rosenbrock.png'
+            minimum: 'The global minimum is at (1,1)',
+            graphic: '/images/Rosenbrock.png'
         },
         'Sphere Function': {
             name: 'Sphere Function',
-            formula: '\\sum_{i=1}^{n} (x_i - a)^2 + (y_i - b)^2',
-            description: 'The Sphere function is a simple unimodal function. It is continuous, convex, and unimodal. The global minimum is at the origin.',
-            graphic: '/images/sphere.png'
+            formula: 'A \\cdot (x - A)^2 + (y - A)^2',
+            description: 'The Sphere function, as implemented, offsets the input values by a constant factor before squaring them. This function is a simple unimodal function. The global minimum is at the origin after the offset.',
+            graphic: '/images/Sphere.png',
+            minimum: 'The minimum for the deployed contract is at (200,200)',
         }
     };
 
@@ -38,6 +41,8 @@ const TargetFunctionDetails = ({targetFunction}) => {
             <p><InlineMath>{details.formula}</InlineMath></p>
             <br/>
             <p>{details.description}</p>
+            <br/>
+            <p>{details.minimum}</p>
             {details.graphic && <img src={details.graphic} alt={`${details.name} graphic`} className={styles.graphic}/>}
         </div>
     );
