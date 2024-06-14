@@ -15,7 +15,7 @@ contract RastriginFunction is IFunction {
         int A = factor;
         int sum = A * int(dimensions.length);  // Initialize sum to n * A
         for (uint i = 0; i < dimensions.length; i++) {
-            int xi = dimensions[i] * 10**18; // Scale input to 18 decimals
+            int xi = dimensions[i]; // Scale input to 18 decimals
             int term1 = (xi * xi) / 10**18; // Scale down after squaring
             int term2 = (A * Trigonometry.cos(uint256((2 * pi() * xi) / 10**18))) / 10**18; // Scale down after cosine
             sum += (term1 - term2);
