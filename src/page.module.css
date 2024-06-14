@@ -91,7 +91,7 @@
 }
 
 .chartContainer {
-    width: 80%;
+    width: 87%;
     height: 100%;
     margin: 0 auto; /* Center the chart */
 }
@@ -159,10 +159,22 @@
 }
 
 .detailsContainer {
-    width: 20%;
+    width: 22%;
     /*padding: 1rem;*/
     /*background-color: rgba(0, 0, 0, 0.05);*/
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-top: 2rem;
 }
+
+/*.detailsContainer img {*/
+/*    margin-top: 1rem;*/
+/*    width: 110%;*/
+/*    !*height: 300px;*!*/
+/*    object-fit: cover;*/
+/*    mix-blend-mode: multiply; !* Apply blending mode to make white transparent *!*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*}*/

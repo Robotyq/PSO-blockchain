@@ -17,7 +17,7 @@ const TargetFunctionDetails = ({targetFunction}) => {
         },
         'Rosenbrock': {
             name: 'Rosenbrock Function',
-            formula: '\\sum_{i=1}^{n-1} \\left[ 100 (x_{i+1} - x_i^2)^2 + (1 - x_i)^2 \\right]',
+            formula: '\\sum_{i=1}^{n-1}\\left[100(x_{i+1}-x_i^2)^2+ (1-x_i)^2\\right]',
             description: 'The Rosenbrock function, also known as the Valley or Banana function, is a popular test problem for optimization algorithms. The global minimum is inside a long, narrow, parabolic shaped flat valley.',
             minimum: 'The global minimum is at (1,1)',
             graphic: '/images/Rosenbrock.png'
