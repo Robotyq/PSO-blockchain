@@ -40,3 +40,5 @@ next-env.d.ts
 /.idea/inspectionProfiles/Project_Default.xml
 /package-lock.json
 /.idea/particle-viewer2.iml
+/public/images/Rastrigin - Copy.png
+/public/images/Rosenbrock - Copy.png
