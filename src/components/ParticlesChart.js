@@ -7,12 +7,30 @@ ChartJS.register(Tooltip, PointElement, LinearScale, CategoryScale);
 
 const ParticlesChart = ({particles, account}) => {
     const data = {
-        datasets: particles.map((particle) => ({
-            label: particle.name,
-            data: [{x: particle.position[0], y: particle.position[1]}],
-            backgroundColor: particle.owner === account ? 'rgb(5,61,248)' : 'rgba(75, 192, 192, 1)',
-            pointRadius: 13,
-        })),
+        datasets: particles.map((particle) => {
+            let backgroundColor
+            if (account) {
+                backgroundColor = particle.owner === account ? 'rgb(5,61,248)' : 'rgba(75, 192, 192, 1)';
+            } else {
+                // console.log("particle",particle)
+                const localBestElement = Number(particle.localBest[2]);
+                const positionElement = Number(particle.currentValue);
+                let diff = (positionElement - localBestElement) / localBestElement;
+                diff = Number(diff.toFixed(2))
+                const red = 255 * diff
+                const green = 255 - red;
+                backgroundColor = `rgb(${red}, ${green}, 192)`;
+                // console.log("diff",diff)
+                // console.log("red",red)
+                // console.log("blue",blue)
+            }
+            return ({
+                label: particle.name,
+                data: [{x: particle.position[0], y: particle.position[1]}],
+                backgroundColor: backgroundColor,
+                pointRadius: 13,
+            });
+        }),
     };
 
     const options = {

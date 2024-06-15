@@ -64,7 +64,10 @@ export default function Home() {
     const fetchCurrentBlock = async () => {
         if (controller) {
             const blockNumber = await web3.eth.getBlockNumber();
-            setCurrentBlock(Number(blockNumber));
+            console.log("old block number", currentBlock);
+            const newBlockNumber = Number(blockNumber);
+            console.log("new block number", newBlockNumber);
+            setCurrentBlock(newBlockNumber);
         }
     };
 

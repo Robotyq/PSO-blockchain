@@ -193,6 +193,11 @@ export const iterateParticle = async (web3, account, particleAddress, value, cal
             console.log('Transaction receipt:', receipt)
             callback();
         });
+        send.catch((error) => {
+            console.error('Error iterating particle in promise:', error);
+            callback();
+            // throw error;
+        });
     } catch (error) {
         console.error('Error iterating particle:', error);
         throw error;

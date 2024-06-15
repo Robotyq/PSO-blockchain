@@ -31,7 +31,7 @@ const ComboChart = ({controller, particles, currentBlock}) => {
 
     useEffect(() => {
         if (particles && particles.length > 0 && globalMin && currentBlock) {
-            const labels = [...chartData.labels, `Round ${chartData.labels.length + 1}`];
+            const labels = [...chartData.labels, `Block ${currentBlock}`];
 
             const newDatasets = particles.map((particle, index) => {
                 const existingDataset = chartData.datasets.find(dataset => dataset.label === `Particle ${index + 1}`);
@@ -64,7 +64,7 @@ const ComboChart = ({controller, particles, currentBlock}) => {
             console.log("chartData: ", newChartData)
             setChartData(newChartData);
         }
-    }, [particles]);
+    }, [currentBlock]);
 
     const options = {
         scales: {
