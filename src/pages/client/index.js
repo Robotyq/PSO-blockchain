@@ -10,7 +10,8 @@ import GlobalMin from '../../components/GlobalMin';
 import styles from '../../page.module.css';
 import ComboChart from '../../components/ComboChart';
 
-import DeployParticleForm from '../../components/DeployParticleForm'; // Add this import
+import DeployParticleForm from '../../components/DeployParticleForm';
+import TargetFunctionDetails from "@/components/TarghetFunctionDetails"; // Add this import
 
 export default function Home() {
     const {web3, account} = useWeb3();
@@ -129,7 +130,10 @@ export default function Home() {
                     <ComboChart web3={web3} account={account} controller={controller} particles={userParticles}
                                 currentBlock={currentBlock}/>
                 </div>
-                <GlobalMin controller={controller} blockNumber={currentBlock}/>
+                <div className={styles.detailsContainer}>
+                    <GlobalMin controller={controller} blockNumber={currentBlock}/>
+                    <TargetFunctionDetails targetFunction={targetFunction}/>
+                </div>
             </div>
         </main>
     );

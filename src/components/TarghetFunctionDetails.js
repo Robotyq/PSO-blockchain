@@ -31,7 +31,13 @@ const TargetFunctionDetails = ({targetFunction}) => {
         }
     };
 
-    const details = functionDetails[funcName] || {};
+    const details = functionDetails[funcName] || {
+        name: 'Unknown Function',
+        formula: '?',
+        description: 'The function details are not available. Please select a known function from the dropdown.',
+        // graphic: '/images/Sphere.png',
+        minimum: '',
+    };
 
     return (
         <div className={styles.functionDetails}>

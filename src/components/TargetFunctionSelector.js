@@ -6,7 +6,7 @@ import styles from '../page.module.css';
 export const functionNames = {
     'd66': 'Rastrigin',
     'e23': 'Rosenbrock',
-    '497': 'Sphere Function'
+    '0fd': 'Sphere Function'
 };
 
 const TargetFunctionSelector = ({web3, account, controller, afterChange}) => {
