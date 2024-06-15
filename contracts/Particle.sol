@@ -16,6 +16,7 @@ contract Particle {
     address private _owner;
 
     event NewLocalMin(address particle, int[dimension + 1] newVal);
+    event moved(address particle, int currentValue);
 
     constructor(address _controllerAddress, address _TargetContractAddress, int[dimension] memory initialPos, int[dimension] memory initialVelocity) payable {
         controller = IController(_controllerAddress);
@@ -58,13 +59,7 @@ contract Particle {
         int[dimension] memory newSpeed;
         for (uint i = 0; i < dimension; i++) {
             int newSpeedi = speed[i] * inertiaF / 100 + cogF * (localBest[i] - position[i]) / 100 + socialF * (globalBest[i] - position[i]) / 100;
-            if(newSpeedi>0){
-                newSpeedi+=random(-newSpeedi/10, newSpeedi/10);
-            }
-            else
-            {
-                newSpeedi+=random(newSpeedi/10, -newSpeedi/10);
-            }
+            newSpeedi += random(- newSpeedi / 10, newSpeedi / 10);
             newSpeedi += random(- 6, 6);
 //            if (newSpeedi > maxSpeed) {
 //                newSpeedi = maxSpeed;
@@ -79,6 +74,14 @@ contract Particle {
     }
 
     function random(int min, int max) private returns (int) {
+        if (max == min) {
+            return min;
+        }
+        if (max < min) {
+            int temp = max;
+            max = min;
+            min = temp;
+        }
         nonce++;
         uint rand = uint(keccak256(abi.encodePacked(block.number - 1, nonce, this)));
         int randi = int(rand);
