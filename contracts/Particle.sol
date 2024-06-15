@@ -16,7 +16,6 @@ contract Particle {
     address private _owner;
 
     event NewLocalMin(address particle, int[dimension + 1] newVal);
-    event moved(address particle, int currentValue);
 
     constructor(address _controllerAddress, address _TargetContractAddress, int[dimension] memory initialPos, int[dimension] memory initialVelocity) payable {
         controller = IController(_controllerAddress);
