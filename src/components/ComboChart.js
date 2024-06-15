@@ -11,6 +11,7 @@ const ComboChart = ({controller, particles, currentBlock}) => {
     });
 
     const [globalMin, setGlobalMin] = useState(null);
+    const [oldCurrentBlock, setOldCurrentBlock] = useState(null);
 
     const fetchMin = async () => {
         if (controller) {
@@ -30,41 +31,44 @@ const ComboChart = ({controller, particles, currentBlock}) => {
     }, [controller, currentBlock]);
 
     useEffect(() => {
-        if (particles && particles.length > 0 && globalMin && currentBlock) {
-            const labels = [...chartData.labels, `Block ${currentBlock}`];
+        if (currentBlock !== oldCurrentBlock) {
+            setOldCurrentBlock(currentBlock)
+            if (particles && particles.length > 0 && globalMin && currentBlock) {
+                const labels = [...chartData.labels, `Block ${currentBlock}`];
 
-            const newDatasets = particles.map((particle, index) => {
-                const existingDataset = chartData.datasets.find(dataset => dataset.label === `Particle ${index + 1}`);
-                return {
-                    type: 'bar',
-                    label: `Particle ${index + 1}`,
-                    data: existingDataset ? [...existingDataset.data, Number(particle.position[2])] : [Number(particle.position[2])],
-                    backgroundColor: existingDataset ? existingDataset.backgroundColor : `rgba(${15 + index * 120}, 192, 192, 0.5)`,
-                    borderColor: existingDataset ? existingDataset.borderColor : `rgba(${15 + index * 120}, 192, 192, 1)`,
-                    borderWidth: 5,
+                const newDatasets = particles.map((particle, index) => {
+                    const existingDataset = chartData.datasets.find(dataset => dataset.label === `Particle ${index + 1}`);
+                    return {
+                        type: 'bar',
+                        label: `Particle ${index + 1}`,
+                        data: existingDataset ? [...existingDataset.data, Number(particle.position[2])] : [Number(particle.position[2])],
+                        backgroundColor: existingDataset ? existingDataset.backgroundColor : `rgba(${15 + index * 120}, 192, 192, 0.5)`,
+                        borderColor: existingDataset ? existingDataset.borderColor : `rgba(${15 + index * 120}, 192, 192, 1)`,
+                        borderWidth: 5,
+                    };
+                });
+
+                const globalMinDataset = chartData.datasets.find(dataset => dataset.label === 'Global Minimum');
+                const globalMinData = globalMinDataset ? [...globalMinDataset.data, globalMin[2]] : [globalMin[2]];
+
+                const newChartData = {
+                    labels,
+                    datasets: [
+                        ...newDatasets,
+                        {
+                            type: 'line',
+                            label: 'Global Minimum',
+                            data: globalMinData,
+                            fill: false,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                        },
+                    ],
                 };
-            });
-
-            const globalMinDataset = chartData.datasets.find(dataset => dataset.label === 'Global Minimum');
-            const globalMinData = globalMinDataset ? [...globalMinDataset.data, globalMin[2]] : [globalMin[2]];
-
-            const newChartData = {
-                labels,
-                datasets: [
-                    ...newDatasets,
-                    {
-                        type: 'line',
-                        label: 'Global Minimum',
-                        data: globalMinData,
-                        fill: false,
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                    },
-                ],
-            };
-            console.log("chartData: ", newChartData)
-            setChartData(newChartData);
+                console.log("chartData: ", newChartData)
+                setChartData(newChartData);
+            }
         }
-    }, [currentBlock]);
+    }, [particles]);
 
     const options = {
         scales: {
