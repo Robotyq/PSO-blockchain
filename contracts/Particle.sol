@@ -41,7 +41,8 @@ contract Particle {
         int socialFactor = random(45, 90);
         int cognitiveFactor = 100 - socialFactor;
         int[dimension + 1] memory globalBest = controller.getBestPoint();
-        findNewVal(cognitiveFactor, socialFactor, 33, globalBest);
+        advance(cognitiveFactor, socialFactor, 33, globalBest);
+        currentValue = targetFunction.compute(position);
         if (currentValue < localBest[dimension]) {
             for (uint i = 0; i < dimension; i++) {
                 localBest[i] = position[i];
@@ -54,22 +55,16 @@ contract Particle {
         }
     }
 
-    function findNewVal(int cogF, int socialF, int inertiaF, int[dimension + 1] memory globalBest) private {
+    function advance(int cogF, int socialF, int inertiaF, int[dimension + 1] memory globalBest) private {
         int[dimension] memory newSpeed;
         for (uint i = 0; i < dimension; i++) {
             int newSpeedi = speed[i] * inertiaF / 100 + cogF * (localBest[i] - position[i]) / 100 + socialF * (globalBest[i] - position[i]) / 100;
             newSpeedi += random(- newSpeedi / 10, newSpeedi / 10);
             newSpeedi += random(- 6, 6);
-//            if (newSpeedi > maxSpeed) {
-//                newSpeedi = maxSpeed;
-//            } else if (newSpeedi < - maxSpeed) {
-//                newSpeedi = - maxSpeed;
-//            }
             newSpeed[i] = newSpeedi;
             position[i] = position[i] + newSpeed[i];
         }
         speed = newSpeed;
-        currentValue = targetFunction.compute(position);
     }
 
     function random(int min, int max) private returns (int) {
