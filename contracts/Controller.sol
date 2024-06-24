@@ -2,15 +2,6 @@
 pragma solidity ^0.8.0;
 uint constant dimension = 2;
 
-interface IParticle {
-//    function position(uint256) external view returns (int256);
-//    function currentValue() external view returns (int256);
-//    function localBest(uint256) external view returns (int256);
-    function iterate(uint16 times) external;
-
-    function updateTargetFunction(address _newTargetFunctionAddress) external;
-}
-
 contract Controller {
     int[dimension + 1] public bestPoint;
     IParticle[] public particles;
@@ -73,4 +64,9 @@ contract Controller {
         return particles.length;
     }
 
+}
+interface IParticle {
+    function iterate(uint16 times) external;
+
+    function updateTargetFunction(address _newTargetFunctionAddress) external;
 }
