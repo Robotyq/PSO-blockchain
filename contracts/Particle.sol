@@ -6,13 +6,12 @@ int16 constant maxSpeed = 50;
 
 contract Particle {
     int[dimension] public position;
-    int public currentValue = int(2 ** 255 - 1);
-    IFunction public targetFunction;
-    int[dimension + 1] public localBest;
-    int private localMin = int(2 ** 255 - 1);
     int[dimension] public speed;
-    uint private nonce = 0;
+    int public currentValue = int(2 ** 255 - 1);
+    int[dimension + 1] public localBest;
+    IFunction public targetFunction;
     IController private controller;
+    uint private nonce = 0;
     address private _owner;
 
     event NewLocalMin(address particle, int[dimension + 1] newVal);
@@ -25,7 +24,7 @@ contract Particle {
         for (uint i = 0; i < dimension; i++) {
             localBest[i] = position[i];
         }
-        localBest[dimension] = localMin;
+        localBest[dimension] = int(2 ** 255 - 1);
         _owner = msg.sender;
         controller.addParticle(address(this));
     }
@@ -86,11 +85,10 @@ contract Particle {
     function updateTargetFunction(address _newTargetFunctionAddress) external {
         require(msg.sender == address(controller), "Only the controller can update the target function");
         targetFunction = IFunction(_newTargetFunctionAddress);
-        localMin = int(2 ** 255 - 1);
         for (uint i = 0; i < dimension; i++) {
             localBest[i] = 0;
         }
-        localBest[dimension] = localMin;
+        localBest[dimension] = int(2 ** 255 - 1);
     }
 
     function getOwner() external view returns (address) {

@@ -29,8 +29,10 @@ contract Controller {
     }
 
     function iterateTimes(uint16 times) public {
-        for (uint i = 0; i < particles.length; i++) {
-            particles[i].iterate(times);
+        for(uint16 i = 0; i < times; i++) {
+            for (uint i = 0; i < particles.length; i++) {
+                particles[i].iterate();
+            }
         }
     }
 
@@ -66,7 +68,7 @@ contract Controller {
 
 }
 interface IParticle {
-    function iterate(uint16 times) external;
+    function iterate() external;
 
     function updateTargetFunction(address _newTargetFunctionAddress) external;
 }
