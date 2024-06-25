@@ -4,7 +4,7 @@ import styles from '../page.module.css';
 
 const getRandomValue = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-const DeployParticleForm = ({web3, account, controller, onParticleDeployed, targetFunction}) => {
+const DeployParticleForm = ({web3, account, controller, onParticleDeployed}) => {
     const [initialPosition, setInitialPosition] = useState({x: 0, y: 0});
     const [initialSpeed, setInitialSpeed] = useState({vx: 0, vy: 0});
     const [deployError, setDeployError] = useState(null);
@@ -25,7 +25,7 @@ const DeployParticleForm = ({web3, account, controller, onParticleDeployed, targ
 
     const handleDeploy = async () => {
         try {
-            await deployParticle(web3, account, controller, targetFunction, initialPosition, initialSpeed);
+            await deployParticle(web3, account, controller, initialPosition, initialSpeed);
             onParticleDeployed();
         } catch (error) {
             setDeployError({message: error.message, stack: error.stack});

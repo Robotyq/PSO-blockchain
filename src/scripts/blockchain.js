@@ -1,6 +1,5 @@
 import ControllerContract from '../contracts/Controller.js';
 import ParticleContract from '../contracts/Particle.js';
-import Particle from '../contracts/Particle.js';
 
 export const initializeController = async (web3) => {
     const networkId = await web3.eth.net.getId();
@@ -204,16 +203,16 @@ export const iterateParticle = async (web3, account, particleAddress, value, cal
     }
 };
 
-export const deployParticle = async (web3, account, controller, targetFunctionAddress, initialPosition, initialSpeed) => {
+export const deployParticle = async (web3, account, controller, initialPosition, initialSpeed) => {
     const position = [initialPosition.x, initialPosition.y];
     const speed = [initialSpeed.vx, initialSpeed.vy];
     // Get the contract instance for Particle
-    const ParticleContract = new web3.eth.Contract(Particle.abi);
+    const newParticleContract = new web3.eth.Contract(ParticleContract.abi);
 
     // Deploy a new Particle contract
-    const newParticleInstance = await ParticleContract.deploy({
-        data: Particle.bytecode,
-        arguments: [controller.options.address, targetFunctionAddress, position, speed]
+    const newParticleInstance = await newParticleContract.deploy({
+        data: ParticleContract.bytecode,
+        arguments: [controller.options.address, position, speed]
     }).send({from: account});
 
     // Get the address of the newly deployed Particle contract

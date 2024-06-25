@@ -118,7 +118,6 @@ export default function Home() {
                     account={account}
                     controller={controller}
                     onParticleDeployed={handleParticleDeployed}
-                    targetFunction={targetFunction}
                 /></div>
             {error && (
                 <div className={styles.error}>
