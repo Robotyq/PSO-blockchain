@@ -4,9 +4,9 @@ import styles from '../page.module.css';
 // import iterationControl from "@/src/components/IterationControl";
 
 export const functionNames = {
-    'd66': 'Rastrigin',
-    'e23': 'Rosenbrock',
-    '0fd': 'Sphere Function'
+    '262': 'Rastrigin',
+    '413': 'Rosenbrock',
+    '9c5': 'Sphere Function'
 };
 
 const TargetFunctionSelector = ({web3, account, controller, afterChange}) => {
