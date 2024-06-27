@@ -16,9 +16,9 @@ contract Particle {
 
     event NewLocalMin(address particle, int[dimension + 1] newVal);
 
-    constructor(address _controllerAddress, address _TargetContractAddress, int[dimension] memory initialPos, int[dimension] memory initialVelocity) payable {
+    constructor(address _controllerAddress, int[dimension] memory initialPos, int[dimension] memory initialVelocity) payable {
         controller = IController(_controllerAddress);
-        targetFunction = IFunction(_TargetContractAddress);
+        targetFunction = IFunction(controller.targetFunctionAddress());
         position = initialPos;
         speed = initialVelocity;
         for (uint i = 0; i < dimension; i++) {
@@ -102,4 +102,6 @@ interface IController {
     function setBestPoint(int[3] memory newVar) external;
 
     function addParticle(address particleAddress) external;
+
+    function targetFunctionAddress() external view returns (address);
 }

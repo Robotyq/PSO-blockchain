@@ -30,8 +30,8 @@ contract Controller {
 
     function iterateTimes(uint16 times) public {
         for(uint16 i = 0; i < times; i++) {
-            for (uint i = 0; i < particles.length; i++) {
-                particles[i].iterate();
+            for (uint j = 0; j < particles.length; j++) {
+                particles[j].iterate();
             }
         }
     }
