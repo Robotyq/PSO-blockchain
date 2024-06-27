@@ -15,6 +15,7 @@ contract Particle {
     address private _owner;
 
     event NewLocalMin(address particle, int[dimension + 1] newVal);
+    event Moved(address particle, int newValue);
 
     constructor(address _controllerAddress, int[dimension] memory initialPos, int[dimension] memory initialVelocity) payable {
         controller = IController(_controllerAddress);
@@ -42,6 +43,7 @@ contract Particle {
         int[dimension + 1] memory globalBest = controller.getBestPoint();
         advance(cognitiveFactor, socialFactor, 33, globalBest);
         currentValue = targetFunction.compute(position);
+        emit Moved(msg.sender, currentValue);
         if (currentValue < localBest[dimension]) {
             for (uint i = 0; i < dimension; i++) {
                 localBest[i] = position[i];
