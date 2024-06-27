@@ -12,7 +12,8 @@ const ParticlesList = ({particles1, account}) => {
         position: [Number(p.position[0]), Number(p.position[1])],
         currentValue: Number(p.position[2]),
         localBest: [Number(p.localBest[0]), Number(p.localBest[1]), Number(p.localBest[2])],
-        owner: p.owner
+        owner: p.owner,
+        speed: p.speed
     }));
 
     return (

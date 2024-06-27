@@ -53,7 +53,11 @@ const ParticlesChart = ({particles, account}) => {
                         const datasetIndex = context.datasetIndex;
                         const particle = particles[datasetIndex];
                         const name = particle.name.slice(0, 4) + '...' + particle.name.slice(-3)
-                        return `${name}: (${particle.position[0]}, ${particle.position[1]}) => ${particle.currentValue}`;
+                        return [
+                            `${name}: (${particle.position[0]}, ${particle.position[1]}) => ${particle.currentValue}`,
+                            `Local Best: (${particle.localBest[0]}, ${particle.localBest[1]}) => ${particle.localBest[2]}`,
+                            `Speed: (${particle.speed[0]}, ${particle.speed[1]})`
+                        ];
                     },
                 },
             },
