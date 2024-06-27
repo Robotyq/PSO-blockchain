@@ -2,73 +2,89 @@ import React, {useEffect, useState} from 'react';
 import {Bar} from 'react-chartjs-2';
 import 'chart.js/auto';
 import styles from '../page.module.css';
-import {fetchGlobalMin} from '@/scripts/blockchain';
+import {fetchEventsData} from '@/scripts/blockchain';
 
-const ComboChart = ({controller, particles, currentBlock}) => {
+const ComboChart = ({controller, currentBlock, web3}) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [],
     });
-
+    const [events, setEvents] = useState([]);
     const [globalMin, setGlobalMin] = useState(null);
-    const [oldCurrentBlock, setOldCurrentBlock] = useState(null);
 
-    const fetchMin = async () => {
-        if (controller) {
+    const fetchEvents = async () => {
+        if (controller && currentBlock !== null) {
             try {
-                const min = await fetchGlobalMin(controller);
-                setGlobalMin(min);
+                const eventsData = await fetchEventsData(web3, controller, currentBlock);
+                setEvents(eventsData);
             } catch (error) {
-                console.error('Error fetching global minimum:', error);
+                console.error('Error fetching events:', error);
             }
         }
     };
 
     useEffect(() => {
         if (controller) {
-            fetchMin();
+            fetchEvents();
         }
     }, [controller, currentBlock]);
 
     useEffect(() => {
-        if (currentBlock !== oldCurrentBlock) {
-            setOldCurrentBlock(currentBlock)
-            if (particles && particles.length > 0 && globalMin && currentBlock) {
-                const labels = [...chartData.labels, `Block ${currentBlock}`];
+        if (events.length > 0) {
+            const labels = [];
+            const newDatasets = [];
+            let lastGlobalMin = globalMin;
 
-                const newDatasets = particles.map((particle, index) => {
-                    const existingDataset = chartData.datasets.find(dataset => dataset.label === `Particle ${index + 1}`);
-                    return {
-                        type: 'bar',
-                        label: `Particle ${index + 1}`,
-                        data: existingDataset ? [...existingDataset.data, Number(particle.position[2])] : [Number(particle.position[2])],
-                        backgroundColor: existingDataset ? existingDataset.backgroundColor : `rgba(${15 + index * 120}, 192, 192, 0.5)`,
-                        borderColor: existingDataset ? existingDataset.borderColor : `rgba(${15 + index * 120}, 192, 192, 1)`,
-                        borderWidth: 5,
-                    };
-                });
+            events.forEach(event => {
+                if (event.event === 'Moved') {
+                    labels.push(`Block ${event.blockNumber}`);
+                    const particleData = event.returnValues.newValue.map(val => Number(val));
+                    const existingDataset = newDatasets.find(dataset => dataset.label === `Particle ${event.returnValues.particle}`);
+                    if (existingDataset) {
+                        existingDataset.data.push(particleData[2]);
+                    } else {
+                        newDatasets.push({
+                            type: 'bar',
+                            label: `Particle ${event.returnValues.particle}`,
+                            data: [particleData[2]],
+                            backgroundColor: `rgba(${15 + newDatasets.length * 120}, 192, 192, 0.5)`,
+                            borderColor: `rgba(${15 + newDatasets.length * 120}, 192, 192, 1)`,
+                            borderWidth: 5,
+                        });
+                    }
+                } else if (event.event === 'NewBestGlobal') {
+                    lastGlobalMin = event.returnValues.newVar.map(val => Number(val));
+                    if (lastGlobalMin[2] > 10000000000000) {
+                        lastGlobalMin = lastGlobalMin.map(val => val / 1000000000000000000);
+                    }
+                } else if (event.event === 'TargetFunctionUpdated') {
+                    // Reset chart data if TargetFunctionUpdated event occurs
+                    setChartData({
+                        labels: [],
+                        datasets: [],
+                    });
+                }
+            });
 
+            if (lastGlobalMin) {
                 const globalMinDataset = chartData.datasets.find(dataset => dataset.label === 'Global Minimum');
-                const globalMinData = globalMinDataset ? [...globalMinDataset.data, globalMin[2]] : [globalMin[2]];
-
-                const newChartData = {
-                    labels,
-                    datasets: [
-                        ...newDatasets,
-                        {
-                            type: 'line',
-                            label: 'Global Minimum',
-                            data: globalMinData,
-                            fill: false,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                        },
-                    ],
-                };
-                console.log("chartData: ", newChartData)
-                setChartData(newChartData);
+                const globalMinData = globalMinDataset ? [...globalMinDataset.data, lastGlobalMin[2]] : [lastGlobalMin[2]];
+                newDatasets.push({
+                    type: 'line',
+                    label: 'Global Minimum',
+                    data: globalMinData,
+                    fill: false,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                });
             }
+
+            setChartData({
+                labels,
+                datasets: newDatasets,
+            });
+            setGlobalMin(lastGlobalMin);
         }
-    }, [particles]);
+    }, [events]);
 
     const options = {
         scales: {
