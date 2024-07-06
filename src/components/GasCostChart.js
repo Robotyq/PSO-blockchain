@@ -56,13 +56,17 @@ const GasCostChart = ({web3, controller, account, currentBlock, particles}) => {
             const totalGasCosts = await Promise.all(totalGasCostsPromises);
             const myGasCosts = await Promise.all(myGasCostsPromises);
 
+            // Convert gas costs to milliETH
+            const totalGasCostsInMilliEth = totalGasCosts.map(gas => gas * 5 / 1e6);
+            const myGasCostsInMilliEth = myGasCosts.map(gas => gas * 5 / 1e6);
+            console.log("myGasCost: ", myGasCosts);
             setChartData({
                 labels: blocks.map(block => `Block ${block}`),
                 datasets: [
                     {
                         type: 'line',
                         label: 'Total Gas Cost',
-                        data: totalGasCosts,
+                        data: totalGasCostsInMilliEth,
                         borderColor: 'rgba(54, 162, 235, 1)',
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         fill: false,
@@ -70,7 +74,7 @@ const GasCostChart = ({web3, controller, account, currentBlock, particles}) => {
                     {
                         type: 'bar',
                         label: 'My particles\'s Gas Cost',
-                        data: myGasCosts,
+                        data: myGasCostsInMilliEth,
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 1,
@@ -86,6 +90,10 @@ const GasCostChart = ({web3, controller, account, currentBlock, particles}) => {
         scales: {
             y: {
                 beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Gas Used (milliETH)',
+                },
             },
         },
     };
