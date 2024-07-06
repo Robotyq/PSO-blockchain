@@ -11,11 +11,13 @@ contract SphereFunction is IFunction {
     }
 
     function compute(int[dimension] calldata positions) external view override returns (int) {
-        int x = positions[0];
-        x-=factor;
-        int y = positions[1];
-        y-=factor;
-        return factor * x * x + y * y;
+        int sum = 0;
+        for(uint i=0; i<dimension;i++){
+            int termen = positions[i];
+            termen-=factor;
+            sum+=termen*termen;
+        }
+        return  sum;
     }
 
     function getFactor() external view override returns (int) {

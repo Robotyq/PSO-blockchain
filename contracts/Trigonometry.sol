@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// This library was implemented by Matt Solomon and made public here: https://github.com/mds1/solidity-trigonometry
 pragma solidity ^0.8.0;
 
 /**

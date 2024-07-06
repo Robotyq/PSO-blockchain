@@ -43,7 +43,7 @@ contract Particle {
         int[dimension + 1] memory globalBest = controller.getBestPoint();
         advance(cognitiveFactor, socialFactor, 33, globalBest);
         currentValue = targetFunction.compute(position);
-        emit Moved(msg.sender, currentValue);
+        emit Moved(address(this), currentValue);
         if (currentValue < localBest[dimension]) {
             for (uint i = 0; i < dimension; i++) {
                 localBest[i] = position[i];
