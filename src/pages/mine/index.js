@@ -11,8 +11,6 @@ import styles from '../../page.module.css';
 import ComboChart from '../../components/ComboChart';
 
 import DeployParticleForm from '../../components/DeployParticleForm';
-import TargetFunctionDetails from "@/components/TarghetFunctionDetails";
-import GasCostChart from '../../components/GasCostChart';
 import IterationsComboChart from "@/components/MyIterationsChart";
 
 export default function Home() {
@@ -135,13 +133,13 @@ export default function Home() {
                                 currentBlock={currentBlock}/>
                     <IterationsComboChart web3={web3} controller={controller} account={account}
                                           currentBlock={currentBlock} particles={userParticles}/>
-                    <GasCostChart web3={web3} controller={controller} account={account}
-                                  currentBlock={currentBlock} particles={userParticles}/>
+                    {/*<GasCostChart web3={web3} controller={controller} account={account}*/}
+                    {/*              currentBlock={currentBlock} particles={userParticles}/>*/}
 
                 </div>
                 <div className={styles.detailsContainer}>
                     <GlobalMin controller={controller} blockNumber={currentBlock}/>
-                    <TargetFunctionDetails targetFunction={targetFunction}/>
+                    {/*<TargetFunctionDetails targetFunction={targetFunction}/>*/}
                 </div>
             </div>
         </main>

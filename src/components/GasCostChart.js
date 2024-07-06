@@ -41,20 +41,18 @@ const GasCostChart = ({web3, controller, account, currentBlock, particles}) => {
             const blocks = [...new Set(movedEvents.map(event => event.blockNumber))];
             blocks.sort((a, b) => Number(a) - Number(b));
 
-            const totalGasCostsPromises = blocks.map(async block => {
-                const eventsInBlock = movedEvents.filter(event => event.blockNumber === block);
-                const gasCosts = await Promise.all(eventsInBlock.map(event => getGasCost(event.transactionHash)));
-                return gasCosts.reduce((acc, gas) => acc + Number(gas), 0);
-            });
+            const calculateGasCosts = async (blocks, events, filterFunction) => {
+                const blockGasCostsPromises = blocks.map(async block => {
+                    const eventsInBlock = events.filter(event => filterFunction(event, block));
+                    const uniqueTransactionHashes = [...new Set(eventsInBlock.map(event => event.transactionHash))];
+                    const gasCosts = await Promise.all(uniqueTransactionHashes.map(transactionHash => getGasCost(transactionHash)));
+                    return gasCosts.reduce((acc, gas) => acc + Number(gas), 0);
+                });
+                return await Promise.all(blockGasCostsPromises);
+            };
 
-            const myGasCostsPromises = blocks.map(async block => {
-                const eventsInBlock = movedEvents.filter(event => isMyParticleAndFromBlock(event, block));
-                const gasCosts = await Promise.all(eventsInBlock.map(event => getGasCost(event.transactionHash)));
-                return gasCosts.reduce((acc, gas) => acc + Number(gas), 0);
-            });
-
-            const totalGasCosts = await Promise.all(totalGasCostsPromises);
-            const myGasCosts = await Promise.all(myGasCostsPromises);
+            const totalGasCosts = await calculateGasCosts(blocks, movedEvents, (event, block) => event.blockNumber === block);
+            const myGasCosts = await calculateGasCosts(blocks, movedEvents, isMyParticleAndFromBlock);
 
             // Convert gas costs to milliETH
             const totalGasCostsInMilliEth = totalGasCosts.map(gas => gas * 5 / 1e6);
