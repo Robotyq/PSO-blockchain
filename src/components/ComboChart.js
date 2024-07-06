@@ -4,7 +4,7 @@ import 'chart.js/auto';
 import styles from '../page.module.css';
 import {fetchEventsData} from '@/scripts/blockchain';
 
-const ComboChart = ({controller, currentBlock, web3}) => {
+const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [],
@@ -31,52 +31,84 @@ const ComboChart = ({controller, currentBlock, web3}) => {
 
     useEffect(() => {
         if (events.length > 0) {
-            const labels = [];
-            const newDatasets = [];
+            let labels = [];
+            let newDatasets = [];
             let lastGlobalMin = globalMin;
-
+            let globalMinSet = [];
             events.forEach(event => {
                 if (event.event === 'Moved') {
+                    let isMine = false;
+                    for (let i = 0; i < particles.length; i++) {
+                        if (particles[i].address === event.particle) {
+                            isMine = true;
+                            break;
+                        }
+                    }
+                    if (!isMine) {
+                        return;
+                    }
+                    // console.log('Moved event:', event)
                     labels.push(`Block ${event.blockNumber}`);
-                    const particleData = event.returnValues.newValue.map(val => Number(val));
-                    const existingDataset = newDatasets.find(dataset => dataset.label === `Particle ${event.returnValues.particle}`);
+                    // console.log("pushed block number: ", event.blockNumber)
+                    const particleData = Number(event.newValue);
+                    const existingDataset = newDatasets.find(dataset => dataset.label === `Particle ${event.particle}`);
                     if (existingDataset) {
-                        existingDataset.data.push(particleData[2]);
+                        existingDataset.data.push(particleData);
                     } else {
                         newDatasets.push({
                             type: 'bar',
-                            label: `Particle ${event.returnValues.particle}`,
-                            data: [particleData[2]],
+                            label: `Particle ${event.particle}`,
+                            data: [particleData],
                             backgroundColor: `rgba(${15 + newDatasets.length * 120}, 192, 192, 0.5)`,
                             borderColor: `rgba(${15 + newDatasets.length * 120}, 192, 192, 1)`,
                             borderWidth: 5,
                         });
                     }
                 } else if (event.event === 'NewBestGlobal') {
-                    lastGlobalMin = event.returnValues.newVar.map(val => Number(val));
+                    console.log('NewBestGlobal event:', event)
+                    lastGlobalMin = event.newValue.map(val => Number(val));
                     if (lastGlobalMin[2] > 10000000000000) {
                         lastGlobalMin = lastGlobalMin.map(val => val / 1000000000000000000);
                     }
                 } else if (event.event === 'TargetFunctionUpdated') {
+                    console.log('TargetFunctionUpdated event:', event)
                     // Reset chart data if TargetFunctionUpdated event occurs
+                    labels = [];
+                    newDatasets = [];
+                    lastGlobalMin = null;
+                    globalMinSet = [];
                     setChartData({
                         labels: [],
                         datasets: [],
                     });
                 }
+                if (labels.length > globalMinSet.length + 1 && lastGlobalMin) {
+                    // const globalMinDataset = chartData.datasets.find(dataset => dataset.label === 'Global Minimum');
+                    // const globalMinData = globalMinDataset ? [...globalMinDataset.data, lastGlobalMin[2]] : [lastGlobalMin[2]];
+                    globalMinSet.push(lastGlobalMin[2]);
+
+                }
+            });
+            globalMinSet.push(lastGlobalMin[2]);
+            newDatasets.push({
+                type: 'line',
+                label: 'Global Minimum',
+                data: globalMinSet,
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
             });
 
-            if (lastGlobalMin) {
-                const globalMinDataset = chartData.datasets.find(dataset => dataset.label === 'Global Minimum');
-                const globalMinData = globalMinDataset ? [...globalMinDataset.data, lastGlobalMin[2]] : [lastGlobalMin[2]];
-                newDatasets.push({
-                    type: 'line',
-                    label: 'Global Minimum',
-                    data: globalMinData,
-                    fill: false,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                });
-            }
+            // if (lastGlobalMin) {
+            //     const globalMinDataset = chartData.datasets.find(dataset => dataset.label === 'Global Minimum');
+            //     const globalMinData = globalMinDataset ? [...globalMinDataset.data, lastGlobalMin[2]] : [lastGlobalMin[2]];
+            //     newDatasets.push({
+            //         type: 'line',
+            //         label: 'Global Minimum',
+            //         data: globalMinData,
+            //         fill: false,
+            //         borderColor: 'rgba(255, 99, 132, 1)',
+            //     });
+            // }
 
             setChartData({
                 labels,

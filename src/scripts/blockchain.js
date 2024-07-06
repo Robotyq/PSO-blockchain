@@ -67,23 +67,27 @@ export const fetchEventsData = async (web3, controller, currentBlock) => {
                     event: 'ParticleAdded',
                     blockNumber: event.blockNumber,
                     particle: event.returnValues.particle,
+                    logIndex: event.logIndex,
                 };
             case 'NewBestGlobal':
                 return {
                     event: 'NewBestGlobal',
                     blockNumber: event.blockNumber,
                     particle: event.returnValues.particle,
-                    newValue: event.returnValues.newVar
+                    newValue: event.returnValues.newVar,
+                    logIndex: event.logIndex,
                 };
             case 'TargetFunctionUpdated':
                 return {
                     event: 'TargetFunctionUpdated',
                     blockNumber: event.blockNumber,
+                    logIndex: event.logIndex,
                     targetFunctionAddress: event.returnValues.newTargetFunction
                 };
             default:
                 return {
                     event: 'UnknownEvent',
+                    logIndex: event.logIndex,
                     blockNumber: event.blockNumber,
                     data: event
                 };
@@ -106,24 +110,40 @@ export const fetchEventsData = async (web3, controller, currentBlock) => {
         // console.log('Fetched events for particle', particleAddress, events);
     }
 
-    return [...formattedGlobalVarEvents, ...particleEvents.map(event => {
+    const allEvents = [...formattedGlobalVarEvents, ...particleEvents.map(event => {
             switch (event.event) {
                 case 'NewLocalMin':
                     return {
                         event: 'New Local Min',
                         blockNumber: event.blockNumber,
+                        logIndex: event.logIndex,
                         particle: event.returnValues.particle,
                         newPos: event.returnValues.newVal
+                    };
+                case 'Moved':
+                    return {
+                        event: 'Moved',
+                        blockNumber: event.blockNumber,
+                        logIndex: event.logIndex,
+                        particle: event.returnValues.particle,
+                        newValue: event.returnValues.newValue
                     };
                 default:
                     return {
                         event: 'UnknownEvent',
+                        logIndex: event.logIndex,
                         blockNumber: event.blockNumber,
                         data: event
                     };
             }
         }
     )];
+    allEvents.sort((a, b) => {
+        const aEventIndex = Number(a.blockNumber) * 1000 + Number(a.logIndex);
+        const bEventIndex = Number(b.blockNumber) * 1000 + Number(b.logIndex);
+        return aEventIndex - bEventIndex;
+    });
+    return allEvents;
 }
 
 export const iterate = async (account, controller, value, callback) => {
@@ -172,6 +192,7 @@ export const fetchGlobalMin = async (controller) => {
     const min = [];
     for (let i = 0; i < 3; i++) {
         const pos = await controller.methods.bestPoint(i).call();
+        console.log('pos:', pos)
         let number = Number(pos);
         if (number > 10000000000)
             number /= 1000000000000000000;
