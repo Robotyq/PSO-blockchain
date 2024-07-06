@@ -52,10 +52,7 @@ export const fetchParticlesData = async (web3, controller) => {
     );
 };
 
-export const fetchEventsData = async (web3, controller, currentBlock) => {
-    const fromBlock = Math.max(currentBlock - 5, 0);
-    // console.log('Current block number:', currentBlock)
-    // console.log('Fetching events of ', controller, 'from block', fromBlock, 'to latest')
+export const fetchEventsData = async (web3, controller, fromBlock) => {
     const controllerEvents = await controller.getPastEvents('allEvents', {
         fromBlock,
         toBlock: 'latest',

@@ -15,7 +15,7 @@ const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
     const fetchEvents = async () => {
         if (controller && currentBlock !== null) {
             try {
-                const eventsData = await fetchEventsData(web3, controller, currentBlock);
+                const eventsData = await fetchEventsData(web3, controller, 0);
                 setEvents(eventsData);
             } catch (error) {
                 console.error('Error fetching events:', error);
@@ -65,7 +65,7 @@ const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
                         });
                     }
                 } else if (event.event === 'NewBestGlobal') {
-                    console.log('NewBestGlobal event:', event)
+                    // console.log('NewBestGlobal event:', event)
                     lastGlobalMin = event.newValue.map(val => Number(val));
                     if (lastGlobalMin[2] > 10000000000000) {
                         lastGlobalMin = lastGlobalMin.map(val => val / 1000000000000000000);
@@ -97,19 +97,6 @@ const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
                 fill: false,
                 borderColor: 'rgba(255, 99, 132, 1)',
             });
-
-            // if (lastGlobalMin) {
-            //     const globalMinDataset = chartData.datasets.find(dataset => dataset.label === 'Global Minimum');
-            //     const globalMinData = globalMinDataset ? [...globalMinDataset.data, lastGlobalMin[2]] : [lastGlobalMin[2]];
-            //     newDatasets.push({
-            //         type: 'line',
-            //         label: 'Global Minimum',
-            //         data: globalMinData,
-            //         fill: false,
-            //         borderColor: 'rgba(255, 99, 132, 1)',
-            //     });
-            // }
-
             setChartData({
                 labels,
                 datasets: newDatasets,

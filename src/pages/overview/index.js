@@ -94,7 +94,8 @@ export default function Home() {
     const fetchEvents = async () => {
         if (controller) {
             try {
-                const eventsData = await fetchEventsData(web3, controller, currentBlock);
+                const fromBlock = Math.max(currentBlock - 5, 0);
+                const eventsData = await fetchEventsData(web3, controller, fromBlock);
                 setEvents(eventsData);
                 setError(null); // Clear any previous errors
                 if (eventsData.length === 0) {

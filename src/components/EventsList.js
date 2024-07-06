@@ -37,6 +37,15 @@ const EventItem = ({event}) => {
                     block: {Number(event.blockNumber)}<br/>
                 </div>
             );
+        case 'Moved':
+            return (
+                <div className={styles.eventItem}>
+                    <strong>{event.event}</strong>
+                    : {event.particle}<br/>
+                    new value: {Number(event.newValue)}<br/>
+                    block: {Number(event.blockNumber)}<br/>
+                </div>
+            );
         default:
             return (
                 <div className={styles.eventItem}>

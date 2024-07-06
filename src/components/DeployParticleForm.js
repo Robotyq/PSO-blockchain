@@ -11,7 +11,7 @@ const DeployParticleForm = ({web3, account, controller, onParticleDeployed}) => 
 
     useEffect(() => {
         setInitialPosition({x: getRandomValue(-500, 500), y: getRandomValue(-500, 500)});
-        setInitialSpeed({vx: getRandomValue(-50, 50), vy: getRandomValue(-50, 50)});
+        // setInitialSpeed({vx: getRandomValue(-50, 50), vy: getRandomValue(-50, 50)});
     }, []);
 
     const handleInputChange = (e) => {
