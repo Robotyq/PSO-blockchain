@@ -47,9 +47,7 @@ const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
                     if (!isMine) {
                         return;
                     }
-                    // console.log('Moved event:', event)
                     labels.push(`Block ${event.blockNumber}`);
-                    // console.log("pushed block number: ", event.blockNumber)
                     const particleData = Number(event.newValue);
                     const existingDataset = newDatasets.find(dataset => dataset.label === `Particle ${event.particle}`);
                     if (existingDataset) {
@@ -65,14 +63,11 @@ const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
                         });
                     }
                 } else if (event.event === 'NewBestGlobal') {
-                    // console.log('NewBestGlobal event:', event)
                     lastGlobalMin = event.newValue.map(val => Number(val));
                     if (lastGlobalMin[2] > 10000000000000) {
                         lastGlobalMin = lastGlobalMin.map(val => val / 1000000000000000000);
                     }
                 } else if (event.event === 'TargetFunctionUpdated') {
-                    console.log('TargetFunctionUpdated event:', event)
-                    // Reset chart data if TargetFunctionUpdated event occurs
                     labels = [];
                     newDatasets = [];
                     lastGlobalMin = null;
@@ -83,13 +78,11 @@ const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
                     });
                 }
                 if (labels.length > globalMinSet.length + 1 && lastGlobalMin) {
-                    // const globalMinDataset = chartData.datasets.find(dataset => dataset.label === 'Global Minimum');
-                    // const globalMinData = globalMinDataset ? [...globalMinDataset.data, lastGlobalMin[2]] : [lastGlobalMin[2]];
                     globalMinSet.push(lastGlobalMin[2]);
-
                 }
             });
-            globalMinSet.push(lastGlobalMin[2]);
+            if (lastGlobalMin && globalMinSet.length === 0)
+                globalMinSet.push(lastGlobalMin[2]);
             newDatasets.push({
                 type: 'line',
                 label: 'Global Minimum',
@@ -108,6 +101,7 @@ const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
     const options = {
         scales: {
             y: {
+                type: 'logarithmic',
                 beginAtZero: true,
             },
         },

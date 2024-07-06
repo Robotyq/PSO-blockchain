@@ -147,7 +147,10 @@ export const fetchEventsData = async (web3, controller, fromBlock) => {
 export const iterate = async (account, controller, value, callback) => {
     try {
         console.log('Iterating with value:', value, "from account:", account);
-        const send = controller.methods.iterateTimes(value).send({from: account});
+        const send = controller.methods.iterateTimes(value).send({
+            from: account,
+            // gasLimit: 10000000000
+        });
         send.then((receipt) => {
             console.log('Transaction receipt:', receipt);
             callback();
@@ -214,7 +217,10 @@ export const iterateParticle = async (web3, account, particleAddress, value, cal
     const particleInstance = new web3.eth.Contract(ParticleContract.abi, particleAddress);
     try {
         console.log('Iterating particle with value:', value, "from account:", account);
-        const send = particleInstance.methods.iterate(value).send({from: account});
+        const send = particleInstance.methods.iterate(value).send({
+            from: account,
+            // gasLimit: 10000000000
+        });
         send.then((receipt) => {
             console.log('Transaction receipt:', receipt)
             callback();
