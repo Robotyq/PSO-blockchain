@@ -17,22 +17,18 @@ const MovedEventsChart = ({web3, controller, account, currentBlock, particles}) 
     }, [controller, currentBlock, particles]);
 
     const fetchEvents = async () => {
-        const cache = new Map();
-
-        const isMyParticleAndFromBlock = (event, block) => {
-            return event.blockNumber === block && particles.some(particle => particle.address === event.particle);
-        };
-
-        const getGasCost = async (transactionHash) => {
-            if (cache.has(transactionHash)) {
-                return cache.get(transactionHash);
-            } else {
-                const receipt = await web3.eth.getTransactionReceipt(transactionHash);
-                const gasUsed = receipt.gasUsed;
-                cache.set(transactionHash, gasUsed);
-                return gasUsed;
+        function isMyParticleAndFromBlock(event, block) {
+            if (event.blockNumber !== block)
+                return false;
+            let isMine = false;
+            for (let i = 0; i < particles.length; i++) {
+                if (particles[i].address === event.particle) {
+                    isMine = true;
+                    break;
+                }
             }
-        };
+            return isMine;
+        }
 
         try {
             const events = await fetchEventsData(web3, controller, 0);
@@ -41,36 +37,30 @@ const MovedEventsChart = ({web3, controller, account, currentBlock, particles}) 
             const blocks = [...new Set(movedEvents.map(event => event.blockNumber))];
             blocks.sort((a, b) => Number(a) - Number(b));
 
-            const totalGasCostsPromises = blocks.map(async block => {
-                const eventsInBlock = movedEvents.filter(event => event.blockNumber === block);
-                const gasCosts = await Promise.all(eventsInBlock.map(event => getGasCost(event.transactionHash)));
-                return gasCosts.reduce((acc, gas) => acc + Number(gas), 0);
-            });
+            const totalMovedEvents = blocks.map(block =>
+                movedEvents.filter(event => event.blockNumber === block).length
+            );
 
-            const myGasCostsPromises = blocks.map(async block => {
-                const eventsInBlock = movedEvents.filter(event => isMyParticleAndFromBlock(event, block));
-                const gasCosts = await Promise.all(eventsInBlock.map(event => getGasCost(event.transactionHash)));
-                return gasCosts.reduce((acc, gas) => acc + Number(gas), 0);
-            });
-
-            const totalGasCosts = await Promise.all(totalGasCostsPromises);
-            const myGasCosts = await Promise.all(myGasCostsPromises);
+            const myMovedEvents = blocks.map(block =>
+                movedEvents.filter(event => isMyParticleAndFromBlock(event, block)).length
+            );
+            console.log("myMovedEvents: ", myMovedEvents)
 
             setChartData({
                 labels: blocks.map(block => `Block ${block}`),
                 datasets: [
                     {
                         type: 'line',
-                        label: 'Total Gas Cost',
-                        data: totalGasCosts,
+                        label: 'Total Iterations',
+                        data: totalMovedEvents,
                         borderColor: 'rgba(54, 162, 235, 1)',
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         fill: false,
                     },
                     {
                         type: 'bar',
-                        label: 'My particles\'s Gas Cost',
-                        data: myGasCosts,
+                        label: 'My particles\'s Iterations',
+                        data: myMovedEvents,
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 1,

@@ -12,8 +12,8 @@ import ComboChart from '../../components/ComboChart';
 
 import DeployParticleForm from '../../components/DeployParticleForm';
 import TargetFunctionDetails from "@/components/TarghetFunctionDetails";
-import MovedEventsChart from '../../components/MovedEventsChart';
-import GasCostComboCHart from "@/components/GasCostComboCHart";
+import GasCostChart from '../../components/GasCostChart';
+import IterationsComboChart from "@/components/MyIterationsChart";
 
 export default function Home() {
     const {web3, account} = useWeb3();
@@ -133,10 +133,11 @@ export default function Home() {
 
                     <ComboChart web3={web3} account={account} controller={controller} particles={userParticles}
                                 currentBlock={currentBlock}/>
-                    <MovedEventsChart web3={web3} controller={controller} account={account}
-                                      currentBlock={currentBlock} particles={userParticles}/>
-                    <GasCostComboCHart web3={web3} controller={controller} account={account}
-                                      currentBlock={currentBlock} particles={userParticles}/>
+                    <IterationsComboChart web3={web3} controller={controller} account={account}
+                                          currentBlock={currentBlock} particles={userParticles}/>
+                    <GasCostChart web3={web3} controller={controller} account={account}
+                                  currentBlock={currentBlock} particles={userParticles}/>
+
                 </div>
                 <div className={styles.detailsContainer}>
                     <GlobalMin controller={controller} blockNumber={currentBlock}/>
