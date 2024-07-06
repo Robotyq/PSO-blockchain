@@ -123,7 +123,8 @@ export const fetchEventsData = async (web3, controller, fromBlock) => {
                         blockNumber: event.blockNumber,
                         logIndex: event.logIndex,
                         particle: event.returnValues.particle,
-                        newValue: event.returnValues.newValue
+                        newValue: event.returnValues.newValue,
+                        transactionHash: event.transactionHash
                     };
                 default:
                     return {

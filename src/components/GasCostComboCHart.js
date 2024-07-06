@@ -11,7 +11,7 @@ const MovedEventsChart = ({web3, controller, account, currentBlock, particles}) 
     });
 
     useEffect(() => {
-        if (controller && currentBlock && particles.length > 0) {
+        if (controller && currentBlock) {
             fetchEvents();
         }
     }, [controller, currentBlock, particles]);
@@ -37,39 +37,30 @@ const MovedEventsChart = ({web3, controller, account, currentBlock, particles}) 
             const blocks = [...new Set(movedEvents.map(event => event.blockNumber))];
             blocks.sort((a, b) => Number(a) - Number(b));
 
-            const totalGasCosts = await Promise.all(blocks.map(async block => {
-                const eventsInBlock = movedEvents.filter(event => event.blockNumber === block);
-                const gasCosts = await Promise.all(eventsInBlock.map(async event => {
-                    const receipt = await web3.eth.getTransactionReceipt(event.transactionHash);
-                    return receipt.gasUsed;
-                }));
-                return gasCosts.reduce((acc, gas) => acc + Number(gas), 0);
-            }));
+            const totalMovedEvents = blocks.map(block =>
+                movedEvents.filter(event => event.blockNumber === block).length
+            );
 
-            const myGasCosts = await Promise.all(blocks.map(async block => {
-                const eventsInBlock = movedEvents.filter(event => isMyParticleAndFromBlock(event, block));
-                const gasCosts = await Promise.all(eventsInBlock.map(async event => {
-                    const receipt = await web3.eth.getTransactionReceipt(event.transactionHash);
-                    return receipt.gasUsed;
-                }));
-                return gasCosts.reduce((acc, gas) => acc + Number(gas), 0);
-            }));
+            const myMovedEvents = blocks.map(block =>
+                movedEvents.filter(event => isMyParticleAndFromBlock(event, block)).length
+            );
+            console.log("myMovedEvents: ", myMovedEvents)
 
             setChartData({
                 labels: blocks.map(block => `Block ${block}`),
                 datasets: [
                     {
                         type: 'line',
-                        label: 'Total Gas Cost',
-                        data: totalGasCosts,
+                        label: 'Total Iterations',
+                        data: totalMovedEvents,
                         borderColor: 'rgba(54, 162, 235, 1)',
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         fill: false,
                     },
                     {
                         type: 'bar',
-                        label: 'My particles\'s Gas Cost',
-                        data: myGasCosts,
+                        label: 'My particles\'s Iterations',
+                        data: myMovedEvents,
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 1,
