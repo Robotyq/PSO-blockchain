@@ -217,7 +217,7 @@ export const iterateParticle = async (web3, account, particleAddress, value, cal
     const particleInstance = new web3.eth.Contract(ParticleContract.abi, particleAddress);
     try {
         console.log('Iterating particle with value:', value, "from account:", account);
-        const send = particleInstance.methods.iterate(value).send({
+        const send = particleInstance.methods.iterateTimes(value).send({
             from: account,
             // gasLimit: 10000000000
         });

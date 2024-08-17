@@ -8,7 +8,6 @@ import {
     initializeController,
     iterate
 } from '@/scripts/blockchain';
-import AccountInfo from '../../components/AccountInfo';
 import ControllerInfo from '../../components/ControllerInfo';
 import ParticlesList from '../../components/ParticlesList';
 import IterationControl from '../../components/IterationControl';
@@ -123,7 +122,7 @@ export default function Home() {
     return (
         <main className={styles.main}>
             <h1>Blockchain Particle Swarm Tracker</h1>
-            <AccountInfo account={account} web3={web3}/>
+            {/*<AccountInfo account={account} web3={web3}/>*/}
             <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}
                             targetFunction={targetFunction}/>
             <div className={styles.center}>

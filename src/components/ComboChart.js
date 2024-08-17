@@ -81,7 +81,7 @@ const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
                     globalMinSet.push(lastGlobalMin[2]);
                 }
             });
-            if (lastGlobalMin && globalMinSet.length === 0)
+            if (lastGlobalMin && lastGlobalMin.length !== 0)
                 globalMinSet.push(lastGlobalMin[2]);
             newDatasets.push({
                 type: 'line',
