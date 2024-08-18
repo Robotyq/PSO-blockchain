@@ -80,7 +80,7 @@ export default function Home() {
                 controller={controller}
                 onParticleDeployed={fetchUserParticles}
                 targetFunction={targetFunction}
-            /> {/* Move DeployParticleForm to the end */}
+            />
         </main>
     );
 }

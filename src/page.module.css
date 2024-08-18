@@ -192,4 +192,17 @@
     width: 350px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     color: white;
+    background-color: #333;
+    cursor: pointer; /* Make cursor pointer to indicate it's clickable */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-13px); /* Slightly lift the card */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Deepen the shadow on hover */
+}
+
+.card:active {
+    transform: translateY(-2px); /* Slightly lower the card on click */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Adjust shadow on click */
 }

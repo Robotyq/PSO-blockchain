@@ -1,9 +1,16 @@
 import React from 'react';
+import {useRouter} from 'next/router';
 import styles from '../page.module.css';
 
 const shortenAddress = (address) => `${address.slice(0, 4)}...${address.slice(-4)}`;
 
 const UserParticles = ({particles, controllersColors}) => {
+    const router = useRouter();
+
+    const handleCardClick = (particleAddress) => {
+        router.push(`/particle/${particleAddress}`);
+    };
+
     return (
         <div>
             <h3>All my Particles</h3>
@@ -14,7 +21,12 @@ const UserParticles = ({particles, controllersColors}) => {
                 {particles.map((particle, index) => {
                     const controllerColor = controllersColors[particle.controller] || `hsl(${Math.random() * 360}, 100%, 75%)`;
                     return (
-                        <div key={index} className={styles.card} style={{backgroundColor: controllerColor}}>
+                        <div
+                            key={index}
+                            className={styles.card}
+                            style={{backgroundColor: controllerColor}}
+                            onClick={() => handleCardClick(particle.address)}
+                        >
                             <p><strong>Particle Address:</strong> {shortenAddress(particle.address)}</p>
                             <p><strong>Controller:</strong> {shortenAddress(particle.controller)}</p>
                             <p><strong>Target Function:</strong> {shortenAddress(particle.targetFunction)}</p>
@@ -25,7 +37,6 @@ const UserParticles = ({particles, controllersColors}) => {
                 })}
             </div>
         </div>
-
     );
 };
 
