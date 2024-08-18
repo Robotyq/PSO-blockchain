@@ -7,8 +7,11 @@ export const shortenAddress = (address) => `${address.slice(0, 4)}...${address.s
 const UserParticles = ({particles, controllersColors}) => {
     const router = useRouter();
 
-    const handleCardClick = (particleAddress) => {
-        router.push(`/particle/${particleAddress}`);
+    const handleCardClick = (particle) => {
+        router.push({
+            pathname: `/particle/${particle.address}`,
+            query: {particle: JSON.stringify(particle)}, // Pass particle data as a query parameter
+        }, undefined, {shallow: true});
     };
 
     return (
@@ -25,7 +28,8 @@ const UserParticles = ({particles, controllersColors}) => {
                             key={index}
                             className={styles.card}
                             style={{backgroundColor: controllerColor}}
-                            onClick={() => handleCardClick(particle.address)}
+                            onClick={() => handleCardClick(particle)}
+                            // onClick={() => handleClick(particle)}
                         >
                             <p><strong>Particle Address:</strong> {shortenAddress(particle.address)}</p>
                             <p><strong>Controller:</strong> {shortenAddress(particle.controller)}</p>

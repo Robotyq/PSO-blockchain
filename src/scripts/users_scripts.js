@@ -108,4 +108,8 @@ export const fetchAllControllerDetails = async (web3, fromBlock = 0) => {
     return controllers;
 };
 
+export const initializeControllerFromAddress = async (web3, adr) => {
+    return new web3.eth.Contract(ControllerContract.abi, adr);
+}
+
 

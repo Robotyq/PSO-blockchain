@@ -5,12 +5,15 @@ import styles from '../page.module.css';
 
 ChartJS.register(Tooltip, PointElement, LinearScale, CategoryScale);
 
-const ParticlesChart = ({particles, account}) => {
+const ParticlesChart = ({particles, account, selectedParticle}) => {
     const data = {
         datasets: particles.map((particle) => {
             let backgroundColor
             if (account) {
                 backgroundColor = particle.owner === account ? 'rgb(5,61,248)' : 'rgba(75, 192, 192, 1)';
+                if (selectedParticle && selectedParticle.address === particle.name) {
+                    backgroundColor = 'rgb(255, 0, 0)';
+                }
             } else {
                 // console.log("particle",particle)
                 const localBestElement = Number(particle.localBest[2]);
