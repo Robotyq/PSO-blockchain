@@ -178,3 +178,18 @@
 /*    margin: 0;*/
 /*    padding: 0;*/
 /*}*/
+
+.cardsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+
+.card {
+    border-radius: 8px;
+    padding: 16px;
+    width: 350px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: white;
+}

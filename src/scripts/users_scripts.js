@@ -1,30 +1,34 @@
 import ParticleContract from '../contracts/Particle.js';
 
-// Function to fetch all particles owned by the user by listening to ParticleAdded events
-export const fetchUserParticlesByEvents = async (web3, account, fromBlock = 0) => {
+export const fetchUserParticlesByEvents = async (web3, account) => {
+    const eventSignature = web3.utils.sha3('ParticleAdded(address,address,address)');
+    console.log("Event Signature:", eventSignature);
+    // Fetch logs for the ParticleAdded event
     const particleEvents = await web3.eth.getPastLogs({
-        fromBlock,
+        fromBlock: 0,
         toBlock: 'latest',
-        topics: [web3.utils.sha3('ParticleAdded(address,address,address)')],
+        topics: [eventSignature],
     });
-
+    console.log("particleEvents: ", particleEvents)
     const particles = [];
 
     for (const event of particleEvents) {
-        const {particleAddress, controllerAddress} = web3.eth.abi.decodeLog(
+        const decodedLog = web3.eth.abi.decodeLog(
             [
                 {type: 'address', name: 'particle'},
-                {type: 'address', name: 'particleAddress'},
+                {type: 'address', name: 'particleOwner'},
                 {type: 'address', name: 'controllerAddress'},
             ],
             event.data,
             event.topics.slice(1)
         );
 
-        const particleInstance = new web3.eth.Contract(ParticleContract.abi, particleAddress);
-        const owner = await particleInstance.methods.getOwner().call();
+        const {particle, particleOwner, controllerAddress} = decodedLog;
 
-        if (owner.toLowerCase() === account.toLowerCase()) {
+        // Only proceed if the particleOwner matches the current account
+        if (particleOwner.toLowerCase() === account.toLowerCase()) {
+            const particleInstance = new web3.eth.Contract(ParticleContract.abi, particle);
+
             const position = await Promise.all([
                 particleInstance.methods.position(0).call(),
                 particleInstance.methods.position(1).call(),
@@ -37,12 +41,14 @@ export const fetchUserParticlesByEvents = async (web3, account, fromBlock = 0) =
                 particleInstance.methods.localBest(2).call(),
             ]);
 
+            const targetFunction = await particleInstance.methods.targetFunction().call();
             particles.push({
-                address: particleAddress,
+                address: particle,
                 position: position.map(Number),
                 localBest: localBest.map(Number),
-                owner,
+                owner: particleOwner,
                 controller: controllerAddress,
+                targetFunction: targetFunction,
             });
         }
     }

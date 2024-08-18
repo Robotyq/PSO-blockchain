@@ -1,18 +1,19 @@
 "use client";
 import {useEffect, useState} from 'react';
 import {useWeb3} from '@/components/Web3Provider';
-import {fetchParticlesData, getTargetFunction, initializeController, iterateParticle} from '@/scripts/blockchain';
 import AccountInfo from '../../components/AccountInfo';
-import ControllerInfo from '../../components/ControllerInfo';
-import ParticlesList from '../../components/ParticlesList';
-import IterationControl from '../../components/IterationControl';
-import GlobalMin from '../../components/GlobalMin';
+import UserParticles from '../../components/UserParticles'; // Add this import
+import DeployParticleForm from '../../components/DeployParticleForm'; // Add this import
+//import ControllerInfo from '../../components/ControllerInfo';
+//import IterationControl from '../../components/IterationControl';
+//import GlobalMin from '../../components/GlobalMin';
+//import ComboChart from '../../components/ComboChart';
+//import ParticlesList from '../../components/ParticlesList';
+//import EventsList from '../../components/EventsList';
+//import TargetFunctionDetails from '../../components/TarghetFunctionDetails';
+//import TargetFunctionSelector from '../../components/TargetFunctionSelector';
 import styles from '../../page.module.css';
-import ComboChart from '../../components/ComboChart';
-
-import DeployParticleForm from '../../components/DeployParticleForm';
-import IterationsComboChart from "@/components/MyIterationsChart";
-import GasCostChart from "@/components/GasCostChart";
+import {fetchUserParticlesByEvents} from "@/scripts/users_scripts";
 
 export default function Home() {
     const {web3, account} = useWeb3();
@@ -20,129 +21,66 @@ export default function Home() {
     const [currentBlock, setCurrentBlock] = useState(null);
     const [particles, setParticles] = useState([]);
     const [userParticles, setUserParticles] = useState([]);
+    const [controllersColors, setControllersColors] = useState({});
     const [targetFunction, setTargetFunction] = useState('');
     const [error, setError] = useState(null);
 
-    const initController = async () => {
-        try {
-            const controllerInstance = await initializeController(web3);
-            setController(controllerInstance);
-        } catch (error) {
-            setError({message: error.message, stack: error.stack});
-        }
-    };
+    // const initController = async () => {
+    //     try {
+    //         const controllerInstance = await initializeController(web3);
+    //         setController(controllerInstance);
+    //     } catch (error) {
+    //         setError({message: error.message, stack: error.stack});
+    //     }
+    // };
+    //
+    // useEffect(() => {
+    //     if (web3) {
+    //         initController();
+    //     }
+    // }, [web3]);
 
-    useEffect(() => {
-        if (web3) {
-            initController();
-        }
-    }, [web3]);
-
-    async function fetchTarghetFunction() {
-        try {
-            const targetFunctionAddress = await getTargetFunction(controller);
-            setTargetFunction(targetFunctionAddress);
-        } catch (error) {
-            setError({message: error.message, stack: error.stack});
-        }
-    }
-
-    useEffect(() => {
-        if (controller) {
-            fetchParticles();
-            fetchCurrentBlock();
-            fetchTarghetFunction();
-        }
-    }, [controller]);
-
-    useEffect(() => {
-        if (controller) {
-            fetchParticles();
-            fetchTarghetFunction();
-        }
-    }, [currentBlock]);
-
-    const fetchCurrentBlock = async () => {
-        if (controller) {
-            const blockNumber = await web3.eth.getBlockNumber();
-            console.log("old block number", currentBlock);
-            const newBlockNumber = Number(blockNumber);
-            console.log("new block number", newBlockNumber);
-            setCurrentBlock(newBlockNumber);
-        }
-    };
-
-    const fetchParticles = async () => {
-        if (controller) {
+    const fetchUserParticles = async () => {
+        if (account) {
             try {
-                const particlesData = await fetchParticlesData(web3, controller);
-                setParticles(particlesData);
-                const userParticlesData = particlesData.filter(particle => particle.owner === account);
+                const userParticlesData = await fetchUserParticlesByEvents(web3, account);
                 setUserParticles(userParticlesData);
-                setError(null);
+                const uniqueControllers = [...new Set(userParticlesData.map(particle => particle.controller))];
+                const colors = {};
+                uniqueControllers.forEach((controller, index) => {
+                    colors[controller] = `hsl(${index * (360 / uniqueControllers.length)}, 100%, 30%)`; // Darker colors
+                });
+                setControllersColors(colors);
             } catch (error) {
                 setError({message: error.message, stack: error.stack});
             }
         }
     };
 
-    const handleIterate = async (value) => {
-        if (controller) {
-            try {
-                for (const particle of userParticles) {
-                    iterateParticle(web3, account, particle.address, value, () => {
-                        fetchCurrentBlock();
-                    });
-                }
-            } catch (error) {
-                setError({message: error.message, stack: error.stack});
-            }
+    useEffect(() => {
+        if (account) {
+            fetchUserParticles();
         }
-    };
-
-    const handleParticleDeployed = () => {
-        fetchParticles();
-        fetchCurrentBlock();
-    };
+    }, [account]);
 
     return (
         <main className={styles.main}>
             <h1>My Particles Tracker</h1>
             <AccountInfo account={account} web3={web3}/>
-            <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}
-                            targetFunction={targetFunction}/>
-            <div className={styles.center}>
-                <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
-                <IterationControl onIterate={handleIterate}/>
-                <DeployParticleForm
-                    web3={web3}
-                    account={account}
-                    controller={controller}
-                    onParticleDeployed={handleParticleDeployed}
-                /></div>
+            <UserParticles particles={userParticles} controllersColors={controllersColors}/> {/* Add this line */}
             {error && (
                 <div className={styles.error}>
                     <p>{error.message}</p>
                     <pre>{error.stack}</pre>
                 </div>
             )}
-            <div className={styles.flex_layout}>
-                <div className={styles.chartContainer}>
-                    <ParticlesList particles1={particles} account={account}/>
-
-                    <ComboChart web3={web3} account={account} controller={controller} particles={userParticles}
-                                currentBlock={currentBlock}/>
-                    <IterationsComboChart web3={web3} controller={controller} account={account}
-                                          currentBlock={currentBlock} particles={userParticles}/>
-                    <GasCostChart web3={web3} controller={controller} account={account}
-                                  currentBlock={currentBlock} particles={userParticles}/>
-
-                </div>
-                <div className={styles.detailsContainer}>
-                    <GlobalMin controller={controller} blockNumber={currentBlock}/>
-                    {/*<TargetFunctionDetails targetFunction={targetFunction}/>*/}
-                </div>
-            </div>
+            <DeployParticleForm
+                web3={web3}
+                account={account}
+                controller={controller}
+                onParticleDeployed={fetchUserParticles}
+                targetFunction={targetFunction}
+            /> {/* Move DeployParticleForm to the end */}
         </main>
     );
 }
