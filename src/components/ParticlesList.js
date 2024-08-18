@@ -2,7 +2,7 @@ import React from 'react';
 import ParticlesChart from './ParticlesChart';
 import styles from '../page.module.css';
 
-const ParticlesList = ({particles1, account, selectedParticle}) => {
+const ParticlesList = ({particles1, account, selectedParticle, controller}) => {
     if (!particles1) {
         return null;
     }
@@ -20,7 +20,8 @@ const ParticlesList = ({particles1, account, selectedParticle}) => {
         <div className={styles.particles}>
             <div className={styles.flex_layout}>
                 <h2>Particles</h2>
-                <ParticlesChart particles={particles} account={account} selectedParticle={selectedParticle}/>
+                <ParticlesChart particles={particles} account={account} selectedParticle={selectedParticle}
+                                controller={controller}/>
             </div>
             <p>All particles:</p>
             <ul className={styles.list}>

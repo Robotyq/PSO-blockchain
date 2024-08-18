@@ -4,7 +4,7 @@ import 'chart.js/auto';
 import styles from '../page.module.css';
 import {fetchEventsData} from '@/scripts/blockchain';
 
-const ComboChart = ({controller, currentBlock, web3, particles, account}) => {
+const ComboChart = ({controller, currentBlock = 0, web3, particles, account}) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [],

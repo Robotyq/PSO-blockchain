@@ -11,12 +11,13 @@ const MovedEventsChart = ({web3, controller, account, currentBlock, particles}) 
     });
 
     useEffect(() => {
-        if (controller && currentBlock && particles.length > 0) {
+        if (controller && particles.length > 0) {
             fetchEvents();
         }
     }, [controller, currentBlock, particles]);
 
     const fetchEvents = async () => {
+        console.log("fetchEvents...")
         function isMyParticleAndFromBlock(event, block) {
             if (event.blockNumber !== block)
                 return false;

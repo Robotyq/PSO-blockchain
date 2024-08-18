@@ -126,7 +126,8 @@ export default function ParticleDetails() {
                 )}
             </div>
             <div className={styles.chartContainer}>
-                <ParticlesList particles1={particles} account={account} selectedParticle={particle}/>
+                <ParticlesList particles1={particles} account={account} selectedParticle={particle}
+                               controller={controller}/>
             </div>
         </div>
     );
