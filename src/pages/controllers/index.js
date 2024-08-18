@@ -10,11 +10,13 @@ import styles from '../../page.module.css';
 export default function AdminControllerPage() {
     const {web3, account} = useWeb3();
     const [controllers, setControllers] = useState([]);
+    const [otherControllers, setOtherControllers] = useState([]);
     const [error, setError] = useState(null);
 
     const fetchControllers = async () => {
         try {
             const controllersData = await fetchAllControllerDetails(web3);
+            setOtherControllers(controllersData.filter(controller => controller.owner !== account));
             const ownedControllers = controllersData.filter(controller => controller.owner === account);
             setControllers(ownedControllers);
         } catch (error) {
@@ -31,7 +33,7 @@ export default function AdminControllerPage() {
     return (
         <main className={styles.main}>
             <h1>Admin Controllers</h1>
-            <AccountInfo account={account} web3={web3} role={'controller admin'}/>
+            <AccountInfo account={account} web3={web3} role={'controllers admin'}/>
             <ControllerCards controllers={controllers} owner={account}/>
             {error && (
                 <div className={styles.error}>
@@ -40,6 +42,10 @@ export default function AdminControllerPage() {
                 </div>
             )}
             <DeployControllerForm web3={web3} account={account} onControllerDeployed={fetchControllers}/>
+            <br/>
+            <br/>
+            <br/>
+            <ControllerCards controllers={otherControllers} owner={'others'}/>
 
         </main>
     );

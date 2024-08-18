@@ -7,6 +7,7 @@ import {initializeControllerFromAddress} from "@/scripts/users_scripts";
 import {useWeb3} from '@/components/Web3Provider';
 import {fetchParticlesData} from "@/scripts/blockchain";
 import MyParticlesComboChart from "@/components/MyParticleComboChart";
+import ComboChart from "@/components/ComboChart";
 
 
 export default function ParticleStatistics() {
@@ -64,15 +65,20 @@ export default function ParticleStatistics() {
             </div>
             <br/>
             <br/>
+            <br/>
             <h3> Iterations and gas cost </h3>
             <div className={styles.chartContainer}>
                 <MyParticlesComboChart controller={controllerInstance} particles={particles} web3={web3}
                                        account={account} selectedParticle={parsedParticle.name}/>
             </div>
-            {/*<br/>*/}
-            {/*<div className={styles.chartContainer}>*/}
-            {/*    <ComboChart controller={controllerInstance} particles={particles} web3={web3}/>*/}
-            {/*</div>*/}
+            <br/>
+            <br/>
+            <br/>
+            <h3> Evolution of particle's value and the Global Min</h3>
+            <div className={styles.chartContainer}>
+                <ComboChart controller={controllerInstance} particles={particles} web3={web3}
+                            selectedParticle={parsedParticle.name}/>
+            </div>
         </div>
     );
 }

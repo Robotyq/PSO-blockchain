@@ -2,16 +2,22 @@ import React from 'react';
 import styles from '../page.module.css';
 import {shortenAddress} from './UserParticles';
 
-const ControllerCards = ({controllers, selectedController, onSelectController, controllersColors, owner}) => {
+const ControllerCards = ({
+                             controllers,
+                             selectedController,
+                             onSelectController,
+                             controllersColors,
+                             owner,
+                             displayWarning
+                         }) => {
         return (
             <div>
-                {!owner && <div>
-                    <h3>All Controllers</h3>
-                    <h4>You must select one in order to deploy a new particle on it</h4></div>
-                }
-                {
-                    owner && <h3>My Controllers (deployed by me)</h3>
-                }
+                {!owner && <h3>All Controllers</h3>}
+                {owner && owner !== 'others' && <h3>My Controllers (deployed by me)</h3>}
+                {owner && owner === 'others' && <h3>All other Controllers</h3>}
+                {displayWarning && <h4>You must select one in order to deploy a new particle on it</h4>}
+
+                {controllers.length === 0 && <h4>No controllers found</h4>}
                 <div className={styles.controllerCardsContainer}>
                     {controllers.map((controller, index) => {
                         console.log("controller: ", controllers)

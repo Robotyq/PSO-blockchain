@@ -70,6 +70,7 @@ export default function Home() {
                 selectedController={selectedController}
                 onSelectController={setSelectedController}
                 controllersColors={controllersColors}
+                displayWarning={!selectedController}
             />
             {error && (
                 <div className={styles.error}>

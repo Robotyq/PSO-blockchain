@@ -1,3 +1,3 @@
-import Home from './overview/index.js'
+import Home from './mine/index.js'
 
 export default Home;

@@ -4,7 +4,7 @@ import 'chart.js/auto';
 import styles from '../page.module.css';
 import {fetchEventsData} from '@/scripts/blockchain';
 
-const ComboChart = ({controller, currentBlock = 0, web3, particles, account}) => {
+const ComboChart = ({controller, currentBlock = 0, web3, particles, account, selectedParticle}) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [],
@@ -36,17 +36,18 @@ const ComboChart = ({controller, currentBlock = 0, web3, particles, account}) =>
             let lastGlobalMin = globalMin;
             let globalMinSet = [];
             events.forEach(event => {
-                if (event.event === 'Moved') {
-                    let isMine = false;
-                    for (let i = 0; i < particles.length; i++) {
-                        if (particles[i].address === event.particle) {
-                            isMine = true;
-                            break;
-                        }
-                    }
-                    if (!isMine) {
-                        return;
-                    }
+                if (event.event === 'Moved' && event.particle === selectedParticle) {
+                    // let isMine = false;
+                    // isMine= event.particle === selectedParticle;
+                    // for (let i = 0; i < particles.length; i++) {
+                    //     if (particles[i].address === event.particle) {
+                    //         isMine = true;
+                    //         break;
+                    //     }
+                    // }
+                    // if (!isMine) {
+                    //     return;
+                    // }
                     labels.push(`Block ${event.blockNumber}`);
                     const particleData = Number(event.newValue);
                     const existingDataset = newDatasets.find(dataset => dataset.label === `Particle ${event.particle}`);
