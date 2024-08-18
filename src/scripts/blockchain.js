@@ -1,5 +1,6 @@
 import ControllerContract from '../contracts/Controller.js';
 import ParticleContract from '../contracts/Particle.js';
+import IFunction from "@/contracts/TargetFunction";
 
 export const initializeController = async (web3) => {
     const networkId = await web3.eth.net.getId();
@@ -261,8 +262,19 @@ export const deployParticle = async (web3, account, controller, initialPosition,
     console.log(`New Particle deployed at address: ${newParticleAddress}`);
 };
 
-export const getTargetFunction = async (controller) => {
-    return await controller.methods.targetFunctionAddress().call();
+export const getTargetFunction = async (web3, controller) => {
+    let functionAddress = await controller.methods.targetFunctionAddress().call();
+    const name = await getFunctionName(web3, functionAddress);
+    functionAddress = functionAddress.toString().toLowerCase();
+    const lastThree = functionAddress.slice(-3);
+    const firstThree = functionAddress.slice(0, 4);
+    const targetFunctionName = (name || "Unnamed F") + " " + firstThree + "..." + lastThree;
+    console.log('Fetched target function:', targetFunctionName, 'at address:', functionAddress)
+    return {
+        address: functionAddress,
+        name: name,
+        printName: targetFunctionName
+    };
 };
 
 export const deployController = async (web3, account, targetFunctionAddress) => {
@@ -285,3 +297,13 @@ export const deployController = async (web3, account, targetFunctionAddress) => 
         throw error;
     }
 };
+
+export const getFunctionName = async (web3, targetFunctionAddress) => {
+    try {
+        const contract = new web3.eth.Contract(IFunction.abi, targetFunctionAddress);
+        return await contract.methods.name().call();
+    } catch (error) {
+        console.error('Error fetching function name:', error);
+        return "Unnamed Function";
+    }
+}

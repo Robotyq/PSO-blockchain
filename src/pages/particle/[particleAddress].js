@@ -67,8 +67,8 @@ export default function ParticleDetails() {
 
     async function fetchTarghetFunction() {
         try {
-            const targetFunctionAddress = await getTargetFunction(controller);
-            setTargetFunction(targetFunctionAddress);
+            const targetFunctionAddress = await getTargetFunction(web3, controller);
+            setTargetFunction(targetFunctionAddress.printName);
         } catch (error) {
             setError({message: error.message, stack: error.stack});
         }
@@ -113,7 +113,7 @@ export default function ParticleDetails() {
             <p><strong>Local Min Position:</strong> [{particle.localBest.join(', ')}]</p>
             <p><strong>Target Function address:</strong> {particle.targetFunction}</p>
             <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}
-                            targetFunction={targetFunction}/>
+                            targetFunctionName={targetFunction}/>
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <IterationControl onIterate={handleIterate}/>
