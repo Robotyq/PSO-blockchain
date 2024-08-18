@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Line} from 'react-chartjs-2';
+import {Bar} from 'react-chartjs-2';
 import 'chart.js/auto';
 import styles from '../page.module.css';
 import {fetchEventsData} from '@/scripts/blockchain';
 
-const MovedEventsChart = ({web3, controller, account, currentBlock, particles}) => {
+const MovedEventsChart = ({web3, controller, account, currentBlock, particles, selectedParticle}) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [],
@@ -17,18 +17,13 @@ const MovedEventsChart = ({web3, controller, account, currentBlock, particles}) 
     }, [controller, currentBlock, particles]);
 
     const fetchEvents = async () => {
-        console.log("fetchEvents...")
         function isMyParticleAndFromBlock(event, block) {
             if (event.blockNumber !== block)
                 return false;
-            let isMine = false;
-            for (let i = 0; i < particles.length; i++) {
-                if (particles[i].address === event.particle) {
-                    isMine = true;
-                    break;
-                }
-            }
-            return isMine;
+            // console.log("event.particle: ", event.particle)
+            // console.log("selectedParticle: ", selectedParticle)
+            return event.particle === selectedParticle;
+            return particles.some(particle => particle.address === event.particle);
         }
 
         try {
@@ -45,27 +40,33 @@ const MovedEventsChart = ({web3, controller, account, currentBlock, particles}) 
             const myMovedEvents = blocks.map(block =>
                 movedEvents.filter(event => isMyParticleAndFromBlock(event, block)).length
             );
+
+            const remainingEvents = totalMovedEvents.map((total, index) => total - myMovedEvents[index]);
             console.log("myMovedEvents: ", myMovedEvents)
+            console.log("totalMovedEvents: ", totalMovedEvents)
+            console.log("remainingEvents: ", remainingEvents)
 
             setChartData({
                 labels: blocks.map(block => `Block ${block}`),
                 datasets: [
                     {
-                        type: 'line',
-                        label: 'Total Iterations',
-                        data: totalMovedEvents,
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        fill: false,
+                        type: 'bar',
+                        label: 'My Particles\' Iterations',
+                        data: myMovedEvents,
+                        backgroundColor: 'rgba(246,38,38,0.8)', // Bottom portion for individual particle iterations
+                        borderColor: 'rgb(239,9,9)',
+                        borderWidth: 1,
+                        stack: 'Stack 0',
                     },
                     {
                         type: 'bar',
-                        label: 'My particles\'s Iterations',
-                        data: myMovedEvents,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
+                        label: 'Other Iterations',
+                        data: remainingEvents,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)', // Upper portion for remaining iterations
+                        borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 1,
-                    }
+                        stack: 'Stack 0', // Stack on top of the individual particle iterations
+                    },
                 ]
             });
         } catch (error) {
@@ -78,16 +79,19 @@ const MovedEventsChart = ({web3, controller, account, currentBlock, particles}) 
             y: {
                 beginAtZero: true,
             },
+            x: {
+                stacked: true,
+            },
+            y: {
+                stacked: true,
+            },
         },
     };
 
     return (
         <div className={styles.chartContainer}>
             {chartData.labels.length > 0 && (
-                <>
-                    <Line data={chartData} options={options}/>
-                    {/*<Bar data={chartData} options={options} />*/}
-                </>
+                <Bar data={chartData} options={options}/>
             )}
         </div>
     );

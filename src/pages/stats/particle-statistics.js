@@ -1,12 +1,12 @@
 import {useRouter} from 'next/router';
 import {useEffect, useState} from 'react';
-import ComboChart from '@/components/ComboChart';
 import IterationsComboChart from "@/components/MyIterationsChart";
 
 import styles from '../../page.module.css';
 import {initializeControllerFromAddress} from "@/scripts/users_scripts";
 import {useWeb3} from '@/components/Web3Provider';
 import {fetchParticlesData} from "@/scripts/blockchain";
+import MyParticlesComboChart from "@/components/MyParticleComboChart";
 
 
 export default function ParticleStatistics() {
@@ -54,15 +54,25 @@ export default function ParticleStatistics() {
     return (
         <div className={styles.main}>
             <h1>Particle Statistics</h1>
+            <h3> for {parsedParticle.name}</h3>
+            <h4> owner {parsedParticle.owner}</h4>
             <br/>
             <h3> Iterations per block</h3>
             <div className={styles.chartContainer}>
-                <IterationsComboChart controller={controllerInstance} particles={particles} web3={web3}/>
+                <IterationsComboChart controller={controllerInstance} particles={particles} web3={web3}
+                                      selectedParticle={parsedParticle.name}/>
             </div>
             <br/>
+            <br/>
+            <h3> Iterations and gas cost </h3>
             <div className={styles.chartContainer}>
-                <ComboChart controller={controllerInstance} particles={particles} web3={web3}/>
+                <MyParticlesComboChart controller={controllerInstance} particles={particles} web3={web3}
+                                       account={account} selectedParticle={parsedParticle.name}/>
             </div>
+            {/*<br/>*/}
+            {/*<div className={styles.chartContainer}>*/}
+            {/*    <ComboChart controller={controllerInstance} particles={particles} web3={web3}/>*/}
+            {/*</div>*/}
         </div>
     );
 }
