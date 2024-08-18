@@ -170,11 +170,16 @@ export const fetchDeployedFunctions = async (web3) => {
     const events = await web3.eth.getPastLogs({
         fromBlock: 0,
         toBlock: 'latest',
-        topics: [web3.utils.sha3('FunctionContractDeployed(address)')]
+        topics: [web3.utils.sha3('FunctionContractDeployed(address,string)')]
     });
-    return events.map(event => ({
-        address: event.address
-    }));
+    console.log('Fetched events for deployed Functions:', events)
+    return events.map(event => {
+        const decodedData = web3.eth.abi.decodeParameters(['address', 'string'], event.data);
+        return {
+            address: event.address,
+            name: decodedData[1]
+        };
+    });
 };
 
 export const updateTargetFunction = async (account, controller, newTargetFunction) => {
@@ -258,4 +263,25 @@ export const deployParticle = async (web3, account, controller, initialPosition,
 
 export const getTargetFunction = async (controller) => {
     return await controller.methods.targetFunctionAddress().call();
+};
+
+export const deployController = async (web3, account, targetFunctionAddress) => {
+    try {
+        const newControllerContract = new web3.eth.Contract(ControllerContract.abi);
+
+        // Deploy a new Controller contract
+        const newControllerInstance = await newControllerContract.deploy({
+            data: ControllerContract.bytecode,
+            arguments: [targetFunctionAddress] // Pass the target function address to the constructor
+        }).send({from: account});
+        console.log('Deploying new Controller contract with target function:', targetFunctionAddress, 'from account:', account)
+        // Get the address of the newly deployed Controller contract
+        const newControllerAddress = newControllerInstance.options.address;
+
+        console.log(`New Controller deployed at address: ${newControllerAddress}`);
+        return newControllerAddress;
+    } catch (error) {
+        console.error('Error deploying controller:', error);
+        throw error;
+    }
 };

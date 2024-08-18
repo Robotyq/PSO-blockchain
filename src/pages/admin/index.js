@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import {useWeb3} from '@/components/Web3Provider';
 import AccountInfo from '../../components/AccountInfo';
 import ControllerCards from '@/components/ControllerCards';
+import DeployControllerForm from '../../components/DeployControllerForm';
 import {fetchAllControllerDetails} from "@/scripts/users_scripts";
 import styles from '../../page.module.css';
 
@@ -11,18 +12,17 @@ export default function AdminControllerPage() {
     const [controllers, setControllers] = useState([]);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchControllers = async () => {
-            try {
-                const controllersData = await fetchAllControllerDetails(web3);
-                // Filter controllers to only those owned by the current account
-                const ownedControllers = controllersData.filter(controller => controller.owner === account);
-                setControllers(ownedControllers);
-            } catch (error) {
-                setError({message: error.message, stack: error.stack});
-            }
-        };
+    const fetchControllers = async () => {
+        try {
+            const controllersData = await fetchAllControllerDetails(web3);
+            const ownedControllers = controllersData.filter(controller => controller.owner === account);
+            setControllers(ownedControllers);
+        } catch (error) {
+            setError({message: error.message, stack: error.stack});
+        }
+    };
 
+    useEffect(() => {
         if (account) {
             fetchControllers();
         }
@@ -39,6 +39,8 @@ export default function AdminControllerPage() {
                     <pre>{error.stack}</pre>
                 </div>
             )}
+            <DeployControllerForm web3={web3} account={account} onControllerDeployed={fetchControllers}/>
+
         </main>
     );
 }

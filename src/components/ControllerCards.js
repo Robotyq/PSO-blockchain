@@ -25,7 +25,7 @@ const ControllerCards = ({controllers, selectedController, onSelectController, c
                                 key={index}
                                 className={`${styles.controllerCard} ${isSelected ? styles.selectedCard : ''}`}
                                 style={{backgroundColor: cardColor}}
-                                onClick={() => onSelectController(controller.address)}
+                                onClick={() => onSelectController && onSelectController(controller.address)}
                             >
                                 <h3><strong>Function Name:</strong> {controller.functionName}</h3>
                                 <p><strong>Controller Address:</strong> {shortenAddress(controller.address)}</p>

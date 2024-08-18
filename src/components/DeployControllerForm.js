@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import styles from '../../page.module.css';
+import styles from '../page.module.css';
 import {deployController, fetchDeployedFunctions} from '@/scripts/blockchain';
 
 const DeployControllerForm = ({web3, account, onControllerDeployed}) => {
@@ -38,7 +38,11 @@ const DeployControllerForm = ({web3, account, onControllerDeployed}) => {
 
     return (
         <div className={styles.deployForm}>
-            <h2>Deploy New Controller</h2>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <h2>Deploy New Controller</h2><br/>
             <div>
                 <label>Select Target Function:</label>
                 <select value={selectedFunction} onChange={(e) => setSelectedFunction(e.target.value)}>
@@ -50,6 +54,7 @@ const DeployControllerForm = ({web3, account, onControllerDeployed}) => {
                     ))}
                 </select>
             </div>
+            <br/>
             <button className={styles.button_gas} onClick={handleDeploy}>
                 Deploy Controller
             </button>
