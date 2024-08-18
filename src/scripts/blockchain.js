@@ -241,12 +241,12 @@ export const deployParticle = async (web3, account, controller, initialPosition,
     const speed = [initialSpeed.vx, initialSpeed.vy];
     // Get the contract instance for Particle
     const newParticleContract = new web3.eth.Contract(ParticleContract.abi);
-
     // Deploy a new Particle contract
     const newParticleInstance = await newParticleContract.deploy({
         data: ParticleContract.bytecode,
-        arguments: [controller.options.address, position, speed]
+        arguments: [controller, position, speed]
     }).send({from: account});
+    console.log('Deploying new Particle contract with position:', position, 'speed:', speed, 'controller:', controller, 'from account:', account)
 
     // Get the address of the newly deployed Particle contract
     const newParticleAddress = newParticleInstance.options.address;

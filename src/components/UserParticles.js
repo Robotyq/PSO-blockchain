@@ -2,7 +2,7 @@ import React from 'react';
 import {useRouter} from 'next/router';
 import styles from '../page.module.css';
 
-const shortenAddress = (address) => `${address.slice(0, 4)}...${address.slice(-4)}`;
+export const shortenAddress = (address) => `${address.slice(0, 4)}...${address.slice(-4)}`;
 
 const UserParticles = ({particles, controllersColors}) => {
     const router = useRouter();

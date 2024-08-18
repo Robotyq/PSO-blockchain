@@ -179,14 +179,22 @@
 /*    padding: 0;*/
 /*}*/
 
-.cardsContainer {
+.cardsContainer, .controllerCardsContainer {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
     justify-content: center;
 }
 
-.card {
+.cardsContainer {
+    margin-top: 0; /* Reset margin if there's any difference */
+}
+
+.controllerCardsContainer {
+    margin-top: 24px;
+}
+
+.card, .controllerCard {
     border-radius: 8px;
     padding: 16px;
     width: 350px;
@@ -197,12 +205,16 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card:hover {
+.card:hover, .controllerCard:hover {
     transform: translateY(-13px); /* Slightly lift the card */
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Deepen the shadow on hover */
 }
 
-.card:active {
+.card:active, .controllerCard:active, .selectedCard {
     transform: translateY(-2px); /* Slightly lower the card on click */
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Adjust shadow on click */
+}
+
+.selectedCard {
+    border: 5px solid #021a69;
 }

@@ -1,63 +1,49 @@
-"use client";
 import {useEffect, useState} from 'react';
 import {useWeb3} from '@/components/Web3Provider';
 import AccountInfo from '../../components/AccountInfo';
-import UserParticles from '../../components/UserParticles'; // Add this import
-import DeployParticleForm from '../../components/DeployParticleForm'; // Add this import
-//import ControllerInfo from '../../components/ControllerInfo';
-//import IterationControl from '../../components/IterationControl';
-//import GlobalMin from '../../components/GlobalMin';
-//import ComboChart from '../../components/ComboChart';
-//import ParticlesList from '../../components/ParticlesList';
-//import EventsList from '../../components/EventsList';
-//import TargetFunctionDetails from '../../components/TarghetFunctionDetails';
-//import TargetFunctionSelector from '../../components/TargetFunctionSelector';
+import UserParticles from '../../components/UserParticles';
+// import ControllerCards from '../../components/ControllerCards';
+import DeployParticleForm from '../../components/DeployParticleForm';
+import {fetchAllControllerDetails, fetchUserParticlesByEvents} from "@/scripts/users_scripts"
 import styles from '../../page.module.css';
-import {fetchUserParticlesByEvents} from "@/scripts/users_scripts";
+import ControllerCards from "@/components/ControllerCards";
 
 export default function Home() {
     const {web3, account} = useWeb3();
-    const [controller, setController] = useState(null);
-    const [currentBlock, setCurrentBlock] = useState(null);
-    const [particles, setParticles] = useState([]);
     const [userParticles, setUserParticles] = useState([]);
+    const [controllers, setControllers] = useState([]);
+    const [selectedController, setSelectedController] = useState(null);
     const [controllersColors, setControllersColors] = useState({});
-    const [targetFunction, setTargetFunction] = useState('');
     const [error, setError] = useState(null);
 
-    // const initController = async () => {
-    //     try {
-    //         const controllerInstance = await initializeController(web3);
-    //         setController(controllerInstance);
-    //     } catch (error) {
-    //         setError({message: error.message, stack: error.stack});
-    //     }
-    // };
-    //
-    // useEffect(() => {
-    //     if (web3) {
-    //         initController();
-    //     }
-    // }, [web3]);
-
-    const fetchUserParticles = async () => {
-        if (account) {
+    useEffect(() => {
+        const fetchUserParticles = async () => {
             try {
-                const userParticlesData = await fetchUserParticlesByEvents(web3, account);
-                setUserParticles(userParticlesData);
-                const uniqueControllers = [...new Set(userParticlesData.map(particle => particle.controller))];
+                const particles = await fetchUserParticlesByEvents(web3, account);
+                setUserParticles(particles);
+
+                // Create a unique set of controllers
+                const uniqueControllers = [...new Set(particles.map(particle => particle.controller))];
+                const totalColors = uniqueControllers.length + 5; // 5 more colors
                 const colors = {};
-                uniqueControllers.forEach((controller, index) => {
-                    colors[controller] = `hsl(${index * (360 / uniqueControllers.length)}, 100%, 30%)`; // Darker colors
-                });
+                for (let i = 0; i < totalColors; i++) {
+                    const controller = uniqueControllers[i] || `extraColor${i - uniqueControllers.length}`;
+                    colors[controller] = `hsl(${i * (360 / totalColors)}, 100%, 30%)`;
+                }
                 setControllersColors(colors);
+
+                // Fetch details for each controller
+                const controllerDetailsPromises = fetchAllControllerDetails(web3);
+                console.log("controllerDetailsPromises: ", controllerDetailsPromises)
+                const controllersData = await Promise.all(await controllerDetailsPromises);
+                console.log("controllersData: ", controllersData)
+                setControllers(controllersData);
             } catch (error) {
                 setError({message: error.message, stack: error.stack});
+                console.log("Error: ", error)
             }
-        }
-    };
+        };
 
-    useEffect(() => {
         if (account) {
             fetchUserParticles();
         }
@@ -67,20 +53,30 @@ export default function Home() {
         <main className={styles.main}>
             <h1>My Particles Tracker</h1>
             <AccountInfo account={account} web3={web3}/>
-            <UserParticles particles={userParticles} controllersColors={controllersColors}/> {/* Add this line */}
+            <UserParticles particles={userParticles} controllersColors={controllersColors}/>
+            <br/>
+            <br/>
+            <br/>
+            <DeployParticleForm
+                web3={web3}
+                account={account}
+                controller={selectedController}  // Use selected controller
+                onParticleDeployed={() => {
+                    fetchUserParticlesByEvents(web3, account).then(setUserParticles);
+                }}
+            />
+            <ControllerCards
+                controllers={controllers}
+                selectedController={selectedController}
+                onSelectController={setSelectedController}
+                controllersColors={controllersColors}
+            />
             {error && (
                 <div className={styles.error}>
                     <p>{error.message}</p>
                     <pre>{error.stack}</pre>
                 </div>
             )}
-            <DeployParticleForm
-                web3={web3}
-                account={account}
-                controller={controller}
-                onParticleDeployed={fetchUserParticles}
-                targetFunction={targetFunction}
-            />
         </main>
     );
 }

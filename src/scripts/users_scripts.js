@@ -1,4 +1,6 @@
 import ParticleContract from '../contracts/Particle.js';
+import ControllerContract from '../contracts/Controller.js';
+import TargetFunctionContract from '../contracts/TargetFunction.js';
 
 export const fetchUserParticlesByEvents = async (web3, account) => {
     const eventSignature = web3.utils.sha3('ParticleAdded(address,address,address)');
@@ -55,3 +57,55 @@ export const fetchUserParticlesByEvents = async (web3, account) => {
 
     return particles;
 };
+
+
+export const fetchAllControllerDetails = async (web3, fromBlock = 0) => {
+    // Get the deployed network information
+    const networkId = await web3.eth.net.getId();
+    const deployedNetwork = ControllerContract.networks[networkId];
+    if (!deployedNetwork) {
+        throw new Error('Controller contract not deployed on this network');
+    }
+
+    // Fetch all past logs related to the Controller contract deployment
+    const controllerDeploymentEvents = await web3.eth.getPastLogs({
+        fromBlock,
+        toBlock: 'latest',
+        topics: [web3.utils.sha3('ControllerDeployed(address)')] // Correct event signature
+    });
+
+    const controllers = [];
+    console.log("controllerDeploymentEvents: ", controllerDeploymentEvents)
+
+    // Loop through each event to get the controller address and fetch its details
+    for (const event of controllerDeploymentEvents) {
+        const controllerAddress = web3.eth.abi.decodeParameter('address', event.data);
+        const controllerInstance = new web3.eth.Contract(ControllerContract.abi, controllerAddress);
+
+        const targetFunctionAddress = await controllerInstance.methods.targetFunctionAddress().call();
+        const targetFunctionInstance = new web3.eth.Contract(TargetFunctionContract.abi, targetFunctionAddress);
+
+        const functionName = await targetFunctionInstance.methods.name().call();
+        const globalMin = await Promise.all([
+            controllerInstance.methods.bestPoint(0).call(),
+            controllerInstance.methods.bestPoint(1).call(),
+            controllerInstance.methods.bestPoint(2).call(),
+        ]);
+
+        const particlesCount = await controllerInstance.methods.getParticlesCount().call();
+        const controllerOwner = await controllerInstance.methods.owner().call();
+
+        controllers.push({
+            address: controllerAddress,
+            targetFunctionAddress,
+            functionName,
+            particlesCount: Number(particlesCount),
+            globalMin: globalMin.map(Number),
+            owner: controllerOwner
+        });
+    }
+    console.log("controllers: ", controllers)
+    return controllers;
+};
+
+

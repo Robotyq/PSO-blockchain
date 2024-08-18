@@ -64,9 +64,15 @@ const DeployParticleForm = ({web3, account, controller, onParticleDeployed}) => 
                     value={initialSpeed.vy}
                     onChange={handleInputChange}
                 />
-                <button className={styles.button_gas} onClick={handleDeploy}>
+                <button
+                    className={styles.button_gas}
+                    onClick={handleDeploy}
+                    disabled={!controller}
+                    style={!controller ? {backgroundColor: 'gray'} : {}}
+                >
                     Deploy Particle
                 </button>
+
             </div>
             {deployError && (
                 <div className={styles.error}>
