@@ -254,9 +254,13 @@
 }
 
 
-/*.totalGasCard h4 {*/
-/*    margin: 0;*/
-/*    font-size: 16px;*/
-/*    font-weight: bold;*/
-/*}*/
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
 
+.warningMessage {
+    color: red;
+    margin-bottom: 10px;
+    font-size: 14px;
+}

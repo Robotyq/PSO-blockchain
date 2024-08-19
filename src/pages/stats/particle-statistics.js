@@ -69,7 +69,7 @@ export default function ParticleStatistics() {
             <h3> Iterations and gas cost </h3>
             <div className={styles.chartContainer}>
                 <MyParticlesComboChart controller={controllerInstance} particles={particles} web3={web3}
-                                       account={account} selectedParticle={parsedParticle.name}/>
+                                       account={account} selectedParticle={parsedParticle}/>
             </div>
             <br/>
             <br/>

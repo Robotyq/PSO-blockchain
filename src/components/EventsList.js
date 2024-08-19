@@ -46,6 +46,14 @@ const EventItem = ({event}) => {
                     block: {Number(event.blockNumber)}<br/>
                 </div>
             );
+        case 'ControllerDeployed':
+            return (
+                <div className={styles.eventItem}>
+                    <strong>{event.event}</strong>
+                    : {event.thisContractAddress}<br/>
+                    block: {Number(event.blockNumber)}<br/>
+                </div>
+            );
         default:
             return (
                 <div className={styles.eventItem}>

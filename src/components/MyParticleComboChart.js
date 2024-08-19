@@ -28,7 +28,7 @@ const MyParticlesComboChart = ({web3, controller, account, particles, selectedPa
 
         try {
             const events = await fetchEventsData(web3, controller, 0);
-            const movedEvents = events.filter(event => event.event === 'Moved' && event.particle === selectedParticle);
+            const movedEvents = events.filter(event => event.event === 'Moved' && event.particle === selectedParticle.name);
             const blocks = [...new Set(movedEvents.map(event => event.blockNumber))].sort((a, b) => Number(a) - Number(b));
 
             const myMovedEvents = await Promise.all(
@@ -44,6 +44,12 @@ const MyParticlesComboChart = ({web3, controller, account, particles, selectedPa
                     const gasCost = await eventsInBlock.reduce(async (accPromise, event) => {
                         const acc = await accPromise;
                         const transactionDetails = await getTransactionDetails(event.transactionHash);
+                        console.log('transactionDetails.from', transactionDetails.from)
+                        console.log('selectedParticle.owner', selectedParticle.owner)
+                        if (transactionDetails.from.toLowerCase() !== selectedParticle.owner.toLowerCase()) {
+                            console.log("ignoring, not owner")
+                            return acc;
+                        }
                         return acc + Number(transactionDetails.gasUsed);
                     }, Promise.resolve(0));
                     return gasCost;

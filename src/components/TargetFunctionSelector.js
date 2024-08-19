@@ -33,11 +33,20 @@ const TargetFunctionSelector = ({web3, account, controller, afterChange, owner})
         }
     };
 
+    const isOwner = account === owner;
+
     return (
-        <div className={styles.iterationControl}>
-            <select value={selectedFunction}
-                    onChange={(e) => setSelectedFunction(e.target.value)}
-                    className={styles.dropdown}
+        <div className={`${styles.iterationControl} ${!isOwner ? styles.disabled : ''}`}>
+            {!isOwner && (
+                <p className={styles.warningMessage}>
+                    Only the owner of this controller can change its target function
+                </p>
+            )}
+            <select
+                value={selectedFunction}
+                onChange={(e) => setSelectedFunction(e.target.value)}
+                className={styles.dropdown}
+                disabled={!isOwner}
             >
                 <option value="">Select Target Function</option>
                 {deployedFunctions.map((func) => (
@@ -46,7 +55,11 @@ const TargetFunctionSelector = ({web3, account, controller, afterChange, owner})
                     </option>
                 ))}
             </select>
-            <button className={styles.button_gas} onClick={handleUpdate}>
+            <button
+                className={styles.button_gas}
+                onClick={handleUpdate}
+                disabled={!isOwner}
+            >
                 Update Target Function
             </button>
         </div>

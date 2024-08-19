@@ -82,6 +82,13 @@ export const fetchEventsData = async (web3, controller, fromBlock) => {
                     logIndex: event.logIndex,
                     targetFunctionAddress: event.returnValues.newTargetFunction
                 };
+            case 'ControllerDeployed':
+                return {
+                    event: 'ControllerDeployed',
+                    blockNumber: event.blockNumber,
+                    logIndex: event.logIndex,
+                    thisContractAddress: event.returnValues.thisContractAddress
+                }
             default:
                 return {
                     event: 'UnknownEvent',

@@ -65,6 +65,9 @@ const ParticlesChart = ({particles, account, selectedParticle, controller}) => {
             },
         },
         onClick: (event, elements) => {
+            console.log('controller', controller)
+            console.log('controllerAddress', controller._address);
+
             if (elements.length > 0) {
                 const elementIndex = elements[0].datasetIndex;
                 const selectedParticle = particles[elementIndex];
@@ -75,7 +78,6 @@ const ParticlesChart = ({particles, account, selectedParticle, controller}) => {
                         controller: controller._address
                     },
                 });
-                console.log('controllerAddress', controller._address);
             }
         },
     };

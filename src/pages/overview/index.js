@@ -150,13 +150,19 @@ export default function Home() {
             )}
             <div className={styles.flex_layout}>
                 <div className={styles.chartContainer}>
-                    <ParticlesList particles1={particles}/>
+                    <ParticlesList particles1={particles} controller={controller}/>
                 </div>
                 <div className={styles.detailsContainer}>
                     <GlobalMin controller={controller} blockNumber={currentBlock}/>
                     <TargetFunctionDetails targetFunction={targetF}/>
                 </div>
             </div>
+            <br/>
+            <br/>
+            <h2>Rezultate</h2>
+
+
+
             <EventsList events={events}/>
         </main>
     );
