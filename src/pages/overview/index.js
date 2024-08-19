@@ -160,9 +160,13 @@ export default function Home() {
             </div>
             <br/>
             <br/>
-            <h2>Rezultate</h2>
+            <h2>Results</h2>
+            <br/>
+            <h4>Iterations per block</h4>
             <AllIterationsChart controller={controller} particles={particles} web3={web3}/>
-
+            <br/>
+            <br/>
+            <h4>Gas Cost</h4>
 
             <EventsList events={events}/>
         </main>
