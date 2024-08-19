@@ -13,6 +13,7 @@ import {useRouter} from 'next/router';
 import EventsList from '../../components/EventsList';
 import TargetFunctionSelector from '../../components/TargetFunctionSelector';
 import {initializeControllerFromAddress} from "@/scripts/users_scripts";
+import AllIterationsChart from "@/components/AllIterationsChart";
 
 export default function Home() {
     const {web3, account} = useWeb3();
@@ -160,7 +161,7 @@ export default function Home() {
             <br/>
             <br/>
             <h2>Rezultate</h2>
-
+            <AllIterationsChart controller={controller} particles={particles} web3={web3}/>
 
 
             <EventsList events={events}/>
