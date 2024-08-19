@@ -1,38 +1,37 @@
 "use client";
 import {useEffect, useState} from 'react';
 import {useWeb3} from '@/components/Web3Provider';
-import {
-    fetchEventsData,
-    fetchParticlesData,
-    getTargetFunction,
-    initializeController,
-    iterate
-} from '@/scripts/blockchain';
+import {fetchEventsData, fetchParticlesData, getTargetFunction, iterate} from '@/scripts/blockchain';
 import ControllerInfo from '../../components/ControllerInfo';
 import ParticlesList from '../../components/ParticlesList';
 import IterationControl from '../../components/IterationControl';
 import GlobalMin from '../../components/GlobalMin';
 import styles from '../../page.module.css';
 import TargetFunctionDetails from '../../components/TarghetFunctionDetails';
+import {useRouter} from 'next/router';
 
 import EventsList from '../../components/EventsList';
 import TargetFunctionSelector from '../../components/TargetFunctionSelector';
+import {initializeControllerFromAddress} from "@/scripts/users_scripts";
 
 export default function Home() {
     const {web3, account} = useWeb3();
     const [controller, setController] = useState(null);
+    const [owner, setOwner] = useState(null);
     const [currentBlock, setCurrentBlock] = useState(null);
     const [particles, setParticles] = useState([]);
     const [events, setEvents] = useState([]);
     const [error, setError] = useState(null);
-    const [targetFunction, setTargetFunction] = useState('');
+    const [targetF, setTargetF] = useState('');
+    const router = useRouter();
+    const {controllerAddress} = router.query;
 
     const initController = async () => {
         try {
-            console.log("initController...")
-            const controllerInstance = await initializeController(web3);
+            // console.log("initController...")
+            const controllerInstance = await initializeControllerFromAddress(web3, controllerAddress);
             setController(controllerInstance);
-            console.log("controller initialized")
+            console.log("controller initialized", controllerInstance)
         } catch (error) {
             setError({message: error.message, stack: error.stack});
         }
@@ -42,22 +41,26 @@ export default function Home() {
         if (web3) {
             initController();
         }
-    }, [web3]);
+    }, [web3, controllerAddress]);
 
     async function fetchTarghetFunction() {
         try {
-            const targetFunctionAddress = await getTargetFunction(controller);
-            setTargetFunction(targetFunctionAddress);
+            // console.log("fetchTarghetFunction for controller: ", controller)
+            const target = await getTargetFunction(web3, controller);
+            setTargetF(target);
+            // console.log("targetFunction: ", target)
         } catch (error) {
             setError({message: error.message, stack: error.stack});
         }
     }
+
 
     useEffect(() => {
         if (controller) {
             fetchParticles();
             fetchCurrentBlock();
             fetchTarghetFunction();
+            fetchOwner();
         }
     }, [controller]);
 
@@ -69,11 +72,16 @@ export default function Home() {
         }
     }, [currentBlock]);
 
+    async function fetchOwner() {
+        const owner = await controller.methods.owner().call()
+        setOwner(owner);
+    }
+
     const fetchCurrentBlock = async () => {
         if (controller) {
             const blockNumber = await web3.eth.getBlockNumber();
             setCurrentBlock(Number(blockNumber));
-            console.log("blockNumber: ", blockNumber)
+            // console.log("blockNumber: ", blockNumber)
         }
     };
 
@@ -82,7 +90,7 @@ export default function Home() {
             try {
                 const particlesData = await fetchParticlesData(web3, controller);
                 setParticles(particlesData);
-                console.log("particlesData: ", particlesData)
+                // console.log("particlesData: ", particlesData)
                 setError(null); // Clear any previous errors
             } catch (error) {
                 setError({message: error.message, stack: error.stack});
@@ -121,16 +129,18 @@ export default function Home() {
 
     return (
         <main className={styles.main}>
-            <h1>Blockchain Particle Swarm Tracker</h1>
+            <h1>Controller overview</h1>
+            <h3>Owner: {owner} {account === owner ? '(me)' : '(somone else)'}</h3>
+
             {/*<AccountInfo account={account} web3={web3}/>*/}
             <ControllerInfo controllerAddress={controller?.options.address} currentBlock={currentBlock}
-                            targetFunction={targetFunction}/>
+                            targetFunctionName={targetF.printName}/>
             <div className={styles.center}>
                 <button className={styles.button} onClick={fetchParticles}>Fetch Particles</button>
                 <button className={styles.button} onClick={fetchEvents}>Fetch Events</button>
                 <IterationControl onIterate={handleIterate}/>
                 <TargetFunctionSelector web3={web3} account={account} controller={controller}
-                                        afterChange={fetchCurrentBlock} initialFunc={targetFunction}/>
+                                        afterChange={fetchCurrentBlock} owner={owner}/>
             </div>
             {error && (
                 <div className={styles.error}>
@@ -144,7 +154,7 @@ export default function Home() {
                 </div>
                 <div className={styles.detailsContainer}>
                     <GlobalMin controller={controller} blockNumber={currentBlock}/>
-                    <TargetFunctionDetails targetFunction={targetFunction}/>
+                    <TargetFunctionDetails targetFunction={targetF}/>
                 </div>
             </div>
             <EventsList events={events}/>

@@ -153,7 +153,7 @@ export const iterate = async (account, controller, value, callback) => {
             // gasLimit: 10000000000
         });
         send.then((receipt) => {
-            console.log('Transaction receipt:', receipt);
+            // console.log('Transaction receipt:', receipt);
             callback();
         });
     } catch (error) {
@@ -173,7 +173,7 @@ export const fetchDeployedFunctions = async (web3) => {
         toBlock: 'latest',
         topics: [web3.utils.sha3('FunctionContractDeployed(address,string)')]
     });
-    console.log('Fetched events for deployed Functions:', events)
+    // console.log('Fetched events for deployed Functions:', events)
     return events.map(event => {
         const decodedData = web3.eth.abi.decodeParameters(['address', 'string'], event.data);
         return {
@@ -187,7 +187,7 @@ export const updateTargetFunction = async (account, controller, newTargetFunctio
     try {
         const send = controller.methods.updateTargetFunction(newTargetFunction).send({from: account});
         await send;
-        console.log('Target function updated successfully.');
+        // console.log('Target function updated successfully.');
     } catch (error) {
         console.error('Error updating target function:', error);
         throw error;
@@ -195,11 +195,11 @@ export const updateTargetFunction = async (account, controller, newTargetFunctio
 };
 
 export const fetchGlobalMin = async (controller) => {
-    console.log('Fetching global min from controller:', controller)
+    // console.log('Fetching global min from controller:', controller)
     const min = [];
     for (let i = 0; i < 3; i++) {
         const pos = await controller.methods.bestPoint(i).call();
-        console.log('pos:', pos)
+        // console.log('pos:', pos)
         let number = Number(pos);
         if (number > 10000000000)
             number /= 1000000000000000000;
@@ -228,7 +228,7 @@ export const iterateParticle = async (web3, account, particleAddress, value, cal
             // gasLimit: 10000000000
         });
         send.then((receipt) => {
-            console.log('Transaction receipt:', receipt)
+            // console.log('Transaction receipt:', receipt)
             callback();
         });
         send.catch((error) => {
@@ -264,6 +264,7 @@ export const deployParticle = async (web3, account, controller, initialPosition,
 
 export const getTargetFunction = async (web3, controller) => {
     let functionAddress = await controller.methods.targetFunctionAddress().call();
+    console.log('Fetched target function:', functionAddress)
     const name = await getFunctionName(web3, functionAddress);
     functionAddress = functionAddress.toString().toLowerCase();
     const lastThree = functionAddress.slice(-3);
@@ -286,11 +287,11 @@ export const deployController = async (web3, account, targetFunctionAddress) => 
             data: ControllerContract.bytecode,
             arguments: [targetFunctionAddress] // Pass the target function address to the constructor
         }).send({from: account});
-        console.log('Deploying new Controller contract with target function:', targetFunctionAddress, 'from account:', account)
+        // console.log('Deploying new Controller contract with target function:', targetFunctionAddress, 'from account:', account)
         // Get the address of the newly deployed Controller contract
         const newControllerAddress = newControllerInstance.options.address;
 
-        console.log(`New Controller deployed at address: ${newControllerAddress}`);
+        // console.log(`New Controller deployed at address: ${newControllerAddress}`);
         return newControllerAddress;
     } catch (error) {
         console.error('Error deploying controller:', error);

@@ -34,9 +34,9 @@ export default function Home() {
 
                 // Fetch details for each controller
                 const controllerDetailsPromises = fetchAllControllerDetails(web3);
-                console.log("controllerDetailsPromises: ", controllerDetailsPromises)
+                // console.log("controllerDetailsPromises: ", controllerDetailsPromises)
                 const controllersData = await Promise.all(await controllerDetailsPromises);
-                console.log("controllersData: ", controllersData)
+                // console.log("controllersData: ", controllersData)
                 setControllers(controllersData);
             } catch (error) {
                 setError({message: error.message, stack: error.stack});

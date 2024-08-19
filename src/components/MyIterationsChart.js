@@ -42,9 +42,9 @@ const MovedEventsChart = ({web3, controller, account, currentBlock, particles, s
             );
 
             const remainingEvents = totalMovedEvents.map((total, index) => total - myMovedEvents[index]);
-            console.log("myMovedEvents: ", myMovedEvents)
-            console.log("totalMovedEvents: ", totalMovedEvents)
-            console.log("remainingEvents: ", remainingEvents)
+            // console.log("myMovedEvents: ", myMovedEvents)
+            // console.log("totalMovedEvents: ", totalMovedEvents)
+            // console.log("remainingEvents: ", remainingEvents)
 
             setChartData({
                 labels: blocks.map(block => `Block ${block}`),

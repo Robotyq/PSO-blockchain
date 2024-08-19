@@ -6,7 +6,7 @@ const ParticlesList = ({particles1, account, selectedParticle, controller}) => {
     if (!particles1) {
         return null;
     }
-    console.log("particles1", particles1)
+    // console.log("particles1", particles1)
     const particles = particles1.map(p => ({
         name: p.address,
         position: [Number(p.position[0]), Number(p.position[1])],

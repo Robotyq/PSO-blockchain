@@ -52,8 +52,8 @@ const GasCostChart = ({web3, controller, account, currentBlock, particles}) => {
 
             const isMyParticleAndFromBlock = (event, block) => {
                 const transactionDetails = cache.get(event.transactionHash);
-                console.log("transactionDetails: ", transactionDetails)
-                console.log("account: ", account)
+                // console.log("transactionDetails: ", transactionDetails)
+                // console.log("account: ", account)
                 return event.blockNumber === block
                     && particles.some(particle => particle.address === event.particle)
                     && transactionDetails.from.toLowerCase() === account.toLowerCase();

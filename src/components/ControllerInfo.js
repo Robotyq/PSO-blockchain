@@ -1,10 +1,5 @@
 import React from 'react';
 import styles from '../page.module.css';
-import {functionNames} from "@/components/TargetFunctionSelector";
-
-function getFunctionName(lastThree) {
-    return functionNames[lastThree];
-}
 
 const ControllerInfo = ({controllerAddress, currentBlock, targetFunctionName}) => {
     return (

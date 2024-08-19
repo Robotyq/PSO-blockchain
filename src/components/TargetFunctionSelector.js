@@ -1,29 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {fetchDeployedFunctions, updateTargetFunction} from '@/scripts/blockchain';
 import styles from '../page.module.css';
-// import iterationControl from "@/src/components/IterationControl";
 
-export const functionNames = {
-    'a92': 'Rastrigin',
-    '361': 'Rosenbrock',
-    'b9a': 'Sphere Function'
-};
-
-const TargetFunctionSelector = ({web3, account, controller, afterChange}) => {
+const TargetFunctionSelector = ({web3, account, controller, afterChange, owner}) => {
     const [deployedFunctions, setDeployedFunctions] = useState([]);
     const [selectedFunction, setSelectedFunction] = useState('');
     useEffect(() => {
         const fetchFunctions = async () => {
             try {
                 const functions = await fetchDeployedFunctions(web3);
-
-                let unknownCount = 1;
-                const namedFunctions = functions.map(func => {
-                    const lastThree = func.address.slice(-3);
-                    const name = functionNames[lastThree] || `Unnamed F${unknownCount++}`;
-                    return {...func, name};
-                });
-                setDeployedFunctions(namedFunctions);
+                setDeployedFunctions(functions);
             } catch (error) {
                 console.error('Error fetching deployed functions:', error);
             }
@@ -54,8 +40,8 @@ const TargetFunctionSelector = ({web3, account, controller, afterChange}) => {
                     className={styles.dropdown}
             >
                 <option value="">Select Target Function</option>
-                {deployedFunctions.map((func, index) => (
-                    <option key={index} value={func.address}>
+                {deployedFunctions.map((func) => (
+                    <option key={func.address} value={func.address}>
                         {func.name} ({func.address.slice(0, 4)}...{func.address.slice(-3)})
                     </option>
                 ))}
