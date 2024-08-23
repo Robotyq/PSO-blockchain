@@ -14,6 +14,7 @@ import EventsList from '../../components/EventsList';
 import TargetFunctionSelector from '../../components/TargetFunctionSelector';
 import {initializeControllerFromAddress} from "@/scripts/users_scripts";
 import AllIterationsChart from "@/components/AllIterationsChart";
+import GasCostChart from "@/components/GasCostChart";
 
 export default function Home() {
     const {web3, account} = useWeb3();
@@ -167,7 +168,7 @@ export default function Home() {
             <br/>
             <br/>
             <h4>Gas Cost</h4>
-
+            <GasCostChart controller={controller} web3={web3}/>
             <EventsList events={events}/>
         </main>
     );
