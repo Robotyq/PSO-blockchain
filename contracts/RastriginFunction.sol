@@ -8,7 +8,7 @@ contract RastriginFunction is IFunction {
     int private factor = 10 * 10**18;  // Factor scaled by 18 decimals
 
     constructor() {
-        emit FunctionContractDeployed(address(this));
+        emit FunctionContractDeployed(address(this), "Rastrigin Function");
     }
 
     function compute(int[2] calldata dimensions) external view override returns (int) {
@@ -34,5 +34,9 @@ contract RastriginFunction is IFunction {
     // Helper function to get PI
     function pi() private pure returns (int) {
         return 3141592653589793238;  // PI scaled by 18 decimals
+    }
+
+    function name() external pure returns (string memory){
+        return "Rastrigin Function";
     }
 }

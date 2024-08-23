@@ -7,7 +7,7 @@ contract SphereFunction is IFunction {
     int private factor = 200;
 
     constructor() {
-        emit FunctionContractDeployed(address(this));
+        emit FunctionContractDeployed(address(this), "Sphere Function");
     }
 
     function compute(int[dimension] calldata positions) external view override returns (int) {
@@ -26,5 +26,9 @@ contract SphereFunction is IFunction {
 
     function setFactor(int _factor) external override {
         factor = _factor;
+    }
+
+    function name() external pure returns (string memory){
+        return "Sphere Function";
     }
 }

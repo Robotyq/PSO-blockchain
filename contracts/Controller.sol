@@ -6,17 +6,21 @@ contract Controller {
     int[dimension + 1] public bestPoint;
     IParticle[] public particles;
     address public targetFunctionAddress;
+    address public owner;
 
     event NewBestGlobal(address particle, int[dimension + 1] newVar);
-    event ParticleAdded(address particle);
+    event ParticleAdded(address particle, address particleOwner, address controllerAddress);
     event TargetFunctionUpdated(address newTargetFunction);
+    event ControllerDeployed(address thisContractAddress);
 
     constructor(address _targetFunctionContractAddress) payable {
+        owner = msg.sender;
         targetFunctionAddress = _targetFunctionContractAddress;
         for (uint i = 0; i < dimension; i++) {
             bestPoint[i] = 0;
         }
         bestPoint[dimension] = int(2 ** 255 - 1);
+        emit ControllerDeployed(address(this));
     }
 
     function setBestPoint(int[dimension + 1] calldata newVar) public {
@@ -43,6 +47,7 @@ contract Controller {
     }
 
     function updateTargetFunction(address _newTargetFunctionAddress) public {
+        require(msg.sender == owner, "Only the owner of the Controller can change its target function");
         targetFunctionAddress = _newTargetFunctionAddress;
         emit TargetFunctionUpdated(_newTargetFunctionAddress);
         for (uint i = 0; i < dimension; i++) {
@@ -54,12 +59,13 @@ contract Controller {
         }
     }
 
-    function addParticle(address particleAddress) public {
+    function addParticle(address particleAddress, address particleOwner) public {
         // Create a new instance of the Particle contract
         IParticle particle = IParticle(particleAddress);
+
         // Add the new particle to the array of particles
         particles.push(particle);
-        emit ParticleAdded(address(particle));
+        emit ParticleAdded(particleAddress, particleOwner, address(this));
     }
 
     function getParticlesCount() public view returns (uint) {
@@ -69,6 +75,5 @@ contract Controller {
 }
 interface IParticle {
     function iterate() external;
-
     function updateTargetFunction(address _newTargetFunctionAddress) external;
 }

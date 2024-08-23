@@ -6,7 +6,9 @@ interface IFunction {
 
     function getFactor() external view returns (int);
 
+    function name() external pure returns (string memory);
+
     function setFactor(int _factor) external;
 
-    event FunctionContractDeployed(address thisContractAddress);
+    event FunctionContractDeployed(address thisContractAddress, string name);
 }

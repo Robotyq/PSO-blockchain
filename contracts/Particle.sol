@@ -27,10 +27,10 @@ contract Particle {
         }
         localBest[dimension] = int(2 ** 255 - 1);
         _owner = msg.sender;
-        controller.addParticle(address(this));
+        controller.addParticle(address(this), _owner);
     }
 
-    function iterate(uint16 times) public {
+    function iterateTimes(uint16 times) public {
         for (uint16 i = 0; i < times; i++) {
             iterate();
         }
@@ -101,9 +101,9 @@ contract Particle {
 interface IController {
     function getBestPoint() external view returns (int[3] memory);
 
-    function setBestPoint(int[3] memory newVar) external;
+    function setBestPoint(int[3] calldata newVar) external;
 
-    function addParticle(address particleAddress) external;
+    function addParticle(address particleAddress, address particleOwner) external;
 
     function targetFunctionAddress() external view returns (address);
 }
