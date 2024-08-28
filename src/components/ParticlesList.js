@@ -30,9 +30,10 @@ const ParticlesList = ({particles1, account, selectedParticle, controller}) => {
                         Particle address: {particle.name}, Current Value: {particle.currentValue}, Position:
                         [{particle.position.join(", ")}], Local Best:
                         [{particle.localBest.join(", ")}], Owner
-                        <span className={particle.owner === account ? styles.blueText : null}>
+                        <span
+                            className={particle.owner.toString().toLowerCase() === account.toString().toLowerCase() ? styles.blueText : null}>
             : {particle.owner.slice(0, 6)}...{particle.owner.slice(-4)}
-                            {particle.owner === account ? " (me)" : " (someone else)"}
+                            {particle.owner.toString().toLowerCase() === account.toString().toLowerCase() ? " (me)" : " (someone else)"}
         </span>
                     </li>
                 ))}

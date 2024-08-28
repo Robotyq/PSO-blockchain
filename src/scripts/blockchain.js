@@ -29,7 +29,8 @@ export const fetchParticlesData = async (web3, controller) => {
                 particleInstance.methods.currentValue().call()
             ]);
             position = position.map(pos => Number(pos));
-            if (position[1] > 10000000000000 && position[0] > 10000000000000)
+            console.log('Position:', position);
+            if (Math.abs(position[1]) > 10000000000000 && Math.abs(position[0]) > 10000000000000)
                 position = position.map(pos => pos / 1000000000000000000);
             let localBest = await Promise.all([
                 particleInstance.methods.localBest(0).call(),
@@ -37,7 +38,7 @@ export const fetchParticlesData = async (web3, controller) => {
                 particleInstance.methods.localBest(2).call(),
             ]);
             localBest = localBest.map(pos => Number(pos));
-            if (localBest[0] > 10000000000000 && localBest[1] > 10000000000000)
+            if (Math.abs(localBest[0]) > 10000000000000 && Math.abs(localBest[1]) > 10000000000000)
                 localBest = localBest.map(pos => pos / 1000000000000000000);
             const owner = await particleInstance.methods.getOwner().call();
 
@@ -46,7 +47,7 @@ export const fetchParticlesData = async (web3, controller) => {
                 particleInstance.methods.speed(1).call(),
             ]);
             speed = speed.map(pos => Number(pos));
-            if (speed[0] > 10000000000000 && speed[1] > 10000000000000)
+            if (Math.abs(speed[0]) > 10000000000000 && Math.abs(speed[1]) > 10000000000000)
                 speed = speed.map(pos => pos / 1000000000000000000);
             return {address, position, localBest, owner, speed};
         })
@@ -208,7 +209,7 @@ export const fetchGlobalMin = async (controller) => {
         const pos = await controller.methods.bestPoint(i).call();
         // console.log('pos:', pos)
         let number = Number(pos);
-        if (number > 10000000000)
+        if (Math.abs(number) > 10000000000)
             number /= 1000000000000000000;
         min.push(number);
     }

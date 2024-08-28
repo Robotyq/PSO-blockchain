@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useWeb3} from '@/components/Web3Provider';
 import AccountInfo from '../../components/AccountInfo';
 import UserParticles from '../../components/UserParticles';
@@ -7,6 +7,7 @@ import DeployParticleForm from '../../components/DeployParticleForm';
 import {fetchAllControllerDetails, fetchUserParticlesByEvents} from "@/scripts/users_scripts"
 import styles from '../../page.module.css';
 import ControllerCards from "@/components/ControllerCards";
+import Web3NotConnectedMessage from "@/components/notConnected";
 
 export default function Home() {
     const {web3, account} = useWeb3();
@@ -48,6 +49,10 @@ export default function Home() {
             fetchUserParticles();
         }
     }, [account]);
+
+    if (!web3) {
+        return <Web3NotConnectedMessage/>; // Use the component here
+    }
 
     return (
         <main className={styles.main}>

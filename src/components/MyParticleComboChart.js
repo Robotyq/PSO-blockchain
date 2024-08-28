@@ -76,7 +76,7 @@ const MyParticlesComboChart = ({web3, controller, account, particles, selectedPa
                     },
                     {
                         type: 'line',
-                        label: 'Selected Particle\'s Gas Cost',
+                        label: 'Selected Particle\'s Gas Cost (milliETH)',
                         data: myGasCostsInMilliEth,
                         borderColor: 'rgba(54, 162, 235, 1)',
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',

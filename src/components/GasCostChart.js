@@ -72,7 +72,7 @@ const TotalGasCostChart = ({web3, controller}) => {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Gas Used (miliETH)',
+                    text: 'Gas Used (milliETH)',
                 },
             },
             x: {

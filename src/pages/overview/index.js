@@ -152,7 +152,7 @@ export default function Home() {
             )}
             <div className={styles.flex_layout}>
                 <div className={styles.chartContainer}>
-                    <ParticlesList particles1={particles} controller={controller}/>
+                    <ParticlesList particles1={particles} controller={controller} account={account}/>
                 </div>
                 <div className={styles.detailsContainer}>
                     <GlobalMin controller={controller} blockNumber={currentBlock}/>

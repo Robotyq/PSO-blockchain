@@ -1,11 +1,12 @@
 "use client";
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useWeb3} from '@/components/Web3Provider';
 import AccountInfo from '../../components/AccountInfo';
 import ControllerCards from '@/components/ControllerCards';
 import DeployControllerForm from '../../components/DeployControllerForm';
 import {fetchAllControllerDetails} from "@/scripts/users_scripts";
 import styles from '../../page.module.css';
+import Web3NotConnectedMessage from "@/components/notConnected";
 
 export default function AdminControllerPage() {
     const {web3, account} = useWeb3();
@@ -29,6 +30,10 @@ export default function AdminControllerPage() {
             fetchControllers();
         }
     }, [account]);
+
+    if (!web3) {
+        return <Web3NotConnectedMessage/>;
+    }
 
     return (
         <main className={styles.main}>

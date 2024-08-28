@@ -65,7 +65,7 @@ const ComboChart = ({controller, currentBlock = 0, web3, particles, account, sel
                     }
                 } else if (event.event === 'NewBestGlobal') {
                     lastGlobalMin = event.newValue.map(val => Number(val));
-                    if (lastGlobalMin[2] > 10000000000000) {
+                    if (Math.abs(lastGlobalMin[2]) > 10000000000000) {
                         lastGlobalMin = lastGlobalMin.map(val => val / 1000000000000000000);
                     }
                 } else if (event.event === 'TargetFunctionUpdated') {
