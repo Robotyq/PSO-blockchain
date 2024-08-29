@@ -4,59 +4,62 @@ const Sphere = artifacts.require("SphereFunction");
 const Rosenbrock = artifacts.require("RosenbrockFunction");
 const Rastrigin = artifacts.require("RastriginFunction");
 
+const MAX_POSITION = 1000;
+const SCALE_RASTRIGIN = 1e17;
+
 function getRandomPosition() {
-    return Math.floor(Math.random() * 2001) - 1000; // Random number between -1000 and +1000
+    return Math.floor(Math.random() * (2 * MAX_POSITION + 1)) - MAX_POSITION; // Random number between -1000 and +1000
 }
 
 function getRandomChunkSize() {
-    return Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
+    return Math.floor(Math.random() * 4) + 1; // Random number between 1 and 4
 }
 
 module.exports = async function (deployer, network, accounts) {
     // Deploy SphereFunction and Controller using SphereFunction
-    await deployer.deploy(Sphere, { overwrite: true });
+    await deployer.deploy(Sphere, {overwrite: true});
     const sphere = await Sphere.deployed();
-    await deployer.deploy(Controller, sphere.address, { value: web3.utils.toWei('1', 'ether') });
+    await deployer.deploy(Controller, sphere.address, {value: web3.utils.toWei('1', 'ether')});
     const sphereController = await Controller.deployed();
 
     // Deploy RastriginFunction and Controller using RastriginFunction
-    await deployer.deploy(Rastrigin, { overwrite: true });
+    await deployer.deploy(Rastrigin, {overwrite: true});
     const rastrigin = await Rastrigin.deployed();
-    await deployer.deploy(Controller, rastrigin.address, { value: web3.utils.toWei('1', 'ether') });
+    await deployer.deploy(Controller, rastrigin.address, {value: web3.utils.toWei('1', 'ether')});
     const rastriginController = await Controller.deployed();
 
     // Deploy RosenbrockFunction and Controller using RosenbrockFunction
-    await deployer.deploy(Rosenbrock, { overwrite: true });
+    await deployer.deploy(Rosenbrock, {overwrite: true});
     const rosenbrock = await Rosenbrock.deployed();
-    await deployer.deploy(Controller, rosenbrock.address, { value: web3.utils.toWei('1', 'ether') });
+    await deployer.deploy(Controller, rosenbrock.address, {value: web3.utils.toWei('1', 'ether')});
     const rosenbrockController = await Controller.deployed();
 
     // List of controllers to iterate over
     const controllers = [
-        { controller: sphereController, scale: 1 },
-        { controller: rastriginController, scale: 1e17 },
-        { controller: rosenbrockController, scale: 1 }
+        {controller: sphereController, scale: 1},
+        {controller: rastriginController, scale: SCALE_RASTRIGIN},
+        {controller: rosenbrockController, scale: 1}
     ];
 
     // Deploy Particle contracts using accounts dynamically for each controller
     const particlesData = [
-        { accountIndex: 0 },
-        { accountIndex: 0 },
-        { accountIndex: 1 },
-        { accountIndex: 1 },
-        { accountIndex: 1 },
-        { accountIndex: 2 },
-        { accountIndex: 2 },
-        { accountIndex: 3 },
-        { accountIndex: 3 },
-        { accountIndex: 4 }
+        {accountIndex: 0},
+        {accountIndex: 0},
+        {accountIndex: 1},
+        {accountIndex: 1},
+        {accountIndex: 1},
+        {accountIndex: 2},
+        {accountIndex: 2},
+        {accountIndex: 3},
+        {accountIndex: 3},
+        {accountIndex: 4}
     ];
 
-    for (const { controller, scale } of controllers) {
+    for (const {controller, scale} of controllers) {
         for (const data of particlesData) {
             const initialPosition = [
-                getRandomPosition() * scale,
-                getRandomPosition() * scale
+                (getRandomPosition() * scale).toString(), // Convert to string to avoid overflow
+                (getRandomPosition() * scale).toString()  // Convert to string to avoid overflow
             ];
             const initialSpeed = [0, 0]; // Initial speed set to zero
 
@@ -80,7 +83,9 @@ module.exports = async function (deployer, network, accounts) {
                 if (iterationCounts[particleIndex] < 10) {
                     const account = accounts[particlesData[particleIndex].accountIndex];
                     const particleInstance = particlesData[particleIndex].particleInstance;
-                    promises.push(particleInstance.methods.iterate().send({ from: account }));
+                    promises.push(
+                        particleInstance.methods.iterate().send({from: account, gas: 300000}) // Set gas limit here
+                    );
                     iterationCounts[particleIndex]++;
                     totalIterations++;
                 }
@@ -91,5 +96,5 @@ module.exports = async function (deployer, network, accounts) {
         }
     }
 
-    console.log("All controllers and particles deployed with intercalated iterations and random chunk sizes.");
+    console.log("All controllers and particles deployed with intercalated iterations, random chunk sizes, and gas limit set.");
 };
