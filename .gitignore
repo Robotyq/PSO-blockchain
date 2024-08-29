@@ -1,9 +1,7 @@
 /scripts/particle_positions.png
 /scripts/particle_positions_reversed.png
 /particle_positions_reversed.png
-/scripts/plotPositions.py
 /build/contracts/PolynomialFunction.json
-/scripts/positions.json
 /build/contracts/RastriginFunction.json
 /build/contracts/RosenbrockFunction.json
 /contracts/RosenbrockFunction.sol
