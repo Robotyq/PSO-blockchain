@@ -12,7 +12,7 @@ function getRandomPosition() {
 }
 
 function getRandomChunkSize() {
-    return Math.floor(Math.random() * 4) + 1; // Random number between 1 and 4
+    return Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5
 }
 
 module.exports = async function (deployer, network, accounts) {
@@ -77,17 +77,23 @@ module.exports = async function (deployer, network, accounts) {
         while (totalIterations < 100) {
             const chunkSize = getRandomChunkSize();
             let promises = [];
-
+            let particleIndex = totalIterations % particlesData.length;
             for (let j = 0; j < chunkSize; j++) {
-                const particleIndex = totalIterations % particlesData.length;
                 if (iterationCounts[particleIndex] < 10) {
                     const account = accounts[particlesData[particleIndex].accountIndex];
                     const particleInstance = particlesData[particleIndex].particleInstance;
-                    promises.push(
-                        particleInstance.methods.iterate().send({from: account, gas: 300000}) // Set gas limit here
-                    );
-                    iterationCounts[particleIndex]++;
-                    totalIterations++;
+                    const consecutiveIterations = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
+                    for(let i=0; i<consecutiveIterations; i++){
+                        promises.push(
+                            particleInstance.methods.iterate().send({from: account, gas: 300000}) // Set gas limit here
+                        );
+                        iterationCounts[particleIndex]++;
+                        totalIterations++;
+                        particleIndex++;
+                    }
+                }
+                else {
+                    particleIndex++;
                 }
             }
 
