@@ -37,7 +37,7 @@ export default function AdminControllerPage() {
 
     return (
         <main className={styles.main}>
-            <h1>Controllers admin</h1>
+            <h1>Swarms administration</h1>
             <AccountInfo account={account} web3={web3} role={'controllers admin'}/>
             <ControllerCards controllers={controllers} owner={account}/>
             {error && (

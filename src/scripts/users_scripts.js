@@ -2,6 +2,19 @@ import ParticleContract from '../contracts/Particle.js';
 import ControllerContract from '../contracts/Controller.js';
 import TargetFunctionContract from '../contracts/TargetFunction.js';
 
+const SCALE_THRESHOLD = 10 ** 13;
+const SCALE = 10 ** 18;
+
+const scaleIfNecessary = (value) => {
+    const absValue = Math.abs(value);
+    if (absValue > SCALE_THRESHOLD) {
+        const scaledValue = value / SCALE;
+        // If the scaled value is fractional, print it with 4 decimal places
+        return scaledValue % 1 !== 0 ? parseFloat(scaledValue.toFixed(4)) : scaledValue;
+    }
+    return value;
+};
+
 export const fetchUserParticlesByEvents = async (web3, account) => {
     const eventSignature = web3.utils.sha3('ParticleAdded(address,address,address)');
     console.log("Event Signature:", eventSignature);
@@ -11,7 +24,7 @@ export const fetchUserParticlesByEvents = async (web3, account) => {
         toBlock: 'latest',
         topics: [eventSignature],
     });
-    console.log("particleEvents: ", particleEvents)
+    console.log("particleEvents: ", particleEvents);
     const particles = [];
 
     for (const event of particleEvents) {
@@ -43,11 +56,15 @@ export const fetchUserParticlesByEvents = async (web3, account) => {
                 particleInstance.methods.localBest(2).call(),
             ]);
 
+            // Apply scaling if necessary
+            const scaledPosition = position.map(pos => scaleIfNecessary(Number(pos)));
+            const scaledLocalBest = localBest.map(best => scaleIfNecessary(Number(best)));
+
             const targetFunction = await particleInstance.methods.targetFunction().call();
             particles.push({
                 address: particle,
-                position: position.map(Number),
-                localBest: localBest.map(Number),
+                position: scaledPosition,
+                localBest: scaledLocalBest,
                 owner: particleOwner,
                 controller: controllerAddress,
                 targetFunction: targetFunction,
@@ -57,7 +74,6 @@ export const fetchUserParticlesByEvents = async (web3, account) => {
 
     return particles;
 };
-
 
 export const fetchAllControllerDetails = async (web3, fromBlock = 0) => {
     // Get the deployed network information
@@ -75,7 +91,7 @@ export const fetchAllControllerDetails = async (web3, fromBlock = 0) => {
     });
 
     const controllers = [];
-    console.log("controllerDeploymentEvents: ", controllerDeploymentEvents)
+    console.log("controllerDeploymentEvents: ", controllerDeploymentEvents);
 
     // Loop through each event to get the controller address and fetch its details
     for (const event of controllerDeploymentEvents) {
@@ -92,6 +108,9 @@ export const fetchAllControllerDetails = async (web3, fromBlock = 0) => {
             controllerInstance.methods.bestPoint(2).call(),
         ]);
 
+        // Apply scaling to globalMin if necessary
+        const scaledGlobalMin = globalMin.map(min => scaleIfNecessary(Number(min)));
+
         const particlesCount = await controllerInstance.methods.getParticlesCount().call();
         const controllerOwner = await controllerInstance.methods.owner().call();
 
@@ -100,16 +119,14 @@ export const fetchAllControllerDetails = async (web3, fromBlock = 0) => {
             targetFunctionAddress,
             functionName,
             particlesCount: Number(particlesCount),
-            globalMin: globalMin.map(Number),
+            globalMin: scaledGlobalMin,
             owner: controllerOwner
         });
     }
-    console.log("controllers: ", controllers)
+    console.log("controllers: ", controllers);
     return controllers;
 };
 
 export const initializeControllerFromAddress = async (web3, adr) => {
     return new web3.eth.Contract(ControllerContract.abi, adr);
-}
-
-
+};

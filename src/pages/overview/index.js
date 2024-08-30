@@ -131,7 +131,7 @@ export default function Home() {
 
     return (
         <main className={styles.main}>
-            <h1>Controller overview</h1>
+            <h1>Swarm overview</h1>
             <h3>Owner: {owner} {account === owner ? '(me)' : '(somone else)'}</h3>
 
             {/*<AccountInfo account={account} web3={web3}/>*/}

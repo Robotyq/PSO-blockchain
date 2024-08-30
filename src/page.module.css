@@ -96,6 +96,15 @@
     margin: 0 auto; /* Center the chart */
 }
 
+.scaterContainer {
+    width: 87%;
+    height: 100%;
+    margin: 0 auto;
+    max-height: 380px;
+    min-height: 300px;
+    min-width: 550px;
+}
+
 .iterationControl {
     display: flex;
     align-items: center;

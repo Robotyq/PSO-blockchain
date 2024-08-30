@@ -42,7 +42,7 @@ const DeployControllerForm = ({web3, account, onControllerDeployed}) => {
             <br/>
             <br/>
             <br/>
-            <h2>Deploy New Controller</h2><br/>
+            <h2>Create New Swarm (Deploy Controller)</h2><br/>
             <div>
                 <label>Select Target Function:</label>
                 <select value={selectedFunction} onChange={(e) => setSelectedFunction(e.target.value)}>

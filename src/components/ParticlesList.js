@@ -18,8 +18,8 @@ const ParticlesList = ({particles1, account, selectedParticle, controller}) => {
 
     return (
         <div className={styles.particles}>
+            <h2>Particles</h2>
             <div className={styles.flex_layout}>
-                <h2>Particles</h2>
                 <ParticlesChart particles={particles} account={account} selectedParticle={selectedParticle}
                                 controller={controller}/>
             </div>

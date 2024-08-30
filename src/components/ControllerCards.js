@@ -26,10 +26,10 @@ const ControllerCards = ({
 
     return (
         <div>
-            {!owner && <h3>All Controllers</h3>}
-            {owner && owner !== 'others' && <h3>My Controllers (deployed by me)</h3>}
-            {owner && owner === 'others' && <h3>All other Controllers</h3>}
-            {displayWarning && <h4>You must select one in order to deploy a new particle on it</h4>}
+            {!owner && <h3>All Swarms</h3>}
+            {owner && owner !== 'others' && <h3>My Swarms (controllers deployed by me)</h3>}
+            {owner && owner === 'others' && <h3>All other Swarm Controllers</h3>}
+            {displayWarning && <h4>What swarm do you want your particle to join? You must select one below</h4>}
 
             {controllers.length === 0 && <h4>No controllers found</h4>}
             <div className={styles.controllerCardsContainer}>
@@ -45,7 +45,7 @@ const ControllerCards = ({
                             style={{backgroundColor: cardColor}}
                             onClick={() => handleControllerClick(controller.address)}
                         >
-                            <h3><strong>Function Name:</strong> {controller.functionName}</h3>
+                            <h3><strong>optimizing:</strong> {controller.functionName}</h3>
                             <p><strong>Controller Address:</strong> {shortenAddress(controller.address)}</p>
                             <p><strong>Target Function:</strong> {shortenAddress(controller.targetFunctionAddress)}</p>
                             <p><strong>Number of Particles:</strong> {controller.particlesCount}</p>

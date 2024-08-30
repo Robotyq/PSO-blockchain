@@ -13,16 +13,17 @@ const UserParticles = ({particles, controllersColors}) => {
             query: {particle: JSON.stringify(particle)}, // Pass particle data as a query parameter
         }, undefined, {shallow: true});
     };
-
+    console.log("controlerColors", controllersColors)
     return (
         <div>
             <h3>All my Particles</h3>
-            <h4>Here are all the particles you have deployed. Same color cards share the target function and the
+            <h4>Here are all the particles you have deployed. Same color particles are in the same swarm and thus share
+                the target function and the
                 controller</h4>
             <br/>
             <div className={styles.cardsContainer}>
                 {particles.map((particle, index) => {
-                    const controllerColor = controllersColors[particle.controller] || `hsl(${Math.random() * 360}, 100%, 75%)`;
+                    const controllerColor = controllersColors[particle.controller] || controllersColors['extraColor${index}'] || `hsl(${Math.random() * 360}, 100%, 75%)`;
                     return (
                         <div
                             key={index}

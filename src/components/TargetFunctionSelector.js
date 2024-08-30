@@ -39,7 +39,7 @@ const TargetFunctionSelector = ({web3, account, controller, afterChange, owner})
         <div className={`${styles.iterationControl} ${!isOwner ? styles.disabled : ''}`}>
             {!isOwner && (
                 <p className={styles.warningMessage}>
-                    Only the owner of this controller can change its target function
+                    Only the owner of this swarm can change its target function
                 </p>
             )}
             <select

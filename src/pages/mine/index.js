@@ -9,6 +9,8 @@ import styles from '../../page.module.css';
 import ControllerCards from "@/components/ControllerCards";
 import Web3NotConnectedMessage from "@/components/notConnected";
 
+const START_HUE = 85;//green
+const END_HUE = 325;//purple
 export default function Home() {
     const {web3, account} = useWeb3();
     const [userParticles, setUserParticles] = useState([]);
@@ -29,7 +31,8 @@ export default function Home() {
                 const colors = {};
                 for (let i = 0; i < totalColors; i++) {
                     const controller = uniqueControllers[i] || `extraColor${i - uniqueControllers.length}`;
-                    colors[controller] = `hsl(${i * (360 / totalColors)}, 100%, 30%)`;
+                    const hue = START_HUE + ((END_HUE - START_HUE) * (1 + i) / totalColors);
+                    colors[controller] = `hsl(${hue}, 100%, 30%)`;
                 }
                 setControllersColors(colors);
 

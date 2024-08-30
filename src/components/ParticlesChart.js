@@ -65,8 +65,8 @@ const ParticlesChart = ({particles, account, selectedParticle, controller}) => {
             },
         },
         onClick: (event, elements) => {
-            console.log('controller', controller)
-            console.log('controllerAddress', controller._address);
+            // console.log('controller', controller)
+            // console.log('controllerAddress', controller._address);
 
             if (elements.length > 0) {
                 const elementIndex = elements[0].datasetIndex;
@@ -83,7 +83,7 @@ const ParticlesChart = ({particles, account, selectedParticle, controller}) => {
     };
 
     return (
-        <div className={styles.chartContainer}>
+        <div className={styles.scaterContainer}>
             <Scatter data={data} options={options}/>
         </div>
     );
