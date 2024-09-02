@@ -23,7 +23,7 @@ const ControllerCards = ({
             });
         }
     };
-
+    let extraIndex = 0;
     return (
         <div>
             {!owner && <h3>All Swarms</h3>}
@@ -36,7 +36,9 @@ const ControllerCards = ({
                 {controllers.map((controller, index) => {
                     const isSelected = selectedController === controller.address;
                     const controllersColor = controllersColors ? controllersColors[controller.address] : null;
-                    const cardColor = controllersColor || `hsl(${Math.random() * 360}, 100%, 30%)`;
+                    console.log("controllersColor", controllersColor)
+                    console.log('extraIndex', extraIndex)
+                    const cardColor = controllersColor || controllersColors[++extraIndex] || `hsl(${Math.random() * 360}, 100%, 30%)`;
 
                     return (
                         <div

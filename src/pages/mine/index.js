@@ -27,10 +27,10 @@ export default function Home() {
 
                 // Create a unique set of controllers
                 const uniqueControllers = [...new Set(particles.map(particle => particle.controller))];
-                const totalColors = uniqueControllers.length + 5; // 5 more colors
+                const totalColors = uniqueControllers.length + 2;
                 const colors = {};
                 for (let i = 0; i < totalColors; i++) {
-                    const controller = uniqueControllers[i] || `extraColor${i - uniqueControllers.length}`;
+                    const controller = uniqueControllers[i] || i - uniqueControllers.length;
                     const hue = START_HUE + ((END_HUE - START_HUE) * (1 + i) / totalColors);
                     colors[controller] = `hsl(${hue}, 100%, 30%)`;
                 }

@@ -14,6 +14,7 @@ const UserParticles = ({particles, controllersColors}) => {
         }, undefined, {shallow: true});
     };
     console.log("controlerColors", controllersColors)
+    let extraColorIndex = 0;
     return (
         <div>
             <h3>All my Particles</h3>
@@ -23,7 +24,8 @@ const UserParticles = ({particles, controllersColors}) => {
             <br/>
             <div className={styles.cardsContainer}>
                 {particles.map((particle, index) => {
-                    const controllerColor = controllersColors[particle.controller] || controllersColors['extraColor${index}'] || `hsl(${Math.random() * 360}, 100%, 75%)`;
+                    const extraIndex = (++extraColorIndex) % 2;
+                    const controllerColor = controllersColors[particle.controller] || controllersColors[extraIndex] || `hsl(${Math.random() * 360}, 100%, 75%)`;
                     return (
                         <div
                             key={index}
